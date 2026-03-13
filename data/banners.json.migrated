@@ -1,0 +1,665 @@
+[
+  {
+    "id": "banner_22e5ce2b93bc",
+    "filename": "banner_22e5ce2b93bc.png",
+    "original_filename": "300 х 253 (1).png",
+    "upload_date": "2026-03-09T19:53:12.865093+00:00",
+    "file_size_bytes": 3091632,
+    "width": 4800,
+    "height": 4000,
+    "metrics": {
+      "ctr": null,
+      "cr_install": null,
+      "cr_event": null,
+      "impressions": null,
+      "platform": null,
+      "campaign": null,
+      "date_from": null,
+      "date_to": null
+    },
+    "tags": {
+      "visual": {
+        "has_faces": true,
+        "n_people": 2,
+        "background_type": "сплошной цвет",
+        "background_color": "#000000",
+        "objects": [
+          "мужчины",
+          "ноутбук",
+          "кофейные чашки",
+          "стол",
+          "синие шторы",
+          "абстрактные зеленые линии"
+        ],
+        "color_scheme": "тёмная",
+        "dominant_colors": [
+          "#000000",
+          "#9AFF00",
+          "#FFFFFF"
+        ]
+      },
+      "text_elements": {
+        "headline": "Как проверять автомобиль, чтобы исключить риски?",
+        "subtitle": null,
+        "offer": null,
+        "cta_text": "Бесплатный вебинар",
+        "has_urgency_words": false,
+        "urgency_words": []
+      },
+      "structural": {
+        "has_cta_button": true,
+        "cta_button_color": "#9AFF00",
+        "cta_position": "низ-лево",
+        "has_logo": true,
+        "logo_position": "верх-центр",
+        "text_image_ratio": 0.4
+      },
+      "emotional": {
+        "tonality": "профессиональная",
+        "has_smiling_face": true,
+        "energy_level": "средняя"
+      }
+    },
+    "tags_status": "done",
+    "tags_error": null,
+    "tagged_at": "2026-03-09T21:18:13.317729+00:00"
+  },
+  {
+    "id": "banner_54aeb714355a",
+    "filename": "banner_54aeb714355a.png",
+    "original_filename": "16_9 (2).png",
+    "upload_date": "2026-03-09T20:17:11.531542+00:00",
+    "file_size_bytes": 3088761,
+    "width": 6400,
+    "height": 3600,
+    "metrics": {
+      "ctr": 0.3,
+      "cr_install": 0.2,
+      "cr_event": 0.22,
+      "impressions": 20000,
+      "platform": null,
+      "campaign": "Ny_акции",
+      "date_from": "2005-12-22",
+      "date_to": "2026-01-13"
+    },
+    "tags": {
+      "visual": {
+        "has_faces": false,
+        "n_people": 0,
+        "background_type": "градиент",
+        "background_color": null,
+        "objects": [
+          "новогодние шары",
+          "спидометр",
+          "елочная игрушка в форме елки",
+          "гирлянда",
+          "ленточки"
+        ],
+        "color_scheme": "тёмная",
+        "dominant_colors": [
+          "#1a1a1a",
+          "#dc143c",
+          "#ffd700"
+        ]
+      },
+      "text_elements": {
+        "headline": "СКРУТИЛИ ЦЕНЫ К НОВОМУ ГОДУ",
+        "subtitle": "Новый год в Haraba",
+        "offer": "-8000 ₽ на курсы по промокоду NYDEC до 12.12",
+        "cta_text": null,
+        "has_urgency_words": true,
+        "urgency_words": [
+          "до 12.12"
+        ]
+      },
+      "structural": {
+        "has_cta_button": false,
+        "cta_button_color": null,
+        "cta_position": null,
+        "has_logo": true,
+        "logo_position": "верх-лево",
+        "text_image_ratio": 0.6
+      },
+      "emotional": {
+        "tonality": "игривая",
+        "has_smiling_face": false,
+        "energy_level": "высокая"
+      }
+    },
+    "tags_status": "done",
+    "tags_error": null,
+    "tagged_at": "2026-03-09T21:18:04.783800+00:00",
+    "explanation": "### Общая оценка\nОтличный результат! Баннер показывает исключительную эффективность с CTR 30% и занимает 1-е место среди всех баннеров. Конверсия в установку (20%) и по событиям (22%) также демонстрируют высокую вовлеченность аудитории.\n\n### Что работает хорошо\n**Новогодняя тематика и дизайн**: Сочетание тёмного фона с яркими элементами (#dc143c красный, #ffd700 золотой) создаёт праздничную атмосферу и высокий контраст, что привлекает внимание.\n\n**Сильный заголовок**: \"СКРУТИЛИ ЦЕНЫ К НОВОМУ ГОДУ\" использует игривую тональность и создаёт интригу, что положительно влияет на CTR (+36.4% по статистике).\n\n**Элемент срочности**: Указание срока действия \"до 12.12\" создаёт FOMO-эффект, что статистически повышает CTR на 36.4%.\n\n**Конкретное предложение**: Скидка \"-8000 ₽ на курсы по промокоду NYDEC\" даёт чёткое понимание выгоды и способа её получения.\n\n### Что можно улучшить\n**Отсутствие CTA-кнопки**: Это критический недостаток, который статистически снижает CTR на 100%. Пользователю неясно, где именно нужно нажать.\n\n**Нет человеческих лиц**: Отсутствие лиц снижает эмоциональную связь с аудиторией и негативно влияет на CTR (-100% по статистике).\n\n**Высокое соотношение текст/изображение (0.6)**: Много текстовой информации может усложнять восприятие на мобильных устройствах.\n\n### Рекомендации\n1. **Добавить яркую CTA-кнопку** с текстом \"ПОЛУЧИТЬ СКИДКУ\" или \"ЗАБРАТЬ -8000₽\" в правой части баннера, используя контрастный цвет (например, золотой #ffd700).\n\n2. **Интегрировать человеческий элемент**: Добавить небольшое изображение довольного студента или преподавателя в углу баннера, сохранив новогоднюю стилистику.\n\n3. **Оптимизировать текстовую часть**: Сократить количество текста, оставив только ключевое сообщение - заголовок, размер скидки и срок действия.\n\n4. **Усилить визуальную иерархию**: Сделать цифру \"-8000₽\" более крупной и выделенной, чтобы она сразу привлекала внимание.\n\n5. **A/B-тестировать варианты**: Создать версии с разными позициями CTA-кнопки и различными человеческими элементами для максимизации конверсии.",
+    "explained_at": "2026-03-10T08:32:03.997945+00:00"
+  },
+  {
+    "id": "banner_7475c309fd68",
+    "filename": "banner_7475c309fd68.png",
+    "original_filename": "1_1 (2).png",
+    "upload_date": "2026-03-09T20:29:35.067153+00:00",
+    "file_size_bytes": 2598039,
+    "width": 4800,
+    "height": 4800,
+    "metrics": {
+      "ctr": null,
+      "cr_install": null,
+      "cr_event": null,
+      "impressions": null,
+      "platform": null,
+      "campaign": null,
+      "date_from": null,
+      "date_to": null
+    },
+    "tags": {
+      "visual": {
+        "has_faces": false,
+        "n_people": 0,
+        "background_type": "градиент",
+        "background_color": null,
+        "objects": [
+          "новогодние шары",
+          "спидометр",
+          "ёлочка",
+          "гирлянды",
+          "автомобильные украшения"
+        ],
+        "color_scheme": "тёмная",
+        "dominant_colors": [
+          "#000000",
+          "#ff0000",
+          "#ffffff"
+        ]
+      },
+      "text_elements": {
+        "headline": "СКРУТИЛИ ЦЕНЫ К НОВОМУ ГОДУ",
+        "subtitle": null,
+        "offer": "-8000 ₽ на курсы по промокоду NYDEC до 12.12",
+        "cta_text": null,
+        "has_urgency_words": true,
+        "urgency_words": [
+          "до 12.12"
+        ]
+      },
+      "structural": {
+        "has_cta_button": false,
+        "cta_button_color": null,
+        "cta_position": null,
+        "has_logo": true,
+        "logo_position": "верх-лево",
+        "text_image_ratio": 0.4
+      },
+      "emotional": {
+        "tonality": "игривая",
+        "has_smiling_face": false,
+        "energy_level": "высокая"
+      }
+    },
+    "tags_status": "done",
+    "tags_error": null,
+    "tagged_at": "2026-03-09T21:16:59.175807+00:00",
+    "explanation": "### Общая оценка\nБез данных по CTR/CR сложно дать точную оценку, но баннер имеет смешанные характеристики. Хорошо работает новогодняя тематика с яркими элементами и срочностью, но критически не хватает призыва к действию и человеческого фактора для повышения конверсии.\n\n### Что работает хорошо\nБаннер использует несколько элементов с положительным влиянием на CTR:\n- **Градиентный фон** (+36.4% к CTR) создает визуальную глубину\n- **Тёмная цветовая схема** (+36.4% к CTR) обеспечивает контраст с яркими новогодними элементами\n- **Высокий энергетический уровень** (+36.4% к CTR) достигается через насыщенные красные шары и гирлянды\n- **Игривая тональность** (+36.4% к CTR) поддерживается новогодними украшениями и креативной подачей скидки через спидометр\n- **Слова срочности** \"до 12.12\" (+36.4% к CTR) мотивируют к быстрому действию\n\n### Что можно улучшить\nКритические недостатки баннера влияют на его эффективность:\n- **Отсутствие CTA-кнопки** (-100% к CTR) — пользователь не понимает, что именно нужно делать\n- **Отсутствие лиц людей** (-100% к CTR) снижает эмоциональное вовлечение и доверие\n- **Отсутствие улыбающихся лиц** (-100% к CTR) упускает возможность создать позитивные эмоции\n- **Соотношение текст/изображение 0.4** может быть недостаточным для ясной передачи сообщения\n\n### Рекомендации\n1. **Добавить яркую CTA-кнопку** с текстом \"ПОЛУЧИТЬ СКИДКУ\" или \"ЗАПИСАТЬСЯ СО СКИДКОЙ\" — это критически важно для конверсии\n2. **Включить изображение довольного студента или преподавателя** в новогоднем антураже для повышения доверия и эмоциональной связи\n3. **Увеличить размер и контрастность текста с предложением** — сделать промокод NYDEC более заметным\n4. **Добавить визуальный элемент курсов** (руль, дорога, автошкола) для лучшего понимания продукта\n5. **Протестировать светлую версию** с сохранением новогодних элементов — может показать лучшие результаты при A/B тестировании",
+    "explained_at": "2026-03-10T08:43:41.330389+00:00"
+  },
+  {
+    "id": "banner_60a80196d9c9",
+    "filename": "banner_60a80196d9c9.jpg",
+    "original_filename": "1778x1080_Avilon-Jetour_T2-B-June25.jpg",
+    "upload_date": "2026-03-09T20:55:50.375303+00:00",
+    "file_size_bytes": 418972,
+    "width": 1778,
+    "height": 1080,
+    "metrics": {
+      "ctr": 0.22,
+      "cr_install": 0.14,
+      "cr_event": 0.004,
+      "impressions": 2300000,
+      "platform": "yandex",
+      "campaign": "summaer sale",
+      "date_from": null,
+      "date_to": null
+    },
+    "tags": {
+      "visual": {
+        "has_faces": false,
+        "n_people": 0,
+        "background_type": "фото",
+        "background_color": null,
+        "objects": [
+          "автомобиль",
+          "океан",
+          "пляж",
+          "волны",
+          "небо",
+          "облака"
+        ],
+        "color_scheme": "холодная",
+        "dominant_colors": [
+          "#87CEEB",
+          "#FFFFFF",
+          "#000000"
+        ]
+      },
+      "text_elements": {
+        "headline": "JETOUR",
+        "subtitle": "AVILON",
+        "offer": null,
+        "cta_text": "Drive Your Future",
+        "has_urgency_words": false,
+        "urgency_words": []
+      },
+      "structural": {
+        "has_cta_button": false,
+        "cta_button_color": null,
+        "cta_position": null,
+        "has_logo": true,
+        "logo_position": "низ-лево",
+        "text_image_ratio": 0.1
+      },
+      "emotional": {
+        "tonality": "премиальная",
+        "has_smiling_face": false,
+        "energy_level": "средняя"
+      }
+    },
+    "tags_status": "done",
+    "tags_error": null,
+    "tagged_at": "2026-03-10T08:27:30.726892+00:00",
+    "explanation": "### Общая оценка\nБаннер показал средний результат. CTR 22% находится на 50 перцентиле среди аналогичных креативов, что говорит о стандартной эффективности привлечения внимания. Однако очень низкий CR Event (0.40%) при высоком CR Install (14%) указывает на проблемы с качеством трафика и соответствием ожиданий пользователей.\n\n### Что работает хорошо\nОсновным положительным фактором является **отсутствие слов срочности** — согласно статистике, это даёт прирост CTR на +36.4%. Креатив использует спокойный премиальный подход без агрессивного давления на пользователя. **Премиальная тональность** в сочетании с автомобильной тематикой и живописным фоном (океан, пляж) создаёт ассоциации с качеством и статусом, что соответствует позиционированию бренда JETOUR/AVILON.\n\n### Что можно улучшить\nБаннер имеет множество элементов с негативным влиянием на CTR:\n- **Отсутствует CTA-кнопка** (потенциальная потеря -100% CTR)\n- **Нет человеческих лиц** (-100% CTR по статистике)\n- **Фото-фон** показывает снижение эффективности на -26.7%\n- **Холодная цветовая схема** (#87CEEB, белый, чёрный) также коррелирует с падением CTR на -26.7%\n\nКритически низкий CR Event (0.40%) при высоком CR Install говорит о несоответствии креатива целевому действию в приложении.\n\n### Рекомендации\n1. **Добавить яркую CTA-кнопку** с контрастным цветом (например, оранжевый или красный) и чётким призывом к действию вместо абстрактного \"Drive Your Future\"\n\n2. **Включить человеческие лица** — добавить изображение довольного владельца автомобиля или семьи, что значительно повысит эмоциональную вовлечённость\n\n3. **Пересмотреть цветовую палитру** — добавить тёплые акценты (жёлтый, оранжевый) для повышения энергетики креатива при сохранении премиального позиционирования\n\n4. **Улучшить соответствие ожиданиям** — если приложение про покупку/тест-драйв авто, добавить соответствующие визуальные элементы (салон дилерского центра, ключи от авто)\n\n5. **A/B тестировать варианты фона** — попробовать городскую среду или автосалон вместо природного пейзажа для лучшего соответствия автомобильной тематике",
+    "explained_at": "2026-03-10T09:10:45.147704+00:00"
+  },
+  {
+    "id": "banner_f3d4de854aab",
+    "filename": "banner_f3d4de854aab.jpg",
+    "original_filename": "1080x1920_Avilon-Jetour_X50-B-June25.jpg",
+    "upload_date": "2026-03-09T20:57:32.072509+00:00",
+    "file_size_bytes": 407941,
+    "width": 1080,
+    "height": 1920,
+    "metrics": {
+      "ctr": null,
+      "cr_install": null,
+      "cr_event": null,
+      "impressions": null,
+      "platform": null,
+      "campaign": null,
+      "date_from": null,
+      "date_to": null
+    },
+    "tags": {
+      "visual": {
+        "has_faces": false,
+        "n_people": 0,
+        "background_type": "фото",
+        "background_color": null,
+        "objects": [
+          "автомобиль",
+          "море",
+          "пляж",
+          "облака",
+          "небо"
+        ],
+        "color_scheme": "холодная",
+        "dominant_colors": [
+          "#87CEEB",
+          "#FFFFFF",
+          "#000000"
+        ]
+      },
+      "text_elements": {
+        "headline": "JETOUR AVILON",
+        "subtitle": "Drive Your Future",
+        "offer": null,
+        "cta_text": null,
+        "has_urgency_words": false,
+        "urgency_words": []
+      },
+      "structural": {
+        "has_cta_button": false,
+        "cta_button_color": null,
+        "cta_position": null,
+        "has_logo": true,
+        "logo_position": "верх-центр",
+        "text_image_ratio": 0.1
+      },
+      "emotional": {
+        "tonality": "премиальная",
+        "has_smiling_face": false,
+        "energy_level": "средняя"
+      }
+    },
+    "tags_status": "done",
+    "tags_error": null,
+    "tagged_at": "2026-03-10T08:40:16.001421+00:00"
+  },
+  {
+    "id": "banner_452858da13db",
+    "filename": "banner_452858da13db.jpg",
+    "original_filename": "1080x1920_Avilon-Jetour_Dashing-B-June25.jpg",
+    "upload_date": "2026-03-09T21:00:30.504798+00:00",
+    "file_size_bytes": 436103,
+    "width": 1080,
+    "height": 1920,
+    "metrics": {
+      "ctr": null,
+      "cr_install": null,
+      "cr_event": null,
+      "impressions": null,
+      "platform": null,
+      "campaign": null,
+      "date_from": null,
+      "date_to": null
+    },
+    "tags": {
+      "visual": {
+        "has_faces": false,
+        "n_people": 0,
+        "background_type": "фото",
+        "background_color": null,
+        "objects": [
+          "автомобиль",
+          "океан",
+          "пляж",
+          "облака",
+          "небо"
+        ],
+        "color_scheme": "холодная",
+        "dominant_colors": [
+          "#87CEEB",
+          "#2F4F4F",
+          "#F0F8FF"
+        ]
+      },
+      "text_elements": {
+        "headline": "JETOUR",
+        "subtitle": "Drive Your Future",
+        "offer": null,
+        "cta_text": null,
+        "has_urgency_words": false,
+        "urgency_words": []
+      },
+      "structural": {
+        "has_cta_button": false,
+        "cta_button_color": null,
+        "cta_position": null,
+        "has_logo": true,
+        "logo_position": "верх-центр",
+        "text_image_ratio": 0.1
+      },
+      "emotional": {
+        "tonality": "премиальная",
+        "has_smiling_face": false,
+        "energy_level": "средняя"
+      }
+    },
+    "tags_status": "done",
+    "tags_error": null,
+    "tagged_at": "2026-03-10T05:19:24.080300+00:00"
+  },
+  {
+    "id": "banner_46dfd6ba2397",
+    "filename": "banner_46dfd6ba2397.jpg",
+    "original_filename": "1080x1920_Avilon-Jetour_T2-B-June25.jpg",
+    "upload_date": "2026-03-09T21:08:26.597676+00:00",
+    "file_size_bytes": 401553,
+    "width": 1080,
+    "height": 1920,
+    "metrics": {
+      "ctr": null,
+      "cr_install": null,
+      "cr_event": null,
+      "impressions": null,
+      "platform": null,
+      "campaign": null,
+      "date_from": null,
+      "date_to": null
+    },
+    "tags": {
+      "visual": {
+        "has_faces": false,
+        "n_people": 0,
+        "background_type": "фото",
+        "background_color": null,
+        "objects": [
+          "автомобиль",
+          "океан",
+          "пляж",
+          "облака",
+          "небо",
+          "волны"
+        ],
+        "color_scheme": "холодная",
+        "dominant_colors": [
+          "#87CEEB",
+          "#FFFFFF",
+          "#4682B4"
+        ]
+      },
+      "text_elements": {
+        "headline": "JETOUR",
+        "subtitle": "Drive Your Future | AVILON",
+        "offer": null,
+        "cta_text": null,
+        "has_urgency_words": false,
+        "urgency_words": []
+      },
+      "structural": {
+        "has_cta_button": false,
+        "cta_button_color": null,
+        "cta_position": null,
+        "has_logo": true,
+        "logo_position": "верх-центр",
+        "text_image_ratio": 0.15
+      },
+      "emotional": {
+        "tonality": "премиальная",
+        "has_smiling_face": false,
+        "energy_level": "средняя"
+      }
+    },
+    "tags_status": "done",
+    "tags_error": null,
+    "tagged_at": "2026-03-10T05:16:12.626565+00:00",
+    "explanation": "### Общая оценка\nСлабый результат. Баннер имеет несколько критичных недостатков: отсутствие CTA-кнопки, человеческих лиц и слабая активация аудитории. Хотя статистика показывает отсутствие значимых корреляций из-за малой выборки (8 баннеров), тренды указывают на серьёзные проблемы с конверсионными элементами.\n\n### Что работает хорошо\nЕдинственный положительный элемент — **отсутствие слов срочности** (delta CTR +36.4%). Это может работать для премиального позиционирования автомобилей Jetour, где не нужно создавать искусственное давление. Визуальная концепция с океаном и небом создаёт ассоциации с путешествиями и свободой, что соответствует слогану \"Drive Your Future\".\n\n### Что можно улучшить\nБаннер страдает от множества негативных факторов:\n\n- **Отсутствие CTA-кнопки** (delta CTR -100%) — критичная проблема для performance-рекламы\n- **Отсутствие лиц людей** (delta CTR -100%) — снижает эмоциональное вовлечение\n- **Фоновое фото** (delta CTR -26.7%) — менее эффективно чем графические решения\n- **Холодная цветовая схема** (#87CEEB, #4682B4) также показывает негативную динамику (-26.7%)\n- **Премиальная тональность** (delta CTR -26.7%) может отталкивать массовую аудиторию\n\n### Рекомендации\n\n1. **Добавить яркую CTA-кнопку** с контрастным цветом (красный/оранжевый) и текстом \"Узнать цену\" или \"Тест-драйв\"\n\n2. **Включить изображение человека** за рулём или рядом с автомобилем — это повысит эмоциональную связь с аудиторией\n\n3. **Усилить цветовую схему** тёплыми акцентами: добавить золотые или оранжевые элементы для контраста с холодным фоном\n\n4. **Увеличить соотношение текста к изображению** — сейчас 0.15 слишком мало, добавить ключевые преимущества модели\n\n5. **Протестировать вариант без премиальной тональности** — более простой и понятный месседж может лучше конвертировать в клики",
+    "explained_at": "2026-03-10T08:40:49.883896+00:00"
+  },
+  {
+    "id": "banner_a1c5d855017e",
+    "filename": "banner_a1c5d855017e.png",
+    "original_filename": "1_1 (2).png",
+    "upload_date": "2026-03-12T21:30:52.558019+00:00",
+    "file_size_bytes": 2598039,
+    "width": 4800,
+    "height": 4800,
+    "metrics": {
+      "ctr": 0.3,
+      "cr_install": 0.299,
+      "cr_event": 0.299,
+      "impressions": 400000,
+      "platform": "yandex",
+      "campaign": "тест",
+      "date_from": null,
+      "date_to": null
+    },
+    "tags": {
+      "visual": {
+        "has_faces": false,
+        "n_people": 0,
+        "background_type": "градиент",
+        "background_color": null,
+        "objects": [
+          "новогодние шары",
+          "спидометр",
+          "елочка",
+          "гирлянда"
+        ],
+        "color_scheme": "тёмная",
+        "dominant_colors": [
+          "#000000",
+          "#FF0000",
+          "#FFFFFF"
+        ]
+      },
+      "text_elements": {
+        "headline": "СКРУТИЛИ ЦЕНЫ К НОВОМУ ГОДУ",
+        "subtitle": null,
+        "offer": "-8000 ₽ на курсы по промокоду NYDEC до 12.12",
+        "cta_text": null,
+        "has_urgency_words": true,
+        "urgency_words": [
+          "до 12.12"
+        ]
+      },
+      "structural": {
+        "has_cta_button": false,
+        "cta_button_color": null,
+        "cta_position": null,
+        "has_logo": true,
+        "logo_position": "верх-лево",
+        "text_image_ratio": 0.4
+      },
+      "emotional": {
+        "tonality": "игривая",
+        "has_smiling_face": false,
+        "energy_level": "высокая"
+      }
+    },
+    "tags_status": "done",
+    "tags_error": null,
+    "tagged_at": "2026-03-12T21:30:59.994356+00:00",
+    "explanation": null,
+    "explained_at": null
+  },
+  {
+    "id": "banner_b8278afb37b1",
+    "filename": "banner_b8278afb37b1.png",
+    "original_filename": "1_1 (2).png",
+    "upload_date": "2026-03-13T06:08:00.888044+00:00",
+    "file_size_bytes": 2598039,
+    "width": 4800,
+    "height": 4800,
+    "metrics": {
+      "ctr": null,
+      "cr_install": null,
+      "cr_event": null,
+      "impressions": null,
+      "platform": null,
+      "campaign": null,
+      "date_from": null,
+      "date_to": null
+    },
+    "tags": {
+      "visual": {
+        "has_faces": false,
+        "n_people": 0,
+        "background_type": "градиент",
+        "background_color": null,
+        "objects": [
+          "новогодние шары",
+          "спидометр",
+          "ёлочка",
+          "гирлянда"
+        ],
+        "color_scheme": "тёмная",
+        "dominant_colors": [
+          "#000000",
+          "#FF0000",
+          "#FFFFFF"
+        ]
+      },
+      "text_elements": {
+        "headline": "СКРУТИЛИ ЦЕНЫ К НОВОМУ ГОДУ",
+        "subtitle": "Новый год в Haraba",
+        "offer": "-8000 ₽ на курсы по промокоду NYDEC до 12.12",
+        "cta_text": null,
+        "has_urgency_words": true,
+        "urgency_words": [
+          "до 12.12"
+        ]
+      },
+      "structural": {
+        "has_cta_button": false,
+        "cta_button_color": null,
+        "cta_position": null,
+        "has_logo": true,
+        "logo_position": "верх-лево",
+        "text_image_ratio": 0.6
+      },
+      "emotional": {
+        "tonality": "игривая",
+        "has_smiling_face": false,
+        "energy_level": "высокая"
+      }
+    },
+    "tags_status": "done",
+    "tags_error": null,
+    "tagged_at": "2026-03-13T06:08:08.593256+00:00",
+    "explanation": null,
+    "explained_at": null
+  },
+  {
+    "id": "banner_429c0bd6e5b0",
+    "filename": "banner_429c0bd6e5b0.jpg",
+    "original_filename": "600x500-1_2SDnjdsxodm.jpg",
+    "upload_date": "2026-03-13T06:17:23.904571+00:00",
+    "file_size_bytes": 254915,
+    "width": 600,
+    "height": 500,
+    "metrics": {
+      "ctr": null,
+      "cr_install": null,
+      "cr_event": null,
+      "impressions": null,
+      "platform": null,
+      "campaign": null,
+      "date_from": null,
+      "date_to": null
+    },
+    "tags": {
+      "visual": {
+        "has_faces": true,
+        "n_people": 2,
+        "background_type": "градиент",
+        "background_color": "#E55A2B",
+        "objects": [
+          "мужчина",
+          "женщина",
+          "шапки",
+          "шарфы",
+          "логотип"
+        ],
+        "color_scheme": "тёплая",
+        "dominant_colors": [
+          "#E55A2B",
+          "#FFFFFF",
+          "#2C2C2C"
+        ]
+      },
+      "text_elements": {
+        "headline": "Twinby — время стать ближе",
+        "subtitle": null,
+        "offer": null,
+        "cta_text": "скачать",
+        "has_urgency_words": false,
+        "urgency_words": []
+      },
+      "structural": {
+        "has_cta_button": true,
+        "cta_button_color": "#FFFFFF",
+        "cta_position": "центр",
+        "has_logo": true,
+        "logo_position": "верх-лево",
+        "text_image_ratio": 0.4
+      },
+      "emotional": {
+        "tonality": "позитивная",
+        "has_smiling_face": true,
+        "energy_level": "средняя"
+      }
+    },
+    "tags_status": "done",
+    "tags_error": null,
+    "tagged_at": "2026-03-13T06:17:29.478896+00:00",
+    "explanation": "### Общая оценка\nК сожалению, без конкретных данных по CTR данного баннера сложно оценить его эффективность. Однако анализ визуальных элементов показывает потенциальные проблемы: большинство присутствующих элементов (лица, CTA-кнопка, улыбающиеся лица) демонстрируют отрицательную корреляцию с CTR согласно статистике базы.\n\n### Что работает хорошо\n**Градиентный фон** — единственный элемент с положительным влиянием (+36.4% к CTR). Яркий оранжевый градиент (#E55A2B) создает визуальное притяжение и выделяется среди конкурентов.\n\n**Отсутствие слов срочности** также показывает положительную корреляцию (+36.4%), что может работать для брендов, где важнее доверие, чем агрессивная конверсия.\n\n**Четкая структура** с логотипом в верхнем левом углу и центральной CTA обеспечивает хорошую читаемость.\n\n### Что можно улучшить\n**Наличие лиц людей** (-100% к CTR) может отвлекать от основного сообщения. Два человека в зимней одежде не создают прямой связи с продуктом знакомств.\n\n**CTA-кнопка** также показывает отрицательное влияние (-100%), возможно, из-за слишком общего текста \"скачать\" без конкретики.\n\n**Средний уровень энергии** (-26.7% к CTR) не создает достаточного побуждения к действию для категории dating-приложений.\n\n### Рекомендации\n\n1. **Убрать или минимизировать лица людей** — заменить на абстрактные элементы, символы сердец, или фокус на интерфейсе приложения\n\n2. **Переформулировать CTA** — изменить \"скачать\" на более эмоциональный призыв: \"Найди свою половинку\" или \"Начни знакомство\"\n\n3. **Повысить энергетику** — добавить динамичные элементы, яркие акценты или анимированные детали для digital-размещений\n\n4. **Сохранить градиентный фон** — это единственный работающий элемент, можно даже усилить контрастность\n\n5. **Тестировать варианты без CTA-кнопки** — статистика показывает их негативное влияние, возможно, стоит интегрировать призыв в основной текст",
+    "explained_at": "2026-03-13T06:59:54.316502+00:00"
+  }
+]
