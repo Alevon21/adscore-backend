@@ -317,3 +317,31 @@ class CampaignAnalysisResult(BaseModel):
     overall_best_campaign: str = ""
     overall_worst_campaign: str = ""
     reliability_threshold: int = 500
+
+
+# --- Usability Test models ---
+
+class ScenarioAnswer(BaseModel):
+    scenario_id: str
+    user_choice: str
+    confidence: int
+    agreement: str            # "yes" | "partially" | "no"
+    clarity_rating: int       # 1-5
+    trust_rating: int         # 1-5
+    time_phase_a_sec: float
+    time_phase_b_sec: float
+
+
+class SurveyAnswers(BaseModel):
+    usability: int
+    trust: int
+    transparency: int
+    intelligence: int
+    real_world_usage: int
+    comment: Optional[str] = None
+
+
+class UsabilityTestSubmit(BaseModel):
+    scenarios: List[ScenarioAnswer]
+    survey: SurveyAnswers
+    total_duration_sec: int

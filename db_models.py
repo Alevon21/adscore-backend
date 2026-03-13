@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from typing import Optional, List, Dict
 
 from sqlalchemy import (
-    String, Boolean, DateTime, Integer, BigInteger, Text, Enum, ForeignKey, Index,
+    String, Boolean, DateTime, Integer, BigInteger, Text, Enum, ForeignKey, Index, Float,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID, JSONB
@@ -245,4 +245,21 @@ class Banner(Base):
 
     __table_args__ = (
         Index("ix_banners_tenant_created", "tenant_id", "created_at"),
+    )
+
+
+class UsabilityTestResponse(Base):
+    __tablename__ = "usability_test_responses"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=new_uuid)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("tenants.id"), nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    scenario_responses: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    survey_responses: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    agreement_rate: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    total_duration_sec: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+
+    __table_args__ = (
+        Index("ix_usability_test_tenant_created", "tenant_id", "created_at"),
     )
