@@ -108,12 +108,19 @@ async def register(
     db: AsyncSession = Depends(get_db),
 ):
     """Register a new user + tenant after Supabase signup."""
-    # Check if user already exists
+    # Check if user already exists — return existing profile (idempotent)
     existing = await db.execute(
         select(User).where(User.supabase_uid == body.supabase_uid)
     )
-    if existing.scalar_one_or_none():
-        raise HTTPException(status_code=409, detail="User already registered")
+    existing_user = existing.scalar_one_or_none()
+    if existing_user:
+        # Ensure user is active
+        if not existing_user.is_active:
+            existing_user.is_active = True
+            db.add(existing_user)
+            await db.commit()
+            await db.refresh(existing_user)
+        return user_to_response(existing_user)
 
     # Create tenant
     slug = slugify(body.company_name)
