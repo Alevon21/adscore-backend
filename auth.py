@@ -98,13 +98,29 @@ async def get_current_user(
     if not supabase_uid:
         raise HTTPException(status_code=401, detail="Token missing sub claim")
 
+    # Try with is_active filter first
     result = await db.execute(
         select(User).where(User.supabase_uid == supabase_uid, User.is_active == True)
     )
     user = result.scalar_one_or_none()
 
+    # If not found, check without is_active filter (debug + auto-activate)
     if not user:
-        raise HTTPException(status_code=404, detail="User not found. Please register first.")
+        result2 = await db.execute(
+            select(User).where(User.supabase_uid == supabase_uid)
+        )
+        inactive_user = result2.scalar_one_or_none()
+        if inactive_user:
+            # Auto-activate the user
+            inactive_user.is_active = True
+            db.add(inactive_user)
+            await db.commit()
+            await db.refresh(inactive_user)
+            user = inactive_user
+        else:
+            import logging
+            logging.warning(f"User not found for supabase_uid={supabase_uid}")
+            raise HTTPException(status_code=404, detail="User not found. Please register first.")
 
     tenant = user.tenant
     if not tenant or not tenant.is_active:
