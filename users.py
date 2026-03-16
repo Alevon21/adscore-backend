@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
 from db_models import User, Tenant, AuditLog, UserRole
-from auth import get_current_user, require_role, CurrentUser
+from auth import get_current_user, require_role, require_feature, get_user_features, CurrentUser, VALID_FEATURES
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 tenant_router = APIRouter(prefix="/tenants", tags=["tenants"])
@@ -34,6 +34,7 @@ class UserResponse(BaseModel):
     tenant_name: str
     tenant_slug: str
     tenant_plan: str
+    features: List[str] = []
 
     class Config:
         from_attributes = True
@@ -48,6 +49,10 @@ class InviteRequest(BaseModel):
 
 class RoleUpdateRequest(BaseModel):
     role: str
+
+
+class FeaturesUpdateRequest(BaseModel):
+    features: List[str]
 
 
 class AuditLogResponse(BaseModel):
@@ -81,6 +86,7 @@ def user_to_response(user: User) -> UserResponse:
         tenant_name=user.tenant.name,
         tenant_slug=user.tenant.slug,
         tenant_plan=user.tenant.plan.value,
+        features=get_user_features(user),
     )
 
 
@@ -273,6 +279,55 @@ async def update_role(
         db, current_user.tenant.id, current_user.user.id, "update_role", request,
         resource_type="user", resource_id=str(target_user.id),
         details={"old_role": old_role, "new_role": body.role},
+    )
+
+    return user_to_response(target_user)
+
+
+# ── Feature Management ───────────────────────────────────
+
+@tenant_router.patch("/{tenant_id}/users/{user_id}/features", response_model=UserResponse)
+async def update_features(
+    tenant_id: str,
+    user_id: str,
+    body: FeaturesUpdateRequest,
+    request: Request,
+    current_user: CurrentUser = Depends(require_role(UserRole.owner, UserRole.admin)),
+    db: AsyncSession = Depends(get_db),
+):
+    """Update a user's feature access (owner/admin only)."""
+    if str(current_user.tenant.id) != tenant_id:
+        raise HTTPException(status_code=403, detail="Access denied to this tenant")
+
+    # Validate all features
+    invalid = set(body.features) - VALID_FEATURES
+    if invalid:
+        raise HTTPException(status_code=400, detail=f"Invalid features: {invalid}")
+
+    # Ensure calculators is always included (default feature)
+    features = list(set(body.features) | {"calculators"})
+
+    result = await db.execute(
+        select(User).where(User.id == uuid.UUID(user_id), User.tenant_id == current_user.tenant.id)
+    )
+    target_user = result.scalar_one_or_none()
+    if not target_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Cannot modify owner/admin features (they always have all)
+    if target_user.role in (UserRole.owner, UserRole.admin):
+        raise HTTPException(status_code=400, detail="Owner/admin always have all features")
+
+    old_features = target_user.features or ["calculators", "research"]
+    target_user.features = features
+    db.add(target_user)
+    await db.commit()
+    await db.refresh(target_user)
+
+    await log_audit(
+        db, current_user.tenant.id, current_user.user.id, "update_features", request,
+        resource_type="user", resource_id=str(target_user.id),
+        details={"old_features": old_features, "new_features": features},
     )
 
     return user_to_response(target_user)

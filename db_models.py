@@ -86,6 +86,7 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
     last_login: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    features: Mapped[Optional[list]] = mapped_column(JSONB, default=lambda: ["calculators", "research"], nullable=True)
 
     tenant: Mapped[Tenant] = relationship(back_populates="users", lazy="selectin")
 

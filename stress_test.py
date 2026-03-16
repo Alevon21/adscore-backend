@@ -192,7 +192,9 @@ def check_impact_logic(result: dict, n_scored: int, check: CheckResult):
             expected_conf = "high"
         elif p < 0.10 and abs_d >= 0.3:
             expected_conf = "medium"
-        elif p < 0.20 and abs_d >= 0.2:
+        elif p < 0.10 or abs_d >= 0.3:
+            expected_conf = "low"
+        elif p < 0.20 or abs_d >= 0.15:
             expected_conf = "low"
 
         if conf != expected_conf:

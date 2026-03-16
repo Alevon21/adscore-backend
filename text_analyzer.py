@@ -223,13 +223,21 @@ class TextPartAnalyzer:
 
     @staticmethod
     def _classify_confidence(p_value: float, effect_size: float) -> str:
-        """Classify reliability level based on p-value and Cohen's d."""
+        """Classify reliability level based on p-value and Cohen's d.
+
+        Uses AND for high/medium (need both significance & effect),
+        but OR for low (either signal is enough to distinguish from noise).
+        This prevents normalized metrics like ranking_score (0–1 scale)
+        from always showing "noise" due to naturally small Cohen's d.
+        """
         d = abs(effect_size)
         if p_value < 0.05 and d >= 0.5:
             return "high"
         if p_value < 0.10 and d >= 0.3:
             return "medium"
-        if p_value < 0.20 and d >= 0.2:
+        if p_value < 0.10 or d >= 0.3:
+            return "low"
+        if p_value < 0.20 or d >= 0.15:
             return "low"
         return "noise"
 

@@ -12,7 +12,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
-from db_models import User, Tenant
+from db_models import User, Tenant, UserRole
 
 SUPABASE_URL = os.getenv("SUPABASE_URL", "")
 JWKS_URL = f"{SUPABASE_URL}/auth/v1/.well-known/jwks.json"
@@ -143,3 +143,33 @@ def require_role(*allowed_roles):
             )
         return current_user
     return check_role
+
+
+# ── Feature-based access control ─────────────────────────
+
+VALID_FEATURES = {"calculators", "research", "analysis", "adscore"}
+ALL_FEATURES = list(VALID_FEATURES)
+DEFAULT_FEATURES = ["calculators", "research"]
+
+
+def get_user_features(user: User) -> list:
+    """Get effective features for a user. Owner/admin always get all features."""
+    if user.role in (UserRole.owner, UserRole.admin):
+        return ALL_FEATURES
+    return user.features or DEFAULT_FEATURES
+
+
+def require_feature(feature: str):
+    """Dependency factory: require user to have access to a specific feature."""
+    async def check_feature(current_user: CurrentUser = Depends(get_current_user)):
+        # Owner/admin bypass — always have all features
+        if current_user.user.role in (UserRole.owner, UserRole.admin):
+            return current_user
+        user_features = current_user.user.features or DEFAULT_FEATURES
+        if feature not in user_features:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Feature '{feature}' is not available for your account"
+            )
+        return current_user
+    return check_feature
