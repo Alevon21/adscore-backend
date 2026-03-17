@@ -1,31 +1,43 @@
 """
-Verdict/Recommendation engine for AdScore v2.1.
+Verdict/Recommendation engine for AdScore v2.2.
 
 Assigns actionable verdicts to each scored text based on sigmoid-normalized z-scores:
-- Масштабировать (Scale up) — performing well, increase budget
-- ОК (Hold) — acceptable, keep running
-- Оптимизировать (Optimize) — mixed signals, needs tuning
-- Исключить (Exclude) — poor performance, remove
-- Мало данных (Insufficient data) — can't judge reliably
+- Масштабировать (Scale up)  — top performers, increase budget
+- ОК (Hold)                  — above average, keep running
+- Оптимизировать (Optimize)  — mixed signals, needs tuning
+- Подождать (Wait)           — near average, observe more
+- Исключить (Exclude)        — bottom performers, cut budget
+- Мало данных (Insufficient) — can't judge reliably
 
-v2.1 changes:
-- Updated thresholds: SCALE=0.68, EXCLUDE=0.30 (spec sections 17.3)
-- Anomaly priority check before all verdicts (spec section 13)
-- Uses decision_score instead of composite_score for threshold checks
+v2.2 changes:
+- Uses ranking_score (percentile) as primary criterion instead of composite_score
+  (composite is average of sigmoid z-scores, clusters around 0.50 with ~0.35-0.65 range,
+   making old thresholds 0.68/0.30 nearly unreachable)
+- Ranking score gives uniform distribution: top 15% = Scale, bottom 20% = Exclude
+- "Подождать" added as separate verdict for genuinely uncertain cases
+- Strengths/weaknesses thresholds calibrated for sigmoid z-scores
 """
 
+import math
 from typing import List, Optional, Tuple
 
 from constants import metric_display_name as _metric_name
 from models import EventConfig, ScoringParams, TextResult, Verdict
 
-# Default thresholds (used when params is not provided)
-_SCALE_THRESHOLD = 0.68
-_EXCLUDE_THRESHOLD = 0.30
-_OPTIMIZE_LOWER = 0.45
-_STRONG_Z = 0.60
-_WEAK_Z = 0.35
-_CRITICAL_Z = 0.25
+# ── Percentile thresholds for ranking_score (0–1, uniform) ──
+_SCALE_RANK = 0.80       # top 20% → Масштабировать
+_OK_RANK = 0.55          # 55–80% → ОК
+_WAIT_RANK = 0.35        # 35–55% → Подождать
+_EXCLUDE_RANK = 0.20     # bottom 20% → Исключить (20-35% → Оптимизировать)
+
+# ── Z-score thresholds for individual metrics (sigmoid 0–1) ──
+_STRONG_Z = 0.58         # above average (sigmoid(0.32) ≈ 0.58)
+_WEAK_Z = 0.42           # below average (sigmoid(-0.32) ≈ 0.42)
+_CRITICAL_Z = 0.30       # severely below average
+
+# ── Composite score thresholds (fallback when ranking unavailable) ──
+_SCALE_THRESHOLD = 0.57
+_EXCLUDE_THRESHOLD = 0.43
 
 _ANOMALY_LABELS = {
     "attribution_anomaly": "подозрение на фрод атрибуции",
@@ -68,7 +80,6 @@ def _primary_cpa_z(z_scores: dict, events: List[EventConfig]) -> Optional[float]
                 key = f"CPA_{ev.slot}"
                 if key in z_scores:
                     return z_scores[key]
-        # Fallback: first event
         key = f"CPA_{events[0].slot}"
         if key in z_scores:
             return z_scores[key]
@@ -78,23 +89,20 @@ def _primary_cpa_z(z_scores: dict, events: List[EventConfig]) -> Optional[float]
 def classify(result: TextResult, events: List[EventConfig], event_labels: dict = None, params: ScoringParams = None) -> Verdict:
     """Classify a single text result into a verdict."""
     # Resolve thresholds from params or defaults
-    scale_threshold = params.scale_threshold if params else _SCALE_THRESHOLD
-    exclude_threshold = params.exclude_threshold if params else _EXCLUDE_THRESHOLD
     strong_z = params.strong_z if params else _STRONG_Z
     weak_z = params.weak_z if params else _WEAK_Z
     critical_z = params.critical_z if params else _CRITICAL_Z
 
     z = result.z_scores or {}
-    # v2.1: use decision_score for verdict thresholds (falls back to composite_score)
     score = result.decision_score if result.decision_score is not None else result.composite_score
+    rank = getattr(result, "ranking_score", None)
     strengths, weaknesses = _strengths_weaknesses(z, strong_z, weak_z)
     el = event_labels or {}
 
     valid_z = {m: v for m, v in z.items() if v is not None}
     n_valid = len(valid_z)
 
-    # Guard: NaN score → treat as insufficient data
-    import math
+    # Guard: NaN score
     if score is None or math.isnan(score):
         return Verdict(
             verdict="Мало данных",
@@ -105,7 +113,7 @@ def classify(result: TextResult, events: List[EventConfig], event_labels: dict =
             weaknesses=weaknesses,
         )
 
-    # --- 0. Anomaly priority (v2.1 spec section 13) ---
+    # --- 0. Anomaly priority ---
     if getattr(result, "anomaly_detected", False):
         code = getattr(result, "anomaly_code", None) or "подозрительные данные"
         code_label = _ANOMALY_LABELS.get(code, code)
@@ -136,35 +144,44 @@ def classify(result: TextResult, events: List[EventConfig], event_labels: dict =
     ctr_z = z.get("CTR")
     any_cpa_critical = any(v < critical_z for v in cpa_scores.values())
 
-    # --- 2. Масштабировать ---
-    cr_ok = cr_z is None or cr_z >= strong_z
-    if score >= scale_threshold and cr_ok and not any_cpa_critical:
+    # Use ranking_score (percentile, 0–1 uniform) as primary classifier
+    # Fall back to composite_score thresholds if ranking unavailable
+    is_top = (rank >= _SCALE_RANK) if rank is not None else (score >= _SCALE_THRESHOLD)
+    is_ok_zone = (rank is not None and _OK_RANK <= rank < _SCALE_RANK) if rank is not None else (0.52 <= score < _SCALE_THRESHOLD)
+    is_bottom = (rank <= _EXCLUDE_RANK) if rank is not None else (score <= _EXCLUDE_THRESHOLD)
+    is_low_zone = (rank is not None and _EXCLUDE_RANK < rank <= _WAIT_RANK) if rank is not None else (_EXCLUDE_THRESHOLD < score <= 0.47)
+
+    # --- 2. Масштабировать (top performers) ---
+    cr_ok = cr_z is None or cr_z >= weak_z  # CR at least not weak
+    if is_top and cr_ok and not any_cpa_critical:
         top = ", ".join(_metric_name(m, el) for m in strengths[:3]) or "все метрики"
+        pct_label = f"перцентиль {rank:.0%}" if rank is not None else f"балл {score:.2f}"
         return Verdict(
             verdict="Масштабировать",
-            reason=f"Высокий балл ({score:.2f}), сильные показатели",
+            reason=f"Высокий {pct_label}, сильные показатели",
             reason_type="конверсия",
             reason_detail=f"сильные: {top}",
             strengths=strengths,
             weaknesses=weaknesses,
         )
 
-    # --- 3. Исключить ---
-    n_low = sum(1 for v in valid_z.values() if v < 0.4)
-    majority_low = n_low >= n_valid / 2  # half or more
+    # --- 3. Исключить (bottom performers) ---
+    n_low = sum(1 for v in valid_z.values() if v < weak_z)
+    majority_low = n_low >= n_valid / 2
 
-    if score <= exclude_threshold and (majority_low or (weaknesses and not strengths)):
+    if is_bottom and (majority_low or (weaknesses and not strengths)):
         weak = ", ".join(_metric_name(m, el) for m in weaknesses[:3]) or "большинство"
+        pct_label = f"перцентиль {rank:.0%}" if rank is not None else f"балл {score:.2f}"
         return Verdict(
             verdict="Исключить",
-            reason=f"Низкий балл ({score:.2f}), слабые показатели",
+            reason=f"Низкий {pct_label}, слабые показатели",
             reason_type="цена" if cpa_scores else "смешанная",
             reason_detail=f"слабые: {weak}",
             strengths=strengths,
             weaknesses=weaknesses,
         )
 
-    # --- 4. Оптимизировать ---
+    # --- 4. Оптимизировать (mixed signals) ---
 
     # 4a. Good CTR but poor CR — traffic quality issue
     if (ctr_z is not None and ctr_z >= strong_z
@@ -191,24 +208,46 @@ def classify(result: TextResult, events: List[EventConfig], event_labels: dict =
             weaknesses=weaknesses,
         )
 
-    # 4c. Average score but CPA expensive
-    if (exclude_threshold < score < scale_threshold
-            and cpa_z is not None and cpa_z < weak_z):
+    # 4c. Low zone + expensive CPA
+    if is_low_zone and cpa_z is not None and cpa_z < weak_z:
         return Verdict(
             verdict="Оптимизировать",
-            reason="Средний балл, но стоимость конверсии высока",
+            reason="Ниже среднего, стоимость конверсии высока",
             reason_type="цена",
             reason_detail=f"CPA z-score: {cpa_z:.2f}",
             strengths=strengths,
             weaknesses=weaknesses,
         )
 
-    # --- 5. ОК ---
+    # 4d. Bottom zone but has some strengths (not pure bottom)
+    if is_bottom and strengths:
+        s = ", ".join(_metric_name(m, el) for m in strengths[:2])
+        return Verdict(
+            verdict="Оптимизировать",
+            reason="Низкий общий балл, но есть сильные метрики",
+            reason_type="смешанная",
+            reason_detail=f"сильные: {s}",
+            strengths=strengths,
+            weaknesses=weaknesses,
+        )
+
+    # --- 5. ОК (above average, no issues) ---
+    if is_ok_zone or is_top:
+        return Verdict(
+            verdict="ОК",
+            reason="Выше среднего, стабильные показатели",
+            reason_type="смешанная",
+            reason_detail="метрики в пределах нормы",
+            strengths=strengths,
+            weaknesses=weaknesses,
+        )
+
+    # --- 6. Подождать (mid-range, no strong signals) ---
     return Verdict(
-        verdict="ОК",
-        reason="Сбалансированные показатели",
+        verdict="Подождать",
+        reason="Средние показатели, нужно больше данных для уверенного решения",
         reason_type="смешанная",
-        reason_detail="метрики в пределах нормы",
+        reason_detail="метрики около средних значений",
         strengths=strengths,
         weaknesses=weaknesses,
     )

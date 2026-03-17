@@ -32,13 +32,13 @@ class ScoringParams(BaseModel):
     score_quality_floor: float = 0.55
     good_quality_floor: float = 0.45
     events: List[EventConfig] = Field(default_factory=list)
-    # --- Verdict thresholds (K1: extracted from constants.py) ---
-    scale_threshold: float = 0.68
-    exclude_threshold: float = 0.30
-    optimize_lower: float = 0.45
-    strong_z: float = 0.60
-    weak_z: float = 0.35
-    critical_z: float = 0.25
+    # --- Verdict thresholds (v2.2: calibrated for sigmoid z-score avg) ---
+    scale_threshold: float = 0.57
+    exclude_threshold: float = 0.43
+    optimize_lower: float = 0.47
+    strong_z: float = 0.58
+    weak_z: float = 0.42
+    critical_z: float = 0.30
     # --- Financial (K1: extracted from financial.py) ---
     saturation_discount: float = 0.70
     # --- Fatigue (K1: extracted from fatigue.py) ---

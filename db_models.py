@@ -249,6 +249,24 @@ class Banner(Base):
     )
 
 
+class PendingInvite(Base):
+    __tablename__ = "pending_invites"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=new_uuid)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("tenants.id"), nullable=False)
+    email: Mapped[str] = mapped_column(String(320), nullable=False)
+    role: Mapped[UserRole] = mapped_column(Enum(UserRole), default=UserRole.analyst, nullable=False)
+    invited_by: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+
+    tenant: Mapped[Tenant] = relationship(lazy="selectin")
+
+    __table_args__ = (
+        Index("ix_pending_invites_email", "email"),
+        Index("ix_pending_invites_tenant", "tenant_id"),
+    )
+
+
 class UsabilityTestResponse(Base):
     __tablename__ = "usability_test_responses"
 
