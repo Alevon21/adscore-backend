@@ -428,6 +428,12 @@ class TextScorer:
             z_norm = _sigmoid(z)
             z_norm[series.isna()] = np.nan
 
+            # For conversion rate metrics (CR_*), treat exact zero as "no data"
+            # rather than "worst performer" — zero conversions usually means
+            # insufficient funnel depth, not a meaningful measurement
+            if metric.startswith("CR_") or metric == "CR":
+                z_norm[series == 0] = np.nan
+
             df[z_col] = z_norm
 
         return df
