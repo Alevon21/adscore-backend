@@ -3,9 +3,8 @@ Verdict/Recommendation engine for AdScore v2.2.
 
 Assigns actionable verdicts to each scored text based on sigmoid-normalized z-scores:
 - Масштабировать (Scale up)  — top performers, increase budget
-- ОК (Hold)                  — above average, keep running
+- ОК (Hold)                  — average or above, keep running
 - Оптимизировать (Optimize)  — mixed signals, needs tuning
-- Подождать (Wait)           — near average, observe more
 - Исключить (Exclude)        — bottom performers, cut budget
 - Мало данных (Insufficient) — can't judge reliably
 
@@ -242,12 +241,12 @@ def classify(result: TextResult, events: List[EventConfig], event_labels: dict =
             weaknesses=weaknesses,
         )
 
-    # --- 6. Подождать (mid-range, no strong signals) ---
+    # --- 6. ОК (default — near average, no strong signals) ---
     return Verdict(
-        verdict="Подождать",
-        reason="Средние показатели, нужно больше данных для уверенного решения",
+        verdict="ОК",
+        reason="Показатели около среднего, без явных проблем",
         reason_type="смешанная",
-        reason_detail="метрики около средних значений",
+        reason_detail="метрики в пределах нормы",
         strengths=strengths,
         weaknesses=weaknesses,
     )
