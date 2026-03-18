@@ -893,3 +893,112 @@ async def delete_session(session_id: str, current_user: CurrentUser = Depends(ge
 
     logger.info("Session %s deleted", session_id)
     return {"status": "deleted"}
+
+
+@app.post("/session/{session_id}/restore")
+async def restore_session(
+    session_id: str,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Restore a completed session into memory from DB + stored file,
+    so it can be re-scored with different parameters.
+    """
+    tid = current_user.tenant.id
+    sid = uuid_mod.UUID(session_id)
+
+    # Check if already in memory
+    with _session_lock:
+        if session_id in SESSION_STORE:
+            s = SESSION_STORE[session_id]
+            return {
+                "status": "ok",
+                "session_id": session_id,
+                "mode": s.get("mode"),
+                "events": s.get("events", []),
+                "columns_detected": s.get("columns_detected", []),
+                "auto_mapped": s.get("auto_mapped", {}),
+                "n_rows": len(s["df_original"]) if s.get("df_original") is not None else 0,
+            }
+
+    # Load session metadata from DB
+    result = await db.execute(
+        select(ScoringSession)
+        .where(ScoringSession.id == sid, ScoringSession.tenant_id == tid)
+    )
+    session_db = result.scalar_one_or_none()
+    if not session_db:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    if not session_db.file_id:
+        raise HTTPException(status_code=400, detail="No stored file for this session — re-upload required")
+
+    # Load stored file metadata
+    file_result = await db.execute(
+        select(StoredFile).where(StoredFile.id == session_db.file_id)
+    )
+    stored_file = file_result.scalar_one_or_none()
+    if not stored_file or stored_file.status != FileStatus.ready:
+        raise HTTPException(status_code=400, detail="Stored file not available")
+
+    # Download file content from storage
+    try:
+        content = await file_storage.download_file(stored_file.storage_key)
+    except Exception as e:
+        logger.error("Failed to download stored file %s: %s", stored_file.storage_key, e)
+        raise HTTPException(status_code=500, detail="Failed to retrieve stored file")
+
+    # Parse file
+    try:
+        buf = io.BytesIO(content)
+        fname = stored_file.original_name.lower()
+        if fname.endswith(".csv"):
+            df = pd.read_csv(buf)
+        else:
+            df = pd.read_excel(buf, engine="openpyxl")
+    except Exception as e:
+        logger.error("Failed to parse restored file: %s", e)
+        raise HTTPException(status_code=500, detail=f"Failed to parse file: {e}")
+
+    # Restore session metadata
+    columns_detected = session_db.columns_detected or list(df.columns.astype(str))
+    auto_mapped = session_db.auto_mapped or {}
+    mapping = session_db.mapping or auto_mapped
+    events = session_db.events_detected or []
+    mode = session_db.mode
+
+    # Re-apply mapping to get df_mapped
+    df_mapped = mapper.apply_mapping(df.copy(), mapping)
+    for ev in events:
+        col = ev.get("column")
+        slot = ev.get("slot")
+        if col and slot and col in df_mapped.columns and col != slot:
+            df_mapped = df_mapped.rename(columns={col: slot})
+
+    # Store in memory
+    with _session_lock:
+        SESSION_STORE[session_id] = {
+            "df_original": df,
+            "df_mapped": df_mapped,
+            "columns_detected": columns_detected,
+            "auto_mapped": auto_mapped,
+            "mapping": mapping,
+            "events": events,
+            "mode": mode,
+            "scoring_result": None,
+            "params": session_db.params,
+            "text_part_result": None,
+        }
+        _schedule_ttl_locked(session_id)
+
+    logger.info("Session %s restored from DB (%d rows)", session_id, len(df))
+    return {
+        "status": "ok",
+        "session_id": session_id,
+        "mode": mode,
+        "events": events,
+        "columns_detected": columns_detected,
+        "auto_mapped": auto_mapped,
+        "n_rows": len(df),
+    }
