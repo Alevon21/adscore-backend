@@ -117,7 +117,7 @@ def classify(result: TextResult, events: List[EventConfig], event_labels: dict =
         code = getattr(result, "anomaly_code", None) or "подозрительные данные"
         code_label = _ANOMALY_LABELS.get(code, code)
         return Verdict(
-            verdict="Мало данных",
+            verdict="Проблема QA",
             reason=f"Обнаружена аномалия: {code_label}. Проверьте данные перед принятием решений",
             reason_type="аномалия",
             reason_detail=f"{code_label}",
