@@ -42,13 +42,13 @@ def _top_performers(results: List[TextResult], event_labels: Dict = None) -> Lis
         else:
             strengths = "—"
         headline_short = r.headline[:50] + ("…" if len(r.headline) > 50 else "")
-        lines.append(f"{i}. {r.text_id} ({r.composite_score:.2f}) «{headline_short}» — сильные: {strengths}")
+        lines.append(f"{i}. {r.text_id} ({r.composite_score:.2f}) «{headline_short}»\n   Сильные: {strengths}")
 
     return [Insight(
         type="top_performers",
         icon="trophy",
         title="Лидеры рейтинга",
-        description=" ".join(lines),
+        description="\n".join(lines),
         severity="success",
     )]
 
@@ -74,10 +74,10 @@ def _budget_waste(results: List[TextResult], event_labels: Dict = None) -> List[
         icon="alert_triangle",
         title="Бюджет на слабые тексты",
         description=(
-            f"{len(excluded)} текст(ов) с вердиктом «Исключить» получили "
-            f"суммарно {total_impressions:,} показов. "
-            f"Наибольший расход: {worst_ids}. "
-            f"Рекомендуется перераспределить бюджет на лидеров."
+            f"Текстов с вердиктом «Исключить»: {len(excluded)}\n"
+            f"Суммарно показов: {total_impressions:,}\n"
+            f"Наибольший расход: {worst_ids}\n"
+            f"→ Рекомендуется перераспределить бюджет на лидеров."
         ),
         severity="warning",
     )]
@@ -126,11 +126,9 @@ def _segment_patterns(results: List[TextResult], stats: Dict) -> List[Insight]:
             icon="chart",
             title=f"Различие по {seg_names.get(seg_key, seg_key)}",
             description=(
-                f"«{best_seg}» (средний балл {seg_avgs[best_seg]:.2f}, "
-                f"n={len(by_seg[best_seg])}) значительно лучше "
-                f"«{worst_seg}» ({seg_avgs[worst_seg]:.2f}, "
-                f"n={len(by_seg[worst_seg])}). "
-                f"Разница: {delta:.2f}."
+                f"Лучший: «{best_seg}» — средний балл {seg_avgs[best_seg]:.2f} (n={len(by_seg[best_seg])})\n"
+                f"Худший: «{worst_seg}» — средний балл {seg_avgs[worst_seg]:.2f} (n={len(by_seg[worst_seg])})\n"
+                f"Разница: {delta:.2f}"
             ),
             severity="info",
         ))
@@ -158,9 +156,9 @@ def _sample_warning(results: List[TextResult]) -> List[Insight]:
         icon="info",
         title="Низкая статистическая надёжность",
         description=(
-            f"{n_insufficient} из {len(results)} текстов ({pct:.0f}%) имеют "
-            f"недостаточно данных (менее 30 кликов). Результаты могут быть ненадёжными. "
-            f"Рекомендуется увеличить период сбора данных."
+            f"Текстов с недостаточными данными: {n_insufficient} из {len(results)} ({pct:.0f}%)\n"
+            f"Порог: менее 30 кликов\n"
+            f"→ Рекомендуется увеличить период сбора данных."
         ),
         severity="warning",
     )]
