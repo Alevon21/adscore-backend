@@ -340,7 +340,7 @@ async def apply_mapping(req: MappingRequest, current_user: CurrentUser = Depends
             await db.execute(
                 update(ScoringSession)
                 .where(ScoringSession.id == sid)
-                .values(mapping=req.mapping, status=SessionStatus.mapped, mode=mode)
+                .values(mapping=req.mapping, events_detected=events, status=SessionStatus.mapped, mode=mode)
             )
             await db.commit()
     except Exception as e:
@@ -962,10 +962,12 @@ async def restore_session(
         raise HTTPException(status_code=500, detail=f"Failed to parse file: {e}")
 
     # Restore session metadata
+    # Prefer events from params (user may have edited labels on mapping step)
     columns_detected = session_db.columns_detected or list(df.columns.astype(str))
     auto_mapped = session_db.auto_mapped or {}
     mapping = session_db.mapping or auto_mapped
-    events = session_db.events_detected or []
+    params_events = (session_db.params or {}).get("events", [])
+    events = params_events if params_events else (session_db.events_detected or [])
     mode = session_db.mode
 
     # Re-apply mapping to get df_mapped
