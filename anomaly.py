@@ -107,7 +107,14 @@ def _check_cost_outlier(z: Dict[str, Optional[float]]) -> Optional[str]:
     """
     Any cost metric z-score extremely low = extremely expensive.
     In sigmoid space, sigmoid(-3) ≈ 0.047.
+
+    Exception: if ROI z-score is above WEAK_Z (0.35), the high cost
+    may be justified by targeting a more valuable audience — skip anomaly.
     """
+    roi_z = z.get("ROI")
+    if roi_z is not None and roi_z >= WEAK_Z:
+        return None  # ROI acceptable → expensive traffic is justified
+
     cost_keys = [k for k in z if k.startswith("CPA") or k in ("CPC", "CPM", "CPI")]
     for k in cost_keys:
         val = z.get(k)

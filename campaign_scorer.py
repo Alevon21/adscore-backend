@@ -407,8 +407,10 @@ def _campaign_verdict(
             weaknesses=weaknesses,
         )
 
-    # Scale
-    if score >= scale_threshold and cr.budget_waste_pct < 20:
+    # Scale — block if ROI is weak (prevents scaling money-losing campaigns)
+    roi_z = z_scores.get("ROI")
+    roi_ok = roi_z is None or roi_z >= weak_z
+    if score >= scale_threshold and cr.budget_waste_pct < 20 and roi_ok:
         return CampaignVerdict(
             verdict="Масштабировать",
             reason=f"Лидер среди кампаний. Лучший текст: {cr.best_text_id} ({cr.best_text_score:.2f})",
