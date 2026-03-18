@@ -167,10 +167,12 @@ def classify(result: TextResult, events: List[EventConfig], event_labels: dict =
         )
 
     # --- 3. Исключить (bottom performers) ---
+    # Guard: don't exclude if ROI is acceptable — profitable text should be optimized, not killed
+    roi_excludable = roi_z is None or roi_z < weak_z
     n_low = sum(1 for v in valid_z.values() if v < weak_z)
     majority_low = n_low >= n_valid / 2
 
-    if is_bottom and (majority_low or (weaknesses and not strengths)):
+    if is_bottom and roi_excludable and (majority_low or (weaknesses and not strengths)):
         weak = ", ".join(_metric_name(m, el) for m in weaknesses[:3]) or "большинство"
         pct_label = f"перцентиль {rank:.0%}" if rank is not None else f"балл {score:.2f}"
         return Verdict(
