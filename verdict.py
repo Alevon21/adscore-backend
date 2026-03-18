@@ -141,6 +141,7 @@ def classify(result: TextResult, events: List[EventConfig], event_labels: dict =
     cr_z = _deepest_cr_z(z, events)
     cpa_z = _primary_cpa_z(z, events)
     ctr_z = z.get("CTR")
+    roi_z = z.get("ROI")
     any_cpa_critical = any(v < critical_z for v in cpa_scores.values())
 
     # Use ranking_score (percentile, 0–1 uniform) as primary classifier
@@ -152,7 +153,8 @@ def classify(result: TextResult, events: List[EventConfig], event_labels: dict =
 
     # --- 2. Масштабировать (top performers) ---
     cr_ok = cr_z is None or cr_z >= weak_z  # CR at least not weak
-    if is_top and cr_ok and not any_cpa_critical:
+    roi_ok = roi_z is None or roi_z >= weak_z  # ROI at least not weak (blocks negative-ROMI scaling)
+    if is_top and cr_ok and roi_ok and not any_cpa_critical:
         top = ", ".join(_metric_name(m, el) for m in strengths[:3]) or "все метрики"
         pct_label = f"перцентиль {rank:.0%}" if rank is not None else f"балл {score:.2f}"
         return Verdict(
