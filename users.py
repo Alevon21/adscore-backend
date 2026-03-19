@@ -5,12 +5,19 @@ from typing import Optional, List
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
 from db_models import User, Tenant, AuditLog, UserRole, PendingInvite
-from auth import get_current_user, require_role, require_feature, get_user_features, CurrentUser, VALID_FEATURES
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from auth import get_current_user, require_role, require_feature, get_user_features, CurrentUser, VALID_FEATURES, verify_supabase_token
+
+_security = HTTPBearer(auto_error=False)
+
+limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 tenant_router = APIRouter(prefix="/tenants", tags=["tenants"])
@@ -124,12 +131,21 @@ async def log_audit(db: AsyncSession, tenant_id, user_id, action, request: Reque
 # ── Auth Routes ──────────────────────────────────────────
 
 @router.post("/register", response_model=UserResponse)
+@limiter.limit("5/minute")
 async def register(
     body: RegisterRequest,
     request: Request,
+    credentials: HTTPAuthorizationCredentials = Depends(_security),
     db: AsyncSession = Depends(get_db),
 ):
     """Register a new user + tenant after Supabase signup."""
+    # Verify the caller owns the supabase_uid they are registering
+    if not credentials:
+        raise HTTPException(status_code=401, detail="Authorization header required")
+    verified_uid = await verify_supabase_token(credentials.credentials)
+    if not verified_uid or verified_uid != body.supabase_uid:
+        raise HTTPException(status_code=401, detail="Token does not match the provided supabase_uid")
+
     # Check if user already exists — return existing profile (idempotent)
     existing = await db.execute(
         select(User).where(User.supabase_uid == body.supabase_uid)

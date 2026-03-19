@@ -12,8 +12,10 @@ from typing import Optional
 from urllib.parse import urlparse
 
 import numpy as np
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.responses import StreamingResponse
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from sqlalchemy import select, update, delete, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -39,6 +41,7 @@ from adscore_models import (
 logger = logging.getLogger(__name__)
 
 adscore_router = APIRouter(prefix="/adscore", tags=["adscore"])
+limiter = Limiter(key_func=get_remote_address)
 
 MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10 MB
 
@@ -404,7 +407,9 @@ async def upload_csv(
 
 
 @adscore_router.post("/upload-url", response_model=BannerUploadResponse)
+@limiter.limit("10/minute")
 async def upload_banner_url(
+    request: Request,
     url: str = Form(...),
     metrics: str = Form("{}"),
     current_user: CurrentUser = Depends(get_current_user),
@@ -608,7 +613,9 @@ async def delete_banner(
 
 
 @adscore_router.post("/tag/{banner_id}", response_model=TagResponse)
+@limiter.limit("20/minute")
 async def tag_banner_endpoint(
+    request: Request,
     banner_id: str,
     current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
@@ -659,7 +666,9 @@ async def tag_banner_endpoint(
 
 
 @adscore_router.post("/tag-all")
+@limiter.limit("3/minute")
 async def tag_all_banners(
+    request: Request,
     current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
@@ -1024,7 +1033,9 @@ def _build_explain_context(banner: dict, banners_data: list, element_perf: list)
 
 
 @adscore_router.post("/banner/{banner_id}/explain", response_model=ExplainResponse)
+@limiter.limit("10/minute")
 async def explain_banner(
+    request: Request,
     banner_id: str,
     force: bool = False,
     current_user: CurrentUser = Depends(get_current_user),

@@ -21,6 +21,9 @@ import pandas as pd
 from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -61,11 +64,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+limiter = Limiter(key_func=get_remote_address)
+
 app = FastAPI(
     title="Haraba Text Scoring",
     description="Local prototype for marketing text scoring",
     version="2.0.0",
 )
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.include_router(adscore_router)
 app.include_router(auth_router)
@@ -191,6 +198,7 @@ def health():
 
 
 @app.post("/upload")
+@limiter.limit("20/minute")
 async def upload_file(
     request: Request,
     file: UploadFile = File(...),
@@ -398,6 +406,7 @@ async def apply_mapping(req: MappingRequest, current_user: CurrentUser = Depends
 
 
 @app.post("/score")
+@limiter.limit("30/minute")
 async def run_scoring(req: ScoreRequest, request: Request, current_user: CurrentUser = Depends(get_current_user)):
     """
     Run the full scoring pipeline on the mapped data.
@@ -486,7 +495,9 @@ async def run_scoring(req: ScoreRequest, request: Request, current_user: Current
 
 
 @app.post("/process-banners")
+@limiter.limit("10/minute")
 async def process_banners(
+    request: Request,
     req: dict,
     current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
