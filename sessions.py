@@ -27,7 +27,7 @@ async def list_sessions(
     q = (
         select(ScoringSession)
         .where(ScoringSession.tenant_id == tid)
-        .where(ScoringSession.status != SessionStatus.failed)  # hide deleted
+        .where(ScoringSession.status.notin_([SessionStatus.deleted]))
         .order_by(ScoringSession.created_at.desc())
         .offset(offset)
         .limit(limit)
@@ -42,13 +42,18 @@ async def list_sessions(
     result = await db.execute(q)
     sessions = result.scalars().all()
 
-    # Get total count
+    # Get total count (with same filters as main query)
     count_q = (
         select(func.count())
         .select_from(ScoringSession)
         .where(ScoringSession.tenant_id == tid)
-        .where(ScoringSession.status != SessionStatus.failed)
+        .where(ScoringSession.status.notin_([SessionStatus.deleted]))
     )
+    if status:
+        try:
+            count_q = count_q.where(ScoringSession.status == SessionStatus(status))
+        except ValueError:
+            pass
     total = (await db.execute(count_q)).scalar()
 
     # Get creator names

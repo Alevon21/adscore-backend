@@ -1,71 +1,59 @@
 import os
 import time
 import httpx
+import logging
 from dataclasses import dataclass
 from typing import Optional, Dict
 
+import jwt as pyjwt
+from jwt import PyJWKClient, PyJWK
+from jwt.exceptions import InvalidTokenError
+
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import JWTError, jwt, jwk
-from jose.utils import base64url_decode
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
 from db_models import User, Tenant, UserRole
 
+logger = logging.getLogger(__name__)
+
 SUPABASE_URL = os.getenv("SUPABASE_URL", "")
 JWKS_URL = f"{SUPABASE_URL}/auth/v1/.well-known/jwks.json"
 
-# Cache JWKS keys for 1 hour
-_jwks_cache: Dict = {"keys": {}, "fetched_at": 0}
-JWKS_CACHE_TTL = 3600
+# Hardcoded allowed algorithms to prevent algorithm confusion attacks.
+_ALLOWED_ALGORITHMS = ["RS256", "ES256"]
+
+# PyJWT's built-in JWKS client with caching
+_jwk_client: Optional[PyJWKClient] = None
+
+
+def _get_jwk_client() -> PyJWKClient:
+    """Lazily create the JWKS client (caches keys internally)."""
+    global _jwk_client
+    if _jwk_client is None:
+        _jwk_client = PyJWKClient(
+            JWKS_URL,
+            cache_keys=True,
+            lifespan=3600,  # cache for 1 hour
+        )
+    return _jwk_client
+
 
 security = HTTPBearer(auto_error=False)
 
 
-def _fetch_jwks() -> Dict:
-    """Fetch JWKS from Supabase and cache them."""
-    now = time.time()
-    if _jwks_cache["keys"] and (now - _jwks_cache["fetched_at"]) < JWKS_CACHE_TTL:
-        return _jwks_cache["keys"]
-
-    resp = httpx.get(JWKS_URL, timeout=10)
-    resp.raise_for_status()
-    data = resp.json()
-
-    keys = {}
-    for key_data in data.get("keys", []):
-        kid = key_data.get("kid")
-        if kid:
-            keys[kid] = key_data
-
-    _jwks_cache["keys"] = keys
-    _jwks_cache["fetched_at"] = now
-    return keys
-
-
-def _get_signing_key(token: str):
-    """Extract kid from token header and find the matching JWKS key."""
-    headers = jwt.get_unverified_header(token)
-    kid = headers.get("kid")
-    alg = headers.get("alg", "ES256")
-
-    keys = _fetch_jwks()
-
-    if kid and kid in keys:
-        key_data = keys[kid]
-        return jwk.construct(key_data, alg), alg
-
-    # If kid not found, refresh cache and retry
-    _jwks_cache["fetched_at"] = 0
-    keys = _fetch_jwks()
-
-    if kid and kid in keys:
-        key_data = keys[kid]
-        return jwk.construct(key_data, alg), alg
-
-    raise JWTError(f"Unable to find signing key for kid={kid}")
+async def _get_signing_key(token: str) -> PyJWK:
+    """Get the signing key for the given token using JWKS."""
+    import asyncio
+    client = _get_jwk_client()
+    try:
+        return await asyncio.to_thread(client.get_signing_key_from_jwt, token)
+    except Exception:
+        # Force cache refresh and retry
+        client = _get_jwk_client()
+        return await asyncio.to_thread(client.get_signing_key_from_jwt, token)
 
 
 @dataclass
@@ -84,15 +72,19 @@ async def get_current_user(
 
     token = credentials.credentials
     try:
-        signing_key, alg = _get_signing_key(token)
-        payload = jwt.decode(
+        signing_key = await _get_signing_key(token)
+        payload = pyjwt.decode(
             token,
-            signing_key,
-            algorithms=[alg],
-            options={"verify_aud": False},
+            signing_key.key,
+            algorithms=_ALLOWED_ALGORITHMS,
+            options={
+                "verify_aud": False,
+                "verify_exp": True,
+                "require": ["exp", "sub"],
+            },
         )
-    except JWTError as e:
-        raise HTTPException(status_code=401, detail=f"Invalid token: {e}")
+    except InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
     supabase_uid = payload.get("sub")
     if not supabase_uid:
@@ -104,23 +96,15 @@ async def get_current_user(
     )
     user = result.scalar_one_or_none()
 
-    # If not found, check without is_active filter (debug + auto-activate)
     if not user:
+        # Check if user exists but is deactivated
         result2 = await db.execute(
             select(User).where(User.supabase_uid == supabase_uid)
         )
         inactive_user = result2.scalar_one_or_none()
         if inactive_user:
-            # Auto-activate the user
-            inactive_user.is_active = True
-            db.add(inactive_user)
-            await db.commit()
-            await db.refresh(inactive_user)
-            user = inactive_user
-        else:
-            import logging
-            logging.warning(f"User not found for supabase_uid={supabase_uid}")
-            raise HTTPException(status_code=404, detail="User not found. Please register first.")
+            raise HTTPException(status_code=403, detail="Account deactivated. Contact your admin.")
+        raise HTTPException(status_code=404, detail="User not found. Please register first.")
 
     tenant = user.tenant
     if not tenant or not tenant.is_active:
@@ -131,6 +115,28 @@ async def get_current_user(
     tenant_context.set(tenant.id)
 
     return CurrentUser(user=user, tenant=tenant)
+
+
+async def verify_supabase_token(token: str) -> Optional[str]:
+    """Verify a Supabase JWT and return the sub (user ID) claim.
+
+    Returns None if verification fails.
+    """
+    try:
+        signing_key = await _get_signing_key(token)
+        payload = pyjwt.decode(
+            token,
+            signing_key.key,
+            algorithms=_ALLOWED_ALGORITHMS,
+            options={
+                "verify_aud": False,
+                "verify_exp": True,
+                "require": ["exp", "sub"],
+            },
+        )
+        return payload.get("sub")
+    except Exception:
+        return None
 
 
 def require_role(*allowed_roles):
@@ -148,7 +154,7 @@ def require_role(*allowed_roles):
 # ── Feature-based access control ─────────────────────────
 
 VALID_FEATURES = {"calculators", "research", "analysis", "adscore"}
-ALL_FEATURES = list(VALID_FEATURES)
+ALL_FEATURES = sorted(VALID_FEATURES)
 DEFAULT_FEATURES = ["calculators", "research"]
 
 

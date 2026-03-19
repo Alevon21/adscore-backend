@@ -58,6 +58,7 @@ class SessionStatus(str, enum.Enum):
     scoring = "scoring"
     completed = "completed"
     failed = "failed"
+    deleted = "deleted"
 
 
 class Tenant(Base):
