@@ -45,17 +45,27 @@ def _fetch_jwks_sync() -> Dict:
     return keys
 
 
+# Hardcoded allowed algorithms to prevent algorithm confusion attacks.
+# Never read alg from the unverified token header.
+_ALLOWED_ALGORITHMS = ["RS256", "ES256"]
+
+
 async def _get_signing_key(token: str):
     """Extract kid from token header and find the matching JWKS key."""
     import asyncio
     headers = jwt.get_unverified_header(token)
     kid = headers.get("kid")
-    alg = headers.get("alg", "ES256")
+    # Use the algorithm from the JWKS key data, NOT from the token header
+    token_alg = headers.get("alg", "RS256")
+    if token_alg not in _ALLOWED_ALGORITHMS:
+        raise JWTError(f"Algorithm not allowed: {token_alg}")
 
     keys = await asyncio.to_thread(_fetch_jwks_sync)
 
     if kid and kid in keys:
         key_data = keys[kid]
+        # Use the algorithm from the JWKS key, falling back to RS256
+        alg = key_data.get("alg", "RS256")
         return jwk.construct(key_data, alg), alg
 
     # If kid not found, refresh cache and retry
@@ -64,9 +74,10 @@ async def _get_signing_key(token: str):
 
     if kid and kid in keys:
         key_data = keys[kid]
+        alg = key_data.get("alg", "RS256")
         return jwk.construct(key_data, alg), alg
 
-    raise JWTError(f"Unable to find signing key for kid={kid}")
+    raise JWTError("Unable to find signing key")
 
 
 @dataclass
