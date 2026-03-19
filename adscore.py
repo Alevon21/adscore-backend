@@ -1,12 +1,15 @@
 """AdScore API router — creative banner analytics with AI tagging (tenant-isolated)."""
 
+import ipaddress
 import json
 import logging
 import os
+import re
 import uuid as uuid_mod
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
+from urllib.parse import urlparse
 
 import numpy as np
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
@@ -47,6 +50,41 @@ MIME_MAP = {
     ".gif": "image/gif",
     ".webp": "image/webp",
 }
+
+_SSRF_BLOCKED_HOSTS = {
+    'localhost', '127.0.0.1', '0.0.0.0', '::1',
+    '169.254.169.254', 'metadata.google.internal',
+    'metadata.internal', '100.100.100.200',
+}
+
+
+def _is_safe_url(url: str) -> bool:
+    """Validate URL is safe for server-side fetch (blocks SSRF)."""
+    try:
+        parsed = urlparse(url)
+    except Exception:
+        return False
+    if parsed.scheme not in ('http', 'https'):
+        return False
+    hostname = parsed.hostname
+    if not hostname:
+        return False
+    if hostname in _SSRF_BLOCKED_HOSTS:
+        return False
+    try:
+        ip = ipaddress.ip_address(hostname)
+        if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved:
+            return False
+    except ValueError:
+        pass
+    return True
+
+
+def _sanitize_filename(name: str) -> str:
+    """Sanitize filename — strip path separators and special characters."""
+    name = Path(name).name  # strip directory components
+    name = re.sub(r'[^\w.\-]', '_', name)
+    return name[:200] or "file"
 
 
 # ---------------------------------------------------------------------------
@@ -106,6 +144,7 @@ def _get_image_dimensions(content: bytes):
     try:
         from PIL import Image
         from io import BytesIO
+        Image.MAX_IMAGE_PIXELS = 25_000_000  # ~5000x5000 max, prevents decompression bombs
         with Image.open(BytesIO(content)) as img:
             return img.size
     except Exception:
@@ -124,7 +163,11 @@ async def create_banner_from_url(
     Returns banner UUID on success, None on failure.
     """
     import httpx as httpx_lib
-    from urllib.parse import urlparse, unquote
+    from urllib.parse import unquote  # noqa: local import for clarity
+
+    if not _is_safe_url(image_url):
+        logger.warning("SSRF blocked: %s", image_url)
+        return None
 
     try:
         async with httpx_lib.AsyncClient(follow_redirects=True, timeout=30.0) as client:
@@ -152,8 +195,8 @@ async def create_banner_from_url(
     mime_type = MIME_MAP.get(ext, "image/jpeg")
     banner_id = uuid_mod.uuid4()
 
-    url_path = urlparse(image_url).path
-    original_name = unquote(Path(url_path).name) or "image_from_url"
+    url_path_str = urlparse(image_url).path
+    original_name = _sanitize_filename(unquote(Path(url_path_str).name) or "image_from_url")
 
     storage_key = f"{tenant_id}/banners/{banner_id}/{original_name}"
     try:
@@ -223,7 +266,7 @@ async def upload_banner(
     width, height = _get_image_dimensions(content)
     mime_type = MIME_MAP.get(ext, "image/png")
     banner_id = uuid_mod.uuid4()
-    original_name = image.filename or "unknown"
+    original_name = _sanitize_filename(image.filename or "unknown")
 
     # Upload to Supabase Storage
     storage_key = f"{tid}/banners/{banner_id}/{original_name}"
@@ -309,7 +352,7 @@ async def upload_csv(
     try:
         df = pd.read_csv(BytesIO(content))
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to parse CSV: {e}")
+        raise HTTPException(status_code=400, detail="Failed to parse CSV. Please check the format.")
 
     imported = []
     errors = []
@@ -377,6 +420,9 @@ async def upload_banner_url(
         raise HTTPException(status_code=400, detail="Invalid metrics JSON")
 
     banner_metrics = BannerMetrics(**metrics_dict)
+
+    if not _is_safe_url(url):
+        raise HTTPException(status_code=400, detail="URL is not allowed (private/internal addresses blocked)")
 
     banner_id = await create_banner_from_url(db, tid, uid, url, metrics_dict)
     if not banner_id:
@@ -581,9 +627,10 @@ async def tag_banner_endpoint(
     await db.commit()
 
     try:
+        import asyncio
         # Download image from Supabase
         image_bytes = await file_storage.download_file(banner.storage_key)
-        tags_dict = tag_banner(image_bytes)
+        tags_dict = await asyncio.to_thread(tag_banner, image_bytes)
 
         banner.tags = tags_dict
         banner.tags_status = "done"
@@ -629,12 +676,13 @@ async def tag_all_banners(
     )
     pending = list(result.scalars().all())
 
+    import asyncio
     results = {"tagged": 0, "errors": 0, "total_pending": len(pending)}
 
     for banner in pending:
         try:
             image_bytes = await file_storage.download_file(banner.storage_key)
-            tags_dict = tag_banner(image_bytes)
+            tags_dict = await asyncio.to_thread(tag_banner, image_bytes)
             banner.tags = tags_dict
             banner.tags_status = "done"
             banner.tags_error = None
@@ -1026,7 +1074,7 @@ async def explain_banner(
         explanation = response.content[0].text
     except Exception as e:
         logger.error("Failed to generate explanation for %s: %s", banner_id, e)
-        raise HTTPException(status_code=500, detail=f"Ошибка генерации объяснения: {e}")
+        raise HTTPException(status_code=500, detail="Ошибка генерации объяснения. Попробуйте позже.")
 
     explained_at = datetime.now(timezone.utc)
     banner.explanation = explanation

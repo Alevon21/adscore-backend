@@ -65,6 +65,7 @@ def _resize_image(source, max_size: int = 1568) -> bytes:
     source: file path (str) or raw image bytes.
     """
     from PIL import Image
+    Image.MAX_IMAGE_PIXELS = 25_000_000  # ~5000x5000 max, prevents decompression bombs
 
     if isinstance(source, bytes):
         img = Image.open(BytesIO(source))

@@ -8,12 +8,14 @@ load_dotenv(override=True)
 
 import hashlib
 import io
+import ipaddress
 import logging
 import os
 import threading
 import uuid as uuid_mod
 from datetime import datetime, timezone
 from typing import Any, Dict
+from urllib.parse import urlparse
 
 import pandas as pd
 from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile
@@ -71,21 +73,34 @@ app.include_router(tenant_router)
 app.include_router(sessions_router)
 app.include_router(usability_test_router)
 
+_cors_origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
+    "http://frontend:3000",
+    "https://adscore-orpin.vercel.app",
+]
+_frontend_url = os.getenv("FRONTEND_URL", "")
+if _frontend_url:
+    _cors_origins.append(_frontend_url)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:3001",
-        "http://frontend:3000",
-        "https://adscore-orpin.vercel.app",
-        os.getenv("FRONTEND_URL", ""),
-    ],
+    allow_origins=_cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-Requested-With"],
 )
+
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
 
 @app.on_event("startup")
 async def on_startup():
@@ -105,6 +120,35 @@ SESSION_TTL = int(os.getenv("SESSION_TTL_MINUTES", "60")) * 60  # seconds
 MAX_FILE_SIZE = int(os.getenv("MAX_FILE_SIZE_MB", "50")) * 1024 * 1024  # bytes
 
 mapper = ColumnMapper()
+
+# ── SSRF protection ──────────────────────────────────────────────
+_SSRF_BLOCKED_HOSTS = {
+    'localhost', '127.0.0.1', '0.0.0.0', '::1',
+    '169.254.169.254', 'metadata.google.internal',
+    'metadata.internal', '100.100.100.200',
+}
+
+
+def _is_safe_url(url: str) -> bool:
+    """Validate URL is safe for server-side fetch (blocks SSRF)."""
+    try:
+        parsed = urlparse(url)
+    except Exception:
+        return False
+    if parsed.scheme not in ('http', 'https'):
+        return False
+    hostname = parsed.hostname
+    if not hostname:
+        return False
+    if hostname in _SSRF_BLOCKED_HOSTS:
+        return False
+    try:
+        ip = ipaddress.ip_address(hostname)
+        if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved:
+            return False
+    except ValueError:
+        pass  # hostname is a domain name, not IP — OK
+    return True
 
 
 def _cleanup_session(session_id: str) -> None:
@@ -126,13 +170,16 @@ def _schedule_ttl_locked(session_id: str) -> None:
     SESSION_TIMERS[session_id] = timer
 
 
-def _get_session(session_id: str) -> Dict[str, Any]:
-    """Retrieve session data or raise 404."""
+def _get_session(session_id: str, tenant_id: uuid_mod.UUID = None) -> Dict[str, Any]:
+    """Retrieve session data or raise 404. Verifies tenant ownership if tenant_id given."""
     with _session_lock:
         if session_id not in SESSION_STORE:
-            raise HTTPException(status_code=404, detail=f"Session {session_id} not found")
+            raise HTTPException(status_code=404, detail="Session not found")
+        data = SESSION_STORE[session_id]
+        if tenant_id is not None and data.get("tenant_id") != tenant_id:
+            raise HTTPException(status_code=404, detail="Session not found")
         _schedule_ttl_locked(session_id)
-        return SESSION_STORE[session_id]
+        return data
 
 
 # ---------- ENDPOINTS ----------
@@ -140,7 +187,7 @@ def _get_session(session_id: str) -> Dict[str, Any]:
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "sessions": len(SESSION_STORE)}
+    return {"status": "ok"}
 
 
 @app.post("/upload")
@@ -185,7 +232,7 @@ async def upload_file(
             df = pd.read_excel(buf, engine="openpyxl")
     except Exception as e:
         logger.error("Failed to parse file: %s", e)
-        raise HTTPException(status_code=400, detail=f"Failed to parse file: {e}")
+        raise HTTPException(status_code=400, detail="Failed to parse file. Please check the format and try again.")
 
     if df.empty:
         raise HTTPException(status_code=400, detail="File is empty")
@@ -206,6 +253,7 @@ async def upload_file(
     session_id = str(uuid_mod.uuid4())
     with _session_lock:
         SESSION_STORE[session_id] = {
+            "tenant_id": current_user.tenant.id,
             "df_original": df,
             "df_mapped": None,
             "columns_detected": columns_detected,
@@ -296,7 +344,7 @@ async def apply_mapping(req: MappingRequest, current_user: CurrentUser = Depends
     Apply user-defined column mapping to the uploaded data.
     Accepts optional event configs.
     """
-    session = _get_session(req.session_id)
+    session = _get_session(req.session_id, current_user.tenant.id)
 
     is_valid, missing = mapper.validate_mapping(req.mapping)
     if not is_valid:
@@ -354,7 +402,7 @@ async def run_scoring(req: ScoreRequest, request: Request, current_user: Current
     """
     Run the full scoring pipeline on the mapped data.
     """
-    session = _get_session(req.session_id)
+    session = _get_session(req.session_id, current_user.tenant.id)
 
     df_mapped = session.get("df_mapped")
     if df_mapped is None:
@@ -448,8 +496,11 @@ async def process_banners(
     from adscore import create_banner_from_url
 
     session_id = req.get("session_id", "")
-    session = SESSION_STORE.get(session_id)
+    with _session_lock:
+        session = SESSION_STORE.get(session_id)
     if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    if session.get("tenant_id") != current_user.tenant.id:
         raise HTTPException(status_code=404, detail="Session not found")
 
     # Idempotency guard
@@ -471,6 +522,8 @@ async def process_banners(
             continue
         url = url.strip()
         if not url.startswith("http"):
+            continue
+        if not _is_safe_url(url):
             continue
 
         # Build metrics dict from CSV columns — store ALL raw data
@@ -522,21 +575,17 @@ async def process_banners(
     if not rows_with_banners:
         return {"processed": 0, "failed": 0, "banner_ids": {}}
 
-    # Process with concurrency limit
-    sem = asyncio.Semaphore(5)
+    # Process sequentially to avoid concurrent AsyncSession usage
     banner_ids = {}
-    errors = [0]  # mutable container for nonlocal access
+    failed = 0
 
-    async def _process_one(text_id, url, metrics):
-        async with sem:
-            bid = await create_banner_from_url(db, tid, uid, url, metrics)
-            if bid:
-                banner_ids[text_id] = str(bid)
-            else:
-                errors[0] += 1
+    for text_id, banner_url, metrics in rows_with_banners:
+        bid = await create_banner_from_url(db, tid, uid, banner_url, metrics)
+        if bid:
+            banner_ids[text_id] = str(bid)
+        else:
+            failed += 1
 
-    await asyncio.gather(*[_process_one(tid_str, url, m) for tid_str, url, m in rows_with_banners])
-    failed = errors[0]
     await db.commit()
 
     session["banner_ids"] = banner_ids
@@ -576,7 +625,7 @@ def run_abtest(req: ABTestRequest, current_user: CurrentUser = Depends(get_curre
     """
     Run A/B test comparing two texts from the current session.
     """
-    session = _get_session(req.session_id)
+    session = _get_session(req.session_id, current_user.tenant.id)
     scoring_result = session.get("scoring_result")
     if scoring_result is None:
         raise HTTPException(
@@ -620,7 +669,7 @@ async def run_text_parts(req: TextPartRequest, current_user: CurrentUser = Depen
     """
     Analyze text parts (elements) and find best combinations.
     """
-    session = _get_session(req.session_id)
+    session = _get_session(req.session_id, current_user.tenant.id)
     scoring_result = session.get("scoring_result")
     if scoring_result is None:
         raise HTTPException(
@@ -678,7 +727,7 @@ def extract_words(req: ExtractWordsRequest, current_user: CurrentUser = Depends(
     """
     Extract all unique words from headlines for interactive selection.
     """
-    session = _get_session(req.session_id)
+    session = _get_session(req.session_id, current_user.tenant.id)
     scoring_result = session.get("scoring_result")
     if scoring_result is None:
         raise HTTPException(
@@ -710,7 +759,7 @@ def extract_words(req: ExtractWordsRequest, current_user: CurrentUser = Depends(
 @app.post("/campaign-analysis")
 async def run_campaign_analysis(req: CampaignAnalysisRequest, current_user: CurrentUser = Depends(get_current_user)):
     """Analyze campaign-level performance from scored results."""
-    session = _get_session(req.session_id)
+    session = _get_session(req.session_id, current_user.tenant.id)
     scoring_result = session.get("scoring_result")
     if scoring_result is None:
         raise HTTPException(
@@ -766,7 +815,7 @@ async def export_xlsx(session_id: str, request: Request, current_user: CurrentUs
     """
     Export scoring results as XLSX file.
     """
-    session = _get_session(session_id)
+    session = _get_session(session_id, current_user.tenant.id)
     scoring_result = session.get("scoring_result")
     if scoring_result is None:
         raise HTTPException(
@@ -885,7 +934,7 @@ async def delete_session(session_id: str, current_user: CurrentUser = Depends(ge
             await db.execute(
                 update(ScoringSession)
                 .where(ScoringSession.id == sid)
-                .values(status=SessionStatus.failed)  # reuse 'failed' as deleted indicator
+                .values(status=SessionStatus.deleted)
             )
             await db.commit()
     except Exception as e:
@@ -959,7 +1008,7 @@ async def restore_session(
             df = pd.read_excel(buf, engine="openpyxl")
     except Exception as e:
         logger.error("Failed to parse restored file: %s", e)
-        raise HTTPException(status_code=500, detail=f"Failed to parse file: {e}")
+        raise HTTPException(status_code=500, detail="Failed to parse stored file")
 
     # Restore session metadata
     # Prefer events from params (user may have edited labels on mapping step)
@@ -981,6 +1030,7 @@ async def restore_session(
     # Store in memory
     with _session_lock:
         SESSION_STORE[session_id] = {
+            "tenant_id": tid,
             "df_original": df,
             "df_mapped": df_mapped,
             "columns_detected": columns_detected,

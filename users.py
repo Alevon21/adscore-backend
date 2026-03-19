@@ -107,6 +107,7 @@ def user_to_response(user: User) -> UserResponse:
 
 
 async def log_audit(db: AsyncSession, tenant_id, user_id, action, request: Request = None, **kwargs):
+    """Add an audit log entry to the session. Caller is responsible for commit."""
     log = AuditLog(
         tenant_id=tenant_id,
         user_id=user_id,
@@ -118,7 +119,6 @@ async def log_audit(db: AsyncSession, tenant_id, user_id, action, request: Reque
         details=kwargs.get("details"),
     )
     db.add(log)
-    await db.commit()
 
 
 # ── Auth Routes ──────────────────────────────────────────
@@ -176,6 +176,7 @@ async def register(
             db, pending.tenant_id, user.id, "register_via_invite", request,
             details={"email": body.email, "role": pending.role.value},
         )
+        await db.commit()
         return user_to_response(user)
 
     # Create tenant
@@ -204,6 +205,7 @@ async def register(
 
     # Audit
     await log_audit(db, tenant.id, user.id, "register", request, details={"company": body.company_name})
+    await db.commit()
 
     return user_to_response(user)
 
@@ -287,6 +289,7 @@ async def invite_user(
         resource_type="user", resource_id=str(user.id),
         details={"email": body.email, "role": body.role},
     )
+    await db.commit()
 
     return user_to_response(user)
 
@@ -330,6 +333,7 @@ async def update_role(
         resource_type="user", resource_id=str(target_user.id),
         details={"old_role": old_role, "new_role": body.role},
     )
+    await db.commit()
 
     return user_to_response(target_user)
 
@@ -379,6 +383,7 @@ async def update_features(
         resource_type="user", resource_id=str(target_user.id),
         details={"old_features": old_features, "new_features": features},
     )
+    await db.commit()
 
     return user_to_response(target_user)
 
@@ -442,6 +447,7 @@ async def create_invite(
         resource_type="invite", resource_id=str(invite.id),
         details={"email": body.email, "role": body.role},
     )
+    await db.commit()
 
     return PendingInviteResponse(
         id=str(invite.id),
@@ -510,6 +516,7 @@ async def cancel_invite(
         resource_type="invite", resource_id=invite_id,
         details={"email": invite.email},
     )
+    await db.commit()
 
     return {"ok": True}
 
@@ -547,6 +554,7 @@ async def deactivate_user(
         resource_type="user", resource_id=user_id,
         details={"email": target_user.email},
     )
+    await db.commit()
 
     return {"ok": True}
 

@@ -7,6 +7,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+RUN useradd -m -r appuser && chown -R appuser:appuser /app
+USER appuser
+
 EXPOSE 8000
 
 CMD ["bash", "start.sh"]

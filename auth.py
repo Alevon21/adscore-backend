@@ -24,8 +24,8 @@ JWKS_CACHE_TTL = 3600
 security = HTTPBearer(auto_error=False)
 
 
-def _fetch_jwks() -> Dict:
-    """Fetch JWKS from Supabase and cache them."""
+def _fetch_jwks_sync() -> Dict:
+    """Fetch JWKS from Supabase and cache them (synchronous, call via to_thread)."""
     now = time.time()
     if _jwks_cache["keys"] and (now - _jwks_cache["fetched_at"]) < JWKS_CACHE_TTL:
         return _jwks_cache["keys"]
@@ -45,13 +45,14 @@ def _fetch_jwks() -> Dict:
     return keys
 
 
-def _get_signing_key(token: str):
+async def _get_signing_key(token: str):
     """Extract kid from token header and find the matching JWKS key."""
+    import asyncio
     headers = jwt.get_unverified_header(token)
     kid = headers.get("kid")
     alg = headers.get("alg", "ES256")
 
-    keys = _fetch_jwks()
+    keys = await asyncio.to_thread(_fetch_jwks_sync)
 
     if kid and kid in keys:
         key_data = keys[kid]
@@ -59,7 +60,7 @@ def _get_signing_key(token: str):
 
     # If kid not found, refresh cache and retry
     _jwks_cache["fetched_at"] = 0
-    keys = _fetch_jwks()
+    keys = await asyncio.to_thread(_fetch_jwks_sync)
 
     if kid and kid in keys:
         key_data = keys[kid]
@@ -84,15 +85,20 @@ async def get_current_user(
 
     token = credentials.credentials
     try:
-        signing_key, alg = _get_signing_key(token)
+        signing_key, alg = await _get_signing_key(token)
         payload = jwt.decode(
             token,
             signing_key,
             algorithms=[alg],
-            options={"verify_aud": False},
+            options={
+                "verify_aud": False,
+                "verify_exp": True,
+                "require_exp": True,
+                "require_sub": True,
+            },
         )
-    except JWTError as e:
-        raise HTTPException(status_code=401, detail=f"Invalid token: {e}")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
     supabase_uid = payload.get("sub")
     if not supabase_uid:
@@ -104,23 +110,15 @@ async def get_current_user(
     )
     user = result.scalar_one_or_none()
 
-    # If not found, check without is_active filter (debug + auto-activate)
     if not user:
+        # Check if user exists but is deactivated
         result2 = await db.execute(
             select(User).where(User.supabase_uid == supabase_uid)
         )
         inactive_user = result2.scalar_one_or_none()
         if inactive_user:
-            # Auto-activate the user
-            inactive_user.is_active = True
-            db.add(inactive_user)
-            await db.commit()
-            await db.refresh(inactive_user)
-            user = inactive_user
-        else:
-            import logging
-            logging.warning(f"User not found for supabase_uid={supabase_uid}")
-            raise HTTPException(status_code=404, detail="User not found. Please register first.")
+            raise HTTPException(status_code=403, detail="Account deactivated. Contact your admin.")
+        raise HTTPException(status_code=404, detail="User not found. Please register first.")
 
     tenant = user.tenant
     if not tenant or not tenant.is_active:
