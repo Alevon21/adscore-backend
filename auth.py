@@ -153,7 +153,7 @@ def require_role(*allowed_roles):
 
 # ── Feature-based access control ─────────────────────────
 
-VALID_FEATURES = {"calculators", "research", "analysis", "adscore"}
+VALID_FEATURES = {"calculators", "research", "analysis", "adscore", "mmp", "demo_data"}
 ALL_FEATURES = sorted(VALID_FEATURES)
 DEFAULT_FEATURES = ["calculators", "research"]
 

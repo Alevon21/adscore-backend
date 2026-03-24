@@ -12,3 +12,4 @@ venv/
 .DS_Store
 *.log
 uploads/
+demo_data/combined_adjust_installs.csv
