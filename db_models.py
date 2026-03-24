@@ -283,3 +283,33 @@ class UsabilityTestResponse(Base):
     __table_args__ = (
         Index("ix_usability_test_tenant_created", "tenant_id", "created_at"),
     )
+
+
+class MmpSession(Base):
+    __tablename__ = "mmp_sessions"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=new_uuid)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("tenants.id"), nullable=False)
+    created_by: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    status: Mapped[str] = mapped_column(String(20), default="uploaded", nullable=False)
+
+    file_names: Mapped[Optional[list]] = mapped_column(JSONB, nullable=True)
+    total_rows: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    date_range_min: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    date_range_max: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    trackers: Mapped[Optional[list]] = mapped_column(JSONB, nullable=True)
+    campaigns: Mapped[Optional[list]] = mapped_column(JSONB, nullable=True)
+    countries: Mapped[Optional[list]] = mapped_column(JSONB, nullable=True)
+    platforms: Mapped[Optional[list]] = mapped_column(JSONB, nullable=True)
+
+    benchmark_trackers: Mapped[Optional[list]] = mapped_column(JSONB, nullable=True)
+    thresholds: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    analysis_result: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        Index("ix_mmp_sessions_tenant_created", "tenant_id", "created_at"),
+    )

@@ -1,0 +1,16 @@
+text_id,headline,impressions,clicks,spend,event_1,campaign
+ca_1,Узнайте о нас,18000,720,1080,22,Brand Awareness
+ca_2,Мы рядом с вами,15000,600,900,18,Brand Awareness
+ca_3,Доверие миллионов,20000,800,1200,20,Brand Awareness
+ca_4,Ваш надёжный партнёр,12000,480,720,10,Brand Awareness
+ca_5,Открой новое,16000,640,960,16,Brand Awareness
+cb_1,Вернитесь за скидкой,6000,420,714,34,Retargeting
+cb_2,Ваша корзина ждёт,7000,490,833,39,Retargeting
+cb_3,Товар заканчивается,5500,385,655,31,Retargeting
+cb_4,Персональная скидка 15%,8000,560,952,45,Retargeting
+cb_5,Только для вас,5500,385,655,30,Retargeting
+cc_1,Попробуйте бесплатно,25000,1250,2250,25,Prospecting
+cc_2,Первый заказ со скидкой,22000,1100,1980,33,Prospecting
+cc_3,Новым клиентам -30%,28000,1400,2520,28,Prospecting
+cc_4,Регистрируйтесь сейчас,20000,1000,1800,15,Prospecting
+cc_5,Начните сегодня,24000,1200,2160,24,Prospecting

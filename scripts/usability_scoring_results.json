@@ -1,0 +1,5805 @@
+{
+  "best_performer": {
+    "csv": "01_best_performer.csv",
+    "weight_mode": "goal_conversions",
+    "stats": {
+      "n_total": 6,
+      "n_scored": 6,
+      "n_excluded": 0,
+      "n_top": 2,
+      "n_low": 1,
+      "mode": "basic",
+      "score_mean": 0.5052,
+      "score_std": 0.1394,
+      "weights_used": {
+        "CTR": 0.1,
+        "CR_event_1": 0.2,
+        "CPA_event_1": 0.2,
+        "CPC": 0.05,
+        "CPM": 0.05
+      },
+      "weight_mode": "goal_conversions",
+      "reliability_threshold": 300,
+      "event_labels": {
+        "event_1": "Конверсии"
+      },
+      "verdict_distribution": {
+        "Оптимизировать": 4,
+        "ОК": 1,
+        "Исключить": 1
+      },
+      "excluded_texts": [],
+      "insights": [
+        {
+          "type": "top_performers",
+          "icon": "trophy",
+          "title": "Лидеры рейтинга",
+          "description": "1. ad_5 (0.60) «Персональное предложение» — сильные: Конверсия: Конверсии, CPM, Стоимость: Конверсии 2. ad_2 (0.59) «Бесплатная доставка сегодня» — сильные: Конверсия: Конверсии, Стоимость: Конверсии 3. ad_6 (0.58) «Эксклюзив для подписчиков» — сильные: CTR, CPC, Стоимость: Конверсии",
+          "severity": "success"
+        },
+        {
+          "type": "budget_waste",
+          "icon": "alert_triangle",
+          "title": "Бюджет на слабые тексты",
+          "description": "1 текст(ов) с вердиктом «Исключить» получили суммарно 15,200 показов. Наибольший расход: ad_3. Рекомендуется перераспределить бюджет на лидеров.",
+          "severity": "warning"
+        }
+      ]
+    },
+    "results": [
+      {
+        "text_id": "ad_1",
+        "headline": "Летняя распродажа -50%",
+        "composite_score": 0.4591,
+        "decision_score": 0.4591,
+        "ranking_score": 0.2,
+        "benchmark_score": 0.3145,
+        "relative_score": 0.3333,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 422.26,
+        "missed_conversions": 13.39,
+        "real_savings": 422.25,
+        "real_savings_adjusted": 295.58,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "metric_pattern": "conflicting_signals",
+        "pattern_confidence": 0.5,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "≈Средний",
+        "mode": "basic",
+        "n_impressions": 12400,
+        "n_clicks": 744,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.055957,
+        "ctr_ci_high": 0.064319,
+        "prob_ctr_better": 0.9925,
+        "ctr_pvalue": 0.00096,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.06,
+          "CR_event_1": 0.02957,
+          "CPA_event_1": 50.727273,
+          "CPC": 1.5,
+          "CPM": 90.0
+        },
+        "z_scores": {
+          "CTR": 0.5594,
+          "CR_event_1": 0.3112,
+          "CPA_event_1": 0.4713,
+          "CPC": 0.6855,
+          "CPM": 0.574
+        },
+        "std_metrics": {
+          "CTR": 0.01744,
+          "CR_event_1": 0.023579,
+          "CPA_event_1": 33.466815,
+          "CPC": 0.342233,
+          "CPM": 12.855334
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPC; слабые: Конверсия: Конверсии",
+          "strengths": [
+            "CPC"
+          ],
+          "weaknesses": [
+            "CR_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_2",
+        "headline": "Бесплатная доставка сегодня",
+        "composite_score": 0.5935,
+        "decision_score": 0.5935,
+        "ranking_score": 0.8,
+        "benchmark_score": 0.546,
+        "relative_score": 0.8333,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 9800,
+        "n_clicks": 490,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.045861,
+        "ctr_ci_high": 0.054496,
+        "prob_ctr_better": 0.0148,
+        "ctr_pvalue": 0.162913,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.069388,
+          "CPA_event_1": 27.382353,
+          "CPC": 1.9,
+          "CPM": 95.0
+        },
+        "z_scores": {
+          "CTR": 0.4172,
+          "CR_event_1": 0.7098,
+          "CPA_event_1": 0.6417,
+          "CPC": 0.4039,
+          "CPM": 0.4774
+        },
+        "std_metrics": {
+          "CTR": 0.01744,
+          "CR_event_1": 0.023579,
+          "CPA_event_1": 33.466815,
+          "CPC": 0.342233,
+          "CPM": 12.855334
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CR_event_1",
+            "CPA_event_1"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_3",
+        "headline": "Новая коллекция 2026",
+        "composite_score": 0.2408,
+        "decision_score": 0.2408,
+        "ranking_score": 0.0,
+        "benchmark_score": 0.0874,
+        "relative_score": 0.1667,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 894.17,
+        "missed_conversions": 29.5,
+        "real_savings": 930.13,
+        "real_savings_adjusted": 651.09,
+        "target_source": "batch_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "declining_recently": false,
+        "category": "LOW",
+        "alt_category": "Сильный -",
+        "mode": "basic",
+        "n_impressions": 15200,
+        "n_clicks": 608,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.037001,
+        "ctr_ci_high": 0.043235,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.018092,
+          "CPA_event_1": 112.822727,
+          "CPC": 2.100329,
+          "CPM": 84.013158
+        },
+        "z_scores": {
+          "CTR": 0.2874,
+          "CR_event_1": 0.2173,
+          "CPA_event_1": 0.1224,
+          "CPC": 0.2739,
+          "CPM": 0.6822
+        },
+        "std_metrics": {
+          "CTR": 0.01744,
+          "CR_event_1": 0.023579,
+          "CPA_event_1": 33.466815,
+          "CPC": 0.342233,
+          "CPM": 12.855334
+        },
+        "verdict": {
+          "verdict": "Исключить",
+          "reason": "Низкий балл (0.24), слабые показатели",
+          "reason_type": "цена",
+          "reason_detail": "слабые: Стоимость: Конверсии, Конверсия: Конверсии, CPC",
+          "strengths": [
+            "CPM"
+          ],
+          "weaknesses": [
+            "CPA_event_1",
+            "CR_event_1",
+            "CPC",
+            "CTR"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_4",
+        "headline": "Только 3 дня: скидки до 70%",
+        "composite_score": 0.5598,
+        "decision_score": 0.5598,
+        "ranking_score": 0.4,
+        "benchmark_score": 0.4857,
+        "relative_score": 0.5,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 37.52,
+        "missed_conversions": 1.3,
+        "real_savings": 40.92,
+        "real_savings_adjusted": 28.64,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "metric_pattern": "conflicting_signals",
+        "pattern_confidence": 0.5,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 8500,
+        "n_clicks": 680,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.074423,
+        "ctr_ci_high": 0.085961,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.08,
+          "CR_event_1": 0.042647,
+          "CPA_event_1": 32.827586,
+          "CPC": 1.405,
+          "CPM": 111.65
+        },
+        "z_scores": {
+          "CTR": 0.7999,
+          "CR_event_1": 0.4403,
+          "CPA_event_1": 0.6035,
+          "CPC": 0.7421,
+          "CPM": 0.2001
+        },
+        "std_metrics": {
+          "CTR": 0.01744,
+          "CR_event_1": 0.023579,
+          "CPA_event_1": 33.466815,
+          "CPC": 0.342233,
+          "CPM": 12.855334
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CTR, CPC; слабые: CPM",
+          "strengths": [
+            "CTR",
+            "CPC",
+            "CPA_event_1"
+          ],
+          "weaknesses": [
+            "CPM"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_5",
+        "headline": "Персональное предложение",
+        "composite_score": 0.6021,
+        "decision_score": 0.6021,
+        "ranking_score": 1.0,
+        "benchmark_score": 0.5613,
+        "relative_score": 1.0,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "microsegment",
+        "metric_pattern": "low_ctr_high_cr",
+        "pattern_confidence": 0.75,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 11000,
+        "n_clicks": 385,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.031727,
+        "ctr_ci_high": 0.038602,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.035,
+          "CR_event_1": 0.080519,
+          "CPA_event_1": 27.325569,
+          "CPC": 2.195016,
+          "CPM": 77.350658
+        },
+        "z_scores": {
+          "CTR": 0.2324,
+          "CR_event_1": 0.7968,
+          "CPA_event_1": 0.6421,
+          "CPC": 0.2224,
+          "CPM": 0.7828
+        },
+        "std_metrics": {
+          "CTR": 0.01744,
+          "CR_event_1": 0.023579,
+          "CPA_event_1": 33.466815,
+          "CPC": 0.342233,
+          "CPM": 12.855334
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: Конверсия: Конверсии, CPM; слабые: CPC, CTR",
+          "strengths": [
+            "CR_event_1",
+            "CPM",
+            "CPA_event_1"
+          ],
+          "weaknesses": [
+            "CPC",
+            "CTR"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_6",
+        "headline": "Эксклюзив для подписчиков",
+        "composite_score": 0.5757,
+        "decision_score": 0.5757,
+        "ranking_score": 0.6,
+        "benchmark_score": 0.5143,
+        "relative_score": 0.6667,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "auction",
+        "metric_pattern": "high_cost_ok_performance",
+        "pattern_confidence": 0.7,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 7200,
+        "n_clicks": 504,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.064337,
+        "ctr_ci_high": 0.076128,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.07,
+          "CR_event_1": 0.049603,
+          "CPA_event_1": 30.24,
+          "CPC": 1.5,
+          "CPM": 105.0
+        },
+        "z_scores": {
+          "CTR": 0.6926,
+          "CR_event_1": 0.5138,
+          "CPA_event_1": 0.6219,
+          "CPC": 0.6855,
+          "CPM": 0.2956
+        },
+        "std_metrics": {
+          "CTR": 0.01744,
+          "CR_event_1": 0.023579,
+          "CPA_event_1": 33.466815,
+          "CPC": 0.342233,
+          "CPM": 12.855334
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CTR, CPC; слабые: CPM",
+          "strengths": [
+            "CTR",
+            "CPC",
+            "CPA_event_1"
+          ],
+          "weaknesses": [
+            "CPM"
+          ]
+        }
+      }
+    ]
+  },
+  "budget_cut": {
+    "csv": "02_budget_cut.csv",
+    "weight_mode": "goal_conversions",
+    "stats": {
+      "n_total": 5,
+      "n_scored": 5,
+      "n_excluded": 0,
+      "n_top": 2,
+      "n_low": 0,
+      "mode": "basic",
+      "score_mean": 0.5028,
+      "score_std": 0.2008,
+      "weights_used": {
+        "CTR": 0.1,
+        "CR_event_1": 0.2,
+        "CPA_event_1": 0.2,
+        "CPC": 0.05,
+        "CPM": 0.05
+      },
+      "weight_mode": "goal_conversions",
+      "reliability_threshold": 300,
+      "event_labels": {
+        "event_1": "Конверсии"
+      },
+      "verdict_distribution": {
+        "Оптимизировать": 1,
+        "ОК": 2,
+        "Исключить": 1,
+        "Масштабировать": 1
+      },
+      "excluded_texts": [],
+      "insights": [
+        {
+          "type": "top_performers",
+          "icon": "trophy",
+          "title": "Лидеры рейтинга",
+          "description": "1. ad_4 (0.74) «Бестселлер месяца» — сильные: Конверсия: Конверсии, CTR, CPC 2. ad_2 (0.63) «Новинки сезона» — сильные: CTR, CPC, CPM 3. ad_1 (0.52) «Весенний sale» — сильные: Конверсия: Конверсии",
+          "severity": "success"
+        },
+        {
+          "type": "budget_waste",
+          "icon": "alert_triangle",
+          "title": "Бюджет на слабые тексты",
+          "description": "1 текст(ов) с вердиктом «Исключить» получили суммарно 14,000 показов. Наибольший расход: ad_3. Рекомендуется перераспределить бюджет на лидеров.",
+          "severity": "warning"
+        }
+      ]
+    },
+    "results": [
+      {
+        "text_id": "ad_1",
+        "headline": "Весенний sale",
+        "composite_score": 0.5233,
+        "decision_score": 0.5233,
+        "ranking_score": 0.5,
+        "benchmark_score": 0.5,
+        "relative_score": 0.6,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "microsegment",
+        "metric_pattern": "low_ctr_high_cr",
+        "pattern_confidence": 0.75,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "≈Средний",
+        "mode": "basic",
+        "n_impressions": 18000,
+        "n_clicks": 720,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.037236,
+        "ctr_ci_high": 0.042963,
+        "prob_ctr_better": 0.5093,
+        "ctr_pvalue": 0.000541,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.05,
+          "CPA_event_1": 60.0,
+          "CPC": 3.0,
+          "CPM": 120.0
+        },
+        "z_scores": {
+          "CTR": 0.3251,
+          "CR_event_1": 0.6567,
+          "CPA_event_1": 0.588,
+          "CPC": 0.3251,
+          "CPM": 0.3251
+        },
+        "std_metrics": {
+          "CTR": 0.010954,
+          "CR_event_1": 0.017582,
+          "CPA_event_1": 72.414916,
+          "CPC": 0.821584,
+          "CPM": 16.431677
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: Конверсия: Конверсии; слабые: CTR, CPC",
+          "strengths": [
+            "CR_event_1"
+          ],
+          "weaknesses": [
+            "CTR",
+            "CPC",
+            "CPM"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_2",
+        "headline": "Новинки сезона",
+        "composite_score": 0.6345,
+        "decision_score": 0.6345,
+        "ranking_score": 0.75,
+        "benchmark_score": 0.635,
+        "relative_score": 0.8,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 6500,
+        "n_clicks": 390,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.054487,
+        "ctr_ci_high": 0.06604,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.06,
+          "CR_event_1": 0.038462,
+          "CPA_event_1": 39.0,
+          "CPC": 1.5,
+          "CPM": 90.0
+        },
+        "z_scores": {
+          "CTR": 0.7494,
+          "CR_event_1": 0.4981,
+          "CPA_event_1": 0.656,
+          "CPC": 0.7494,
+          "CPM": 0.7494
+        },
+        "std_metrics": {
+          "CTR": 0.010954,
+          "CR_event_1": 0.017582,
+          "CPA_event_1": 72.414916,
+          "CPC": 0.821584,
+          "CPM": 16.431677
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CTR",
+            "CPC",
+            "CPM",
+            "CPA_event_1"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_3",
+        "headline": "Выбор покупателей",
+        "composite_score": 0.2288,
+        "decision_score": 0.2288,
+        "ranking_score": 0.0,
+        "benchmark_score": 0.1875,
+        "relative_score": 0.2,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 1164.37,
+        "missed_conversions": 20.0,
+        "real_savings": 1199.99,
+        "real_savings_adjusted": 839.99,
+        "target_source": "batch_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Сильный -",
+        "mode": "basic",
+        "n_impressions": 14000,
+        "n_clicks": 560,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.03688,
+        "ctr_ci_high": 0.043376,
+        "prob_ctr_better": 0.5106,
+        "ctr_pvalue": 0.002298,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.014286,
+          "CPA_event_1": 205.542857,
+          "CPC": 3.0,
+          "CPM": 120.0
+        },
+        "z_scores": {
+          "CTR": 0.3251,
+          "CR_event_1": 0.2006,
+          "CPA_event_1": 0.1605,
+          "CPC": 0.3251,
+          "CPM": 0.3251
+        },
+        "std_metrics": {
+          "CTR": 0.010954,
+          "CR_event_1": 0.017582,
+          "CPA_event_1": 72.414916,
+          "CPC": 0.821584,
+          "CPM": 16.431677
+        },
+        "verdict": {
+          "verdict": "Исключить",
+          "reason": "Низкий балл (0.23), слабые показатели",
+          "reason_type": "цена",
+          "reason_detail": "слабые: Стоимость: Конверсии, Конверсия: Конверсии, CTR",
+          "strengths": [],
+          "weaknesses": [
+            "CPA_event_1",
+            "CR_event_1",
+            "CTR",
+            "CPC",
+            "CPM"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_4",
+        "headline": "Бестселлер месяца",
+        "composite_score": 0.7384,
+        "decision_score": 0.7384,
+        "ranking_score": 1.0,
+        "benchmark_score": 0.7448,
+        "relative_score": 1.0,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Сильный +",
+        "mode": "basic",
+        "n_impressions": 9200,
+        "n_clicks": 552,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.055331,
+        "ctr_ci_high": 0.065041,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.06,
+          "CR_event_1": 0.059783,
+          "CPA_event_1": 25.647273,
+          "CPC": 1.5,
+          "CPM": 90.0
+        },
+        "z_scores": {
+          "CTR": 0.7494,
+          "CR_event_1": 0.7694,
+          "CPA_event_1": 0.6964,
+          "CPC": 0.7494,
+          "CPM": 0.7494
+        },
+        "std_metrics": {
+          "CTR": 0.010954,
+          "CR_event_1": 0.017582,
+          "CPA_event_1": 72.414916,
+          "CPC": 0.821584,
+          "CPM": 16.431677
+        },
+        "verdict": {
+          "verdict": "Масштабировать",
+          "reason": "Высокий балл (0.74), сильные показатели",
+          "reason_type": "конверсия",
+          "reason_detail": "сильные: Конверсия: Конверсии, CTR, CPC",
+          "strengths": [
+            "CR_event_1",
+            "CTR",
+            "CPC",
+            "CPM",
+            "CPA_event_1"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_5",
+        "headline": "Премиум качество",
+        "composite_score": 0.389,
+        "decision_score": 0.389,
+        "ranking_score": 0.25,
+        "benchmark_score": 0.3388,
+        "relative_score": 0.4,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 540.0,
+        "missed_conversions": 9.0,
+        "real_savings": 539.99,
+        "real_savings_adjusted": 378.0,
+        "target_source": "batch_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 11500,
+        "n_clicks": 460,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.036572,
+        "ctr_ci_high": 0.04374,
+        "prob_ctr_better": 0.5116,
+        "ctr_pvalue": 0.00581,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.030435,
+          "CPA_event_1": 98.571429,
+          "CPC": 3.0,
+          "CPM": 120.0
+        },
+        "z_scores": {
+          "CTR": 0.3251,
+          "CR_event_1": 0.386,
+          "CPA_event_1": 0.4559,
+          "CPC": 0.3251,
+          "CPM": 0.3251
+        },
+        "std_metrics": {
+          "CTR": 0.010954,
+          "CR_event_1": 0.017582,
+          "CPA_event_1": 72.414916,
+          "CPC": 0.821584,
+          "CPM": 16.431677
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [],
+          "weaknesses": [
+            "CTR",
+            "CPC",
+            "CPM"
+          ]
+        }
+      }
+    ]
+  },
+  "creative_fatigue": {
+    "csv": "03_creative_fatigue.csv",
+    "weight_mode": "goal_conversions",
+    "stats": {
+      "n_total": 5,
+      "n_scored": 5,
+      "n_excluded": 0,
+      "n_top": 2,
+      "n_low": 0,
+      "mode": "basic",
+      "score_mean": 0.5019,
+      "score_std": 0.1922,
+      "weights_used": {
+        "CTR": 0.1,
+        "CR_event_1": 0.2,
+        "CPA_event_1": 0.2,
+        "CPC": 0.05,
+        "CPM": 0.05
+      },
+      "weight_mode": "goal_conversions",
+      "reliability_threshold": 300,
+      "event_labels": {
+        "event_1": "Конверсии"
+      },
+      "verdict_distribution": {
+        "ОК": 2,
+        "Исключить": 1,
+        "Оптимизировать": 2
+      },
+      "excluded_texts": [],
+      "insights": [
+        {
+          "type": "top_performers",
+          "icon": "trophy",
+          "title": "Лидеры рейтинга",
+          "description": "1. ad_3 (0.68) «Лёгкий выбор» — сильные: CTR, CPC, Стоимость: Конверсии 2. ad_1 (0.64) «Проверенное качество» — сильные: CPM, Конверсия: Конверсии, Стоимость: Конверсии 3. ad_4 (0.54) «Для ценителей» — сильные: Конверсия: Конверсии",
+          "severity": "success"
+        },
+        {
+          "type": "budget_waste",
+          "icon": "alert_triangle",
+          "title": "Бюджет на слабые тексты",
+          "description": "1 текст(ов) с вердиктом «Исключить» получили суммарно 12,000 показов. Наибольший расход: ad_2. Рекомендуется перераспределить бюджет на лидеров.",
+          "severity": "warning"
+        }
+      ]
+    },
+    "results": [
+      {
+        "text_id": "ad_1",
+        "headline": "Проверенное качество",
+        "composite_score": 0.6449,
+        "decision_score": 0.6449,
+        "ranking_score": 0.75,
+        "benchmark_score": 0.6373,
+        "relative_score": 0.8,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "fatigue_score": 0.0,
+        "fatigue_penalty": 0.0,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 10000,
+        "n_clicks": 500,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.045901,
+        "ctr_ci_high": 0.054449,
+        "prob_ctr_better": 0.511,
+        "ctr_pvalue": 0.890897,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.05,
+          "CPA_event_1": 30.0,
+          "CPC": 1.5,
+          "CPM": 75.242667
+        },
+        "z_scores": {
+          "CTR": 0.4717,
+          "CR_event_1": 0.6707,
+          "CPA_event_1": 0.6665,
+          "CPC": 0.6362,
+          "CPM": 0.81
+        },
+        "std_metrics": {
+          "CTR": 0.008933,
+          "CR_event_1": 0.005557,
+          "CPA_event_1": 9.832361,
+          "CPC": 0.291643,
+          "CPM": 5.365436
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CPM",
+            "CR_event_1",
+            "CPA_event_1",
+            "CPC"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_2",
+        "headline": "Умное решение",
+        "composite_score": 0.1998,
+        "decision_score": 0.1998,
+        "ranking_score": 0.0,
+        "benchmark_score": 0.149,
+        "relative_score": 0.2,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 327.92,
+        "missed_conversions": 9.34,
+        "real_savings": 334.21,
+        "real_savings_adjusted": 233.95,
+        "target_source": "batch_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "fatigue_score": 0.5977,
+        "fatigue_penalty": 0.0897,
+        "declining_recently": true,
+        "category": "AVERAGE",
+        "alt_category": "Сильный -",
+        "mode": "basic",
+        "n_impressions": 12000,
+        "n_clicks": 480,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.036641,
+        "ctr_ci_high": 0.043657,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.039583,
+          "CPA_event_1": 53.023799,
+          "CPC": 2.111953,
+          "CPM": 85.0
+        },
+        "z_scores": {
+          "CTR": 0.2257,
+          "CR_event_1": 0.2381,
+          "CPA_event_1": 0.1612,
+          "CPC": 0.1766,
+          "CPM": 0.4089
+        },
+        "std_metrics": {
+          "CTR": 0.008933,
+          "CR_event_1": 0.005557,
+          "CPA_event_1": 9.832361,
+          "CPC": 0.291643,
+          "CPM": 5.365436
+        },
+        "verdict": {
+          "verdict": "Исключить",
+          "reason": "Низкий балл (0.22), слабые показатели",
+          "reason_type": "цена",
+          "reason_detail": "слабые: Стоимость: Конверсии, CPC, CTR",
+          "strengths": [],
+          "weaknesses": [
+            "CPA_event_1",
+            "CPC",
+            "CTR",
+            "CR_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_3",
+        "headline": "Лёгкий выбор",
+        "composite_score": 0.6787,
+        "decision_score": 0.6787,
+        "ranking_score": 1.0,
+        "benchmark_score": 0.6785,
+        "relative_score": 1.0,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "fatigue_score": 0.0,
+        "fatigue_penalty": 0.0,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 8000,
+        "n_clicks": 480,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.055007,
+        "ctr_ci_high": 0.065421,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.000125,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.06,
+          "CR_event_1": 0.05,
+          "CPA_event_1": 28.08,
+          "CPC": 1.404,
+          "CPM": 84.0
+        },
+        "z_scores": {
+          "CTR": 0.7322,
+          "CR_event_1": 0.6707,
+          "CPA_event_1": 0.7084,
+          "CPC": 0.7085,
+          "CPM": 0.4546
+        },
+        "std_metrics": {
+          "CTR": 0.008933,
+          "CR_event_1": 0.005557,
+          "CPA_event_1": 9.832361,
+          "CPC": 0.291643,
+          "CPM": 5.365436
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CTR",
+            "CPC",
+            "CPA_event_1",
+            "CR_event_1"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_4",
+        "headline": "Для ценителей",
+        "composite_score": 0.5409,
+        "decision_score": 0.5409,
+        "ranking_score": 0.5,
+        "benchmark_score": 0.5,
+        "relative_score": 0.6,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "microsegment",
+        "metric_pattern": "low_ctr_high_cr",
+        "pattern_confidence": 0.75,
+        "fatigue_score": 0.0,
+        "fatigue_penalty": 0.0,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "≈Средний",
+        "mode": "basic",
+        "n_impressions": 7500,
+        "n_clicks": 338,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.040604,
+        "ctr_ci_high": 0.050002,
+        "prob_ctr_better": 0.025,
+        "ctr_pvalue": 0.034696,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.045067,
+          "CR_event_1": 0.050296,
+          "CPA_event_1": 35.764706,
+          "CPC": 1.798817,
+          "CPM": 81.066667
+        },
+        "z_scores": {
+          "CTR": 0.3395,
+          "CR_event_1": 0.6824,
+          "CPA_event_1": 0.5265,
+          "CPC": 0.3856,
+          "CPM": 0.5901
+        },
+        "std_metrics": {
+          "CTR": 0.008933,
+          "CR_event_1": 0.005557,
+          "CPA_event_1": 9.832361,
+          "CPC": 0.291643,
+          "CPM": 5.365436
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: Конверсия: Конверсии; слабые: CTR",
+          "strengths": [
+            "CR_event_1"
+          ],
+          "weaknesses": [
+            "CTR"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_5",
+        "headline": "Хит продаж",
+        "composite_score": 0.445,
+        "decision_score": 0.445,
+        "ranking_score": 0.25,
+        "benchmark_score": 0.3729,
+        "relative_score": 0.4,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 32.41,
+        "missed_conversions": 0.91,
+        "real_savings": 32.41,
+        "real_savings_adjusted": 22.69,
+        "target_source": "batch_median",
+        "problem_type": "traffic_quality",
+        "metric_pattern": "high_ctr_low_cr",
+        "pattern_confidence": 0.85,
+        "fatigue_score": 0.0,
+        "fatigue_penalty": 0.0,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 9500,
+        "n_clicks": 570,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.055403,
+        "ctr_ci_high": 0.064958,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 3e-05,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.06,
+          "CR_event_1": 0.040351,
+          "CPA_event_1": 37.173913,
+          "CPC": 1.5,
+          "CPM": 89.8
+        },
+        "z_scores": {
+          "CTR": 0.7322,
+          "CR_event_1": 0.2641,
+          "CPA_event_1": 0.4907,
+          "CPC": 0.6362,
+          "CPM": 0.2204
+        },
+        "std_metrics": {
+          "CTR": 0.008933,
+          "CR_event_1": 0.005557,
+          "CPA_event_1": 9.832361,
+          "CPC": 0.291643,
+          "CPM": 5.365436
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Хорошая кликабельность, но слабая конверсия",
+          "reason_type": "трафик",
+          "reason_detail": "CTR (0.73) хороший, CR (0.26) слабый",
+          "strengths": [
+            "CTR",
+            "CPC"
+          ],
+          "weaknesses": [
+            "CPM",
+            "CR_event_1"
+          ]
+        }
+      }
+    ]
+  },
+  "anomaly_detection": {
+    "csv": "04_anomaly_detection.csv",
+    "weight_mode": "goal_conversions",
+    "stats": {
+      "n_total": 6,
+      "n_scored": 5,
+      "n_excluded": 1,
+      "n_top": 2,
+      "n_low": 0,
+      "mode": "basic",
+      "score_mean": 0.5028,
+      "score_std": 0.1845,
+      "weights_used": {
+        "CTR": 0.1,
+        "CR_event_1": 0.2,
+        "CPA_event_1": 0.2,
+        "CPC": 0.05,
+        "CPM": 0.05
+      },
+      "weight_mode": "goal_conversions",
+      "reliability_threshold": 300,
+      "event_labels": {
+        "event_1": "Конверсии"
+      },
+      "verdict_distribution": {
+        "ОК": 2,
+        "Оптимизировать": 1,
+        "Масштабировать": 1,
+        "Исключить": 1
+      },
+      "excluded_texts": [
+        {
+          "text_id": "ad_2",
+          "headline": "Супер-оффер",
+          "reason": "Показов: 48 < 100; Кликов: 7 < 10; Конверсий: 3 < 5",
+          "n_impressions": 48,
+          "n_clicks": 7,
+          "n_conversions": 3
+        }
+      ],
+      "insights": [
+        {
+          "type": "top_performers",
+          "icon": "trophy",
+          "title": "Лидеры рейтинга",
+          "description": "1. ad_4 (0.72) «Надёжный выбор» — сильные: Конверсия: Конверсии, Стоимость: Конверсии, CTR 2. ad_6 (0.60) «Топ рейтинг» — сильные: CTR, CPC, Стоимость: Конверсии 3. ad_1 (0.56) «Стабильный продукт» — сильные: CPM",
+          "severity": "success"
+        },
+        {
+          "type": "budget_waste",
+          "icon": "alert_triangle",
+          "title": "Бюджет на слабые тексты",
+          "description": "1 текст(ов) с вердиктом «Исключить» получили суммарно 11,200 показов. Наибольший расход: ad_5. Рекомендуется перераспределить бюджет на лидеров.",
+          "severity": "warning"
+        }
+      ]
+    },
+    "results": [
+      {
+        "text_id": "ad_1",
+        "headline": "Стабильный продукт",
+        "composite_score": 0.5623,
+        "decision_score": 0.5623,
+        "ranking_score": 0.5,
+        "benchmark_score": 0.5,
+        "relative_score": 0.6,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 15000,
+        "n_clicks": 750,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.046628,
+        "ctr_ci_high": 0.053606,
+        "prob_ctr_better": 0.509,
+        "ctr_pvalue": 0.553025,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.050667,
+          "CPA_event_1": 29.605263,
+          "CPC": 1.5,
+          "CPM": 75.2
+        },
+        "z_scores": {
+          "CTR": 0.4405,
+          "CR_event_1": 0.5179,
+          "CPA_event_1": 0.5924,
+          "CPC": 0.5962,
+          "CPM": 0.8292
+        },
+        "std_metrics": {
+          "CTR": 0.008367,
+          "CR_event_1": 0.007238,
+          "CPA_event_1": 8.405637,
+          "CPC": 0.250329,
+          "CPM": 4.068699
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CPM"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_3",
+        "headline": "Проверено временем",
+        "composite_score": 0.3603,
+        "decision_score": 0.3603,
+        "ranking_score": 0.25,
+        "benchmark_score": 0.2507,
+        "relative_score": 0.4,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 249.47,
+        "missed_conversions": 8.23,
+        "real_savings": 243.71,
+        "real_savings_adjusted": 170.6,
+        "target_source": "batch_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 12000,
+        "n_clicks": 480,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.036641,
+        "ctr_ci_high": 0.043657,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.05,
+          "CPA_event_1": 40.0,
+          "CPC": 1.988,
+          "CPM": 80.0
+        },
+        "z_scores": {
+          "CTR": 0.1924,
+          "CR_event_1": 0.4949,
+          "CPA_event_1": 0.2968,
+          "CPC": 0.1737,
+          "CPM": 0.5987
+        },
+        "std_metrics": {
+          "CTR": 0.008367,
+          "CR_event_1": 0.007238,
+          "CPA_event_1": 8.405637,
+          "CPC": 0.250329,
+          "CPM": 4.068699
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Средний балл, но стоимость конверсии высока",
+          "reason_type": "цена",
+          "reason_detail": "CPA z-score: 0.30",
+          "strengths": [],
+          "weaknesses": [
+            "CPC",
+            "CTR",
+            "CPA_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_4",
+        "headline": "Надёжный выбор",
+        "composite_score": 0.7194,
+        "decision_score": 0.7194,
+        "ranking_score": 1.0,
+        "benchmark_score": 0.7009,
+        "relative_score": 1.0,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Сильный +",
+        "mode": "basic",
+        "n_impressions": 9500,
+        "n_clicks": 570,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.055403,
+        "ctr_ci_high": 0.064958,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.00012,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.06,
+          "CR_event_1": 0.059649,
+          "CPA_event_1": 23.62658,
+          "CPC": 1.4,
+          "CPM": 84.0
+        },
+        "z_scores": {
+          "CTR": 0.7224,
+          "CR_event_1": 0.788,
+          "CPA_event_1": 0.7475,
+          "CPC": 0.6876,
+          "CPM": 0.3582
+        },
+        "std_metrics": {
+          "CTR": 0.008367,
+          "CR_event_1": 0.007238,
+          "CPA_event_1": 8.405637,
+          "CPC": 0.250329,
+          "CPM": 4.068699
+        },
+        "verdict": {
+          "verdict": "Масштабировать",
+          "reason": "Высокий балл (0.72), сильные показатели",
+          "reason_type": "конверсия",
+          "reason_detail": "сильные: Конверсия: Конверсии, Стоимость: Конверсии, CTR",
+          "strengths": [
+            "CR_event_1",
+            "CPA_event_1",
+            "CTR",
+            "CPC"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_5",
+        "headline": "Рекомендуем!",
+        "composite_score": 0.268,
+        "decision_score": 0.268,
+        "ranking_score": 0.0,
+        "benchmark_score": 0.1686,
+        "relative_score": 0.2,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 297.81,
+        "missed_conversions": 10.16,
+        "real_savings": 300.68,
+        "real_savings_adjusted": 210.48,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Сильный -",
+        "mode": "basic",
+        "n_impressions": 11200,
+        "n_clicks": 560,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.046118,
+        "ctr_ci_high": 0.054195,
+        "prob_ctr_better": 0.5104,
+        "ctr_pvalue": 0.606663,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.039286,
+          "CPA_event_1": 43.141818,
+          "CPC": 1.7,
+          "CPM": 84.96
+        },
+        "z_scores": {
+          "CTR": 0.4405,
+          "CR_event_1": 0.1823,
+          "CPA_event_1": 0.2251,
+          "CPC": 0.3991,
+          "CPM": 0.306
+        },
+        "std_metrics": {
+          "CTR": 0.008367,
+          "CR_event_1": 0.007238,
+          "CPA_event_1": 8.405637,
+          "CPC": 0.250329,
+          "CPM": 4.068699
+        },
+        "verdict": {
+          "verdict": "Исключить",
+          "reason": "Низкий балл (0.27), слабые показатели",
+          "reason_type": "цена",
+          "reason_detail": "слабые: Конверсия: Конверсии, Стоимость: Конверсии, CPM",
+          "strengths": [],
+          "weaknesses": [
+            "CR_event_1",
+            "CPA_event_1",
+            "CPM"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_6",
+        "headline": "Топ рейтинг",
+        "composite_score": 0.604,
+        "decision_score": 0.604,
+        "ranking_score": 0.75,
+        "benchmark_score": 0.5563,
+        "relative_score": 0.8,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 8800,
+        "n_clicks": 528,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.055231,
+        "ctr_ci_high": 0.065159,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.000212,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.06,
+          "CR_event_1": 0.051136,
+          "CPA_event_1": 27.37037,
+          "CPC": 1.399636,
+          "CPM": 83.977273
+        },
+        "z_scores": {
+          "CTR": 0.7224,
+          "CR_event_1": 0.5341,
+          "CPA_event_1": 0.6547,
+          "CPC": 0.6879,
+          "CPM": 0.3595
+        },
+        "std_metrics": {
+          "CTR": 0.008367,
+          "CR_event_1": 0.007238,
+          "CPA_event_1": 8.405637,
+          "CPC": 0.250329,
+          "CPM": 4.068699
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CTR",
+            "CPC",
+            "CPA_event_1"
+          ],
+          "weaknesses": []
+        }
+      }
+    ]
+  },
+  "campaign_verdict": {
+    "csv": "05_campaign_verdict.csv",
+    "weight_mode": "goal_conversions",
+    "stats": {
+      "n_total": 15,
+      "n_scored": 15,
+      "n_excluded": 0,
+      "n_top": 4,
+      "n_low": 1,
+      "mode": "basic",
+      "score_mean": 0.4965,
+      "score_std": 0.1637,
+      "weights_used": {
+        "CTR": 0.1,
+        "CR_event_1": 0.2,
+        "CPA_event_1": 0.2,
+        "CPC": 0.05,
+        "CPM": 0.05
+      },
+      "weight_mode": "goal_conversions",
+      "reliability_threshold": 300,
+      "event_labels": {
+        "event_1": "Конверсии"
+      },
+      "verdict_distribution": {
+        "Оптимизировать": 8,
+        "Масштабировать": 5,
+        "ОК": 1,
+        "Исключить": 1
+      },
+      "segments": {
+        "campaign": [
+          "Brand Awareness",
+          "Prospecting",
+          "Retargeting"
+        ]
+      },
+      "excluded_texts": [],
+      "insights": [
+        {
+          "type": "top_performers",
+          "icon": "trophy",
+          "title": "Лидеры рейтинга",
+          "description": "1. cb_1 (0.71) «Вернитесь за скидкой» — сильные: Конверсия: Конверсии, CTR, Стоимость: Конверсии 2. cb_3 (0.70) «Товар заканчивается» — сильные: Конверсия: Конверсии, CTR, Стоимость: Конверсии 3. cb_4 (0.70) «Персональная скидка 15%» — сильные: Конверсия: Конверсии, CTR, Стоимость: Конверсии",
+          "severity": "success"
+        },
+        {
+          "type": "budget_waste",
+          "icon": "alert_triangle",
+          "title": "Бюджет на слабые тексты",
+          "description": "1 текст(ов) с вердиктом «Исключить» получили суммарно 20,000 показов. Наибольший расход: cc_4. Рекомендуется перераспределить бюджет на лидеров.",
+          "severity": "warning"
+        },
+        {
+          "type": "segment_pattern",
+          "icon": "chart",
+          "title": "Различие по кампаниям",
+          "description": "«Retargeting» (средний балл 0.70, n=5) значительно лучше «Prospecting» (0.33, n=5). Разница: 0.37.",
+          "severity": "info"
+        }
+      ]
+    },
+    "results": [
+      {
+        "text_id": "ca_1",
+        "headline": "Узнайте о нас",
+        "composite_score": 0.4905,
+        "decision_score": 0.4905,
+        "ranking_score": 0.6429,
+        "benchmark_score": 0.568,
+        "relative_score": 0.6667,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 614.59,
+        "missed_conversions": 29.05,
+        "real_savings": 614.57,
+        "real_savings_adjusted": 430.2,
+        "target_source": "batch_top_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "≈Средний",
+        "mode": "basic",
+        "n_impressions": 18000,
+        "n_clicks": 720,
+        "campaign": "Brand Awareness",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.037236,
+        "ctr_ci_high": 0.042963,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.030556,
+          "CPA_event_1": 49.090909,
+          "CPC": 1.5,
+          "CPM": 60.0
+        },
+        "z_scores": {
+          "CTR": 0.2625,
+          "CR_event_1": 0.3951,
+          "CPA_event_1": 0.5573,
+          "CPC": 0.7845,
+          "CPM": 0.7667
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPC, CPM; слабые: CTR",
+          "strengths": [
+            "CPC",
+            "CPM"
+          ],
+          "weaknesses": [
+            "CTR"
+          ]
+        }
+      },
+      {
+        "text_id": "ca_2",
+        "headline": "Мы рядом с вами",
+        "composite_score": 0.4865,
+        "decision_score": 0.4865,
+        "ranking_score": 0.5714,
+        "benchmark_score": 0.562,
+        "relative_score": 0.6,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 519.2,
+        "missed_conversions": 24.54,
+        "real_savings": 519.2,
+        "real_savings_adjusted": 363.44,
+        "target_source": "batch_top_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "≈Средний",
+        "mode": "basic",
+        "n_impressions": 15000,
+        "n_clicks": 600,
+        "campaign": "Brand Awareness",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.036982,
+        "ctr_ci_high": 0.043257,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.03,
+          "CPA_event_1": 50.0,
+          "CPC": 1.5,
+          "CPM": 60.0
+        },
+        "z_scores": {
+          "CTR": 0.2625,
+          "CR_event_1": 0.3904,
+          "CPA_event_1": 0.55,
+          "CPC": 0.7845,
+          "CPM": 0.7667
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPC, CPM; слабые: CTR",
+          "strengths": [
+            "CPC",
+            "CPM"
+          ],
+          "weaknesses": [
+            "CTR"
+          ]
+        }
+      },
+      {
+        "text_id": "ca_3",
+        "headline": "Доверие миллионов",
+        "composite_score": 0.4457,
+        "decision_score": 0.4457,
+        "ranking_score": 0.4643,
+        "benchmark_score": 0.5,
+        "relative_score": 0.5,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 776.89,
+        "missed_conversions": 36.72,
+        "real_savings": 776.89,
+        "real_savings_adjusted": 543.82,
+        "target_source": "batch_top_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 20000,
+        "n_clicks": 800,
+        "campaign": "Brand Awareness",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.037373,
+        "ctr_ci_high": 0.042806,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.025,
+          "CPA_event_1": 60.0,
+          "CPC": 1.5,
+          "CPM": 60.0
+        },
+        "z_scores": {
+          "CTR": 0.2625,
+          "CR_event_1": 0.3485,
+          "CPA_event_1": 0.4696,
+          "CPC": 0.7845,
+          "CPM": 0.7667
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPC, CPM; слабые: CTR, Конверсия: Конверсии",
+          "strengths": [
+            "CPC",
+            "CPM"
+          ],
+          "weaknesses": [
+            "CTR",
+            "CR_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "ca_4",
+        "headline": "Ваш надёжный партнёр",
+        "composite_score": 0.4032,
+        "decision_score": 0.4032,
+        "ranking_score": 0.2857,
+        "benchmark_score": 0.4354,
+        "relative_score": 0.3333,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 508.44,
+        "missed_conversions": 24.03,
+        "real_savings": 508.45,
+        "real_savings_adjusted": 355.91,
+        "target_source": "batch_top_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 12000,
+        "n_clicks": 480,
+        "campaign": "Brand Awareness",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.036641,
+        "ctr_ci_high": 0.043657,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 1e-06,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.020833,
+          "CPA_event_1": 72.0,
+          "CPC": 1.5,
+          "CPM": 60.0
+        },
+        "z_scores": {
+          "CTR": 0.2625,
+          "CR_event_1": 0.3152,
+          "CPA_event_1": 0.3755,
+          "CPC": 0.7845,
+          "CPM": 0.7667
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPC, CPM; слабые: CTR, Конверсия: Конверсии",
+          "strengths": [
+            "CPC",
+            "CPM"
+          ],
+          "weaknesses": [
+            "CTR",
+            "CR_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "ca_5",
+        "headline": "Открой новое",
+        "composite_score": 0.4457,
+        "decision_score": 0.4457,
+        "ranking_score": 0.4643,
+        "benchmark_score": 0.5,
+        "relative_score": 0.5,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 621.51,
+        "missed_conversions": 29.38,
+        "real_savings": 621.51,
+        "real_savings_adjusted": 435.06,
+        "target_source": "batch_top_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 16000,
+        "n_clicks": 640,
+        "campaign": "Brand Awareness",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.037074,
+        "ctr_ci_high": 0.04315,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.025,
+          "CPA_event_1": 60.0,
+          "CPC": 1.5,
+          "CPM": 60.0
+        },
+        "z_scores": {
+          "CTR": 0.2625,
+          "CR_event_1": 0.3485,
+          "CPA_event_1": 0.4696,
+          "CPC": 0.7845,
+          "CPM": 0.7667
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPC, CPM; слабые: CTR, Конверсия: Конверсии",
+          "strengths": [
+            "CPC",
+            "CPM"
+          ],
+          "weaknesses": [
+            "CTR",
+            "CR_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "cb_1",
+        "headline": "Вернитесь за скидкой",
+        "composite_score": 0.7058,
+        "decision_score": 0.7058,
+        "ranking_score": 1.0,
+        "benchmark_score": 0.8305,
+        "relative_score": 1.0,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_top_median",
+        "problem_type": "auction",
+        "metric_pattern": "high_cost_ok_performance",
+        "pattern_confidence": 0.7,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Сильный +",
+        "mode": "basic",
+        "n_impressions": 6000,
+        "n_clicks": 420,
+        "campaign": "Retargeting",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.06382,
+        "ctr_ci_high": 0.076738,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.07,
+          "CR_event_1": 0.080952,
+          "CPA_event_1": 21.018065,
+          "CPC": 1.7,
+          "CPM": 119.0
+        },
+        "z_scores": {
+          "CTR": 0.7843,
+          "CR_event_1": 0.8004,
+          "CPA_event_1": 0.7569,
+          "CPC": 0.4362,
+          "CPM": 0.2359
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "Масштабировать",
+          "reason": "Высокий балл (0.71), сильные показатели",
+          "reason_type": "конверсия",
+          "reason_detail": "сильные: Конверсия: Конверсии, CTR, Стоимость: Конверсии",
+          "strengths": [
+            "CR_event_1",
+            "CTR",
+            "CPA_event_1"
+          ],
+          "weaknesses": [
+            "CPM"
+          ]
+        }
+      },
+      {
+        "text_id": "cb_2",
+        "headline": "Ваша корзина ждёт",
+        "composite_score": 0.7025,
+        "decision_score": 0.7025,
+        "ranking_score": 0.7857,
+        "benchmark_score": 0.8277,
+        "relative_score": 0.8,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 7.93,
+        "missed_conversions": 0.37,
+        "real_savings": 7.93,
+        "real_savings_adjusted": 5.55,
+        "target_source": "batch_top_median",
+        "problem_type": "auction",
+        "metric_pattern": "high_cost_ok_performance",
+        "pattern_confidence": 0.7,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Сильный +",
+        "mode": "basic",
+        "n_impressions": 7000,
+        "n_clicks": 490,
+        "campaign": "Retargeting",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.064259,
+        "ctr_ci_high": 0.076219,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.07,
+          "CR_event_1": 0.079592,
+          "CPA_event_1": 21.358974,
+          "CPC": 1.7,
+          "CPM": 119.0
+        },
+        "z_scores": {
+          "CTR": 0.7843,
+          "CR_event_1": 0.7924,
+          "CPA_event_1": 0.7549,
+          "CPC": 0.4362,
+          "CPM": 0.2359
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "Масштабировать",
+          "reason": "Высокий балл (0.70), сильные показатели",
+          "reason_type": "конверсия",
+          "reason_detail": "сильные: Конверсия: Конверсии, CTR, Стоимость: Конверсии",
+          "strengths": [
+            "CR_event_1",
+            "CTR",
+            "CPA_event_1"
+          ],
+          "weaknesses": [
+            "CPM"
+          ]
+        }
+      },
+      {
+        "text_id": "cb_3",
+        "headline": "Товар заканчивается",
+        "composite_score": 0.7045,
+        "decision_score": 0.7045,
+        "ranking_score": 0.9286,
+        "benchmark_score": 0.8294,
+        "relative_score": 0.9333,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_top_median",
+        "problem_type": "auction",
+        "metric_pattern": "high_cost_ok_performance",
+        "pattern_confidence": 0.7,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Сильный +",
+        "mode": "basic",
+        "n_impressions": 5500,
+        "n_clicks": 385,
+        "campaign": "Retargeting",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.063558,
+        "ctr_ci_high": 0.077051,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.07,
+          "CR_event_1": 0.080519,
+          "CPA_event_1": 21.129032,
+          "CPC": 1.701299,
+          "CPM": 119.090909
+        },
+        "z_scores": {
+          "CTR": 0.7843,
+          "CR_event_1": 0.7979,
+          "CPA_event_1": 0.7562,
+          "CPC": 0.4337,
+          "CPM": 0.2352
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "Масштабировать",
+          "reason": "Высокий балл (0.70), сильные показатели",
+          "reason_type": "конверсия",
+          "reason_detail": "сильные: Конверсия: Конверсии, CTR, Стоимость: Конверсии",
+          "strengths": [
+            "CR_event_1",
+            "CTR",
+            "CPA_event_1"
+          ],
+          "weaknesses": [
+            "CPM"
+          ]
+        }
+      },
+      {
+        "text_id": "cb_4",
+        "headline": "Персональная скидка 15%",
+        "composite_score": 0.7044,
+        "decision_score": 0.7044,
+        "ranking_score": 0.8571,
+        "benchmark_score": 0.8293,
+        "relative_score": 0.8667,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "missed_conversions": 0.0,
+        "real_savings": 0.0,
+        "real_savings_adjusted": 0.0,
+        "target_source": "batch_top_median",
+        "problem_type": "auction",
+        "metric_pattern": "high_cost_ok_performance",
+        "pattern_confidence": 0.7,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Сильный +",
+        "mode": "basic",
+        "n_impressions": 8000,
+        "n_clicks": 560,
+        "campaign": "Retargeting",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.064616,
+        "ctr_ci_high": 0.075802,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.07,
+          "CR_event_1": 0.080357,
+          "CPA_event_1": 21.155556,
+          "CPC": 1.7,
+          "CPM": 119.0
+        },
+        "z_scores": {
+          "CTR": 0.7843,
+          "CR_event_1": 0.7969,
+          "CPA_event_1": 0.7561,
+          "CPC": 0.4362,
+          "CPM": 0.2359
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "Масштабировать",
+          "reason": "Высокий балл (0.70), сильные показатели",
+          "reason_type": "конверсия",
+          "reason_detail": "сильные: Конверсия: Конверсии, CTR, Стоимость: Конверсии",
+          "strengths": [
+            "CR_event_1",
+            "CTR",
+            "CPA_event_1"
+          ],
+          "weaknesses": [
+            "CPM"
+          ]
+        }
+      },
+      {
+        "text_id": "cb_5",
+        "headline": "Только для вас",
+        "composite_score": 0.6979,
+        "decision_score": 0.6979,
+        "ranking_score": 0.7143,
+        "benchmark_score": 0.8236,
+        "relative_score": 0.7333,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 20.33,
+        "missed_conversions": 0.96,
+        "real_savings": 20.33,
+        "real_savings_adjusted": 14.23,
+        "target_source": "batch_top_median",
+        "problem_type": "auction",
+        "metric_pattern": "high_cost_ok_performance",
+        "pattern_confidence": 0.7,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "Сильный +",
+        "mode": "basic",
+        "n_impressions": 5500,
+        "n_clicks": 385,
+        "campaign": "Retargeting",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.063558,
+        "ctr_ci_high": 0.077051,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.07,
+          "CR_event_1": 0.077922,
+          "CPA_event_1": 21.833333,
+          "CPC": 1.701299,
+          "CPM": 119.090909
+        },
+        "z_scores": {
+          "CTR": 0.7843,
+          "CR_event_1": 0.7824,
+          "CPA_event_1": 0.752,
+          "CPC": 0.4337,
+          "CPM": 0.2352
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "Масштабировать",
+          "reason": "Высокий балл (0.70), сильные показатели",
+          "reason_type": "конверсия",
+          "reason_detail": "сильные: CTR, Конверсия: Конверсии, Стоимость: Конверсии",
+          "strengths": [
+            "CTR",
+            "CR_event_1",
+            "CPA_event_1"
+          ],
+          "weaknesses": [
+            "CPM"
+          ]
+        }
+      },
+      {
+        "text_id": "cc_1",
+        "headline": "Попробуйте бесплатно",
+        "composite_score": 0.3228,
+        "decision_score": 0.3228,
+        "ranking_score": 0.1429,
+        "benchmark_score": 0.3206,
+        "relative_score": 0.2,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 1721.11,
+        "missed_conversions": 81.36,
+        "real_savings": 1721.11,
+        "real_savings_adjusted": 1204.78,
+        "target_source": "batch_top_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 25000,
+        "n_clicks": 1250,
+        "campaign": "Prospecting",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.047368,
+        "ctr_ci_high": 0.052772,
+        "prob_ctr_better": 0.5069,
+        "ctr_pvalue": 0.588759,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.02,
+          "CPA_event_1": 90.0,
+          "CPC": 1.8,
+          "CPM": 90.0
+        },
+        "z_scores": {
+          "CTR": 0.4358,
+          "CR_event_1": 0.3088,
+          "CPA_event_1": 0.2517,
+          "CPC": 0.2629,
+          "CPM": 0.4968
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Средний балл, но стоимость конверсии высока",
+          "reason_type": "цена",
+          "reason_detail": "CPA z-score: 0.25",
+          "strengths": [],
+          "weaknesses": [
+            "CPA_event_1",
+            "CPC",
+            "CR_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "cc_2",
+        "headline": "Первый заказ со скидкой",
+        "composite_score": 0.4226,
+        "decision_score": 0.4226,
+        "ranking_score": 0.3571,
+        "benchmark_score": 0.4648,
+        "relative_score": 0.4,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 1281.87,
+        "missed_conversions": 60.59,
+        "real_savings": 1281.87,
+        "real_savings_adjusted": 897.31,
+        "target_source": "batch_top_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 22000,
+        "n_clicks": 1100,
+        "campaign": "Prospecting",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.047199,
+        "ctr_ci_high": 0.05296,
+        "prob_ctr_better": 0.5074,
+        "ctr_pvalue": 0.607266,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.03,
+          "CPA_event_1": 60.0,
+          "CPC": 1.8,
+          "CPM": 90.0
+        },
+        "z_scores": {
+          "CTR": 0.4358,
+          "CR_event_1": 0.3904,
+          "CPA_event_1": 0.4696,
+          "CPC": 0.2629,
+          "CPM": 0.4968
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [],
+          "weaknesses": [
+            "CPC"
+          ]
+        }
+      },
+      {
+        "text_id": "cc_3",
+        "headline": "Новым клиентам -30%",
+        "composite_score": 0.3228,
+        "decision_score": 0.3228,
+        "ranking_score": 0.1429,
+        "benchmark_score": 0.3206,
+        "relative_score": 0.2,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 1927.64,
+        "missed_conversions": 91.12,
+        "real_savings": 1927.64,
+        "real_savings_adjusted": 1349.35,
+        "target_source": "batch_top_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 28000,
+        "n_clicks": 1400,
+        "campaign": "Prospecting",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.047509,
+        "ctr_ci_high": 0.052616,
+        "prob_ctr_better": 0.5066,
+        "ctr_pvalue": 0.57133,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.02,
+          "CPA_event_1": 90.0,
+          "CPC": 1.8,
+          "CPM": 90.0
+        },
+        "z_scores": {
+          "CTR": 0.4358,
+          "CR_event_1": 0.3088,
+          "CPA_event_1": 0.2517,
+          "CPC": 0.2629,
+          "CPM": 0.4968
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Средний балл, но стоимость конверсии высока",
+          "reason_type": "цена",
+          "reason_detail": "CPA z-score: 0.25",
+          "strengths": [],
+          "weaknesses": [
+            "CPA_event_1",
+            "CPC",
+            "CR_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "cc_4",
+        "headline": "Регистрируйтесь сейчас",
+        "composite_score": 0.2691,
+        "decision_score": 0.2691,
+        "ranking_score": 0.0,
+        "benchmark_score": 0.2537,
+        "relative_score": 0.0667,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 1419.67,
+        "missed_conversions": 70.08,
+        "real_savings": 1482.67,
+        "real_savings_adjusted": 1037.87,
+        "target_source": "batch_top_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "LOW",
+        "alt_category": "Сильный -",
+        "mode": "basic",
+        "n_impressions": 20000,
+        "n_clicks": 1000,
+        "campaign": "Prospecting",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.047066,
+        "ctr_ci_high": 0.053109,
+        "prob_ctr_better": 0.5078,
+        "ctr_pvalue": 0.624086,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.015,
+          "CPA_event_1": 115.8,
+          "CPC": 1.8,
+          "CPM": 90.0
+        },
+        "z_scores": {
+          "CTR": 0.4358,
+          "CR_event_1": 0.2717,
+          "CPA_event_1": 0.1277,
+          "CPC": 0.2629,
+          "CPM": 0.4968
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "Исключить",
+          "reason": "Низкий балл (0.27), слабые показатели",
+          "reason_type": "цена",
+          "reason_detail": "слабые: Стоимость: Конверсии, CPC, Конверсия: Конверсии",
+          "strengths": [],
+          "weaknesses": [
+            "CPA_event_1",
+            "CPC",
+            "CR_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "cc_5",
+        "headline": "Начните сегодня",
+        "composite_score": 0.3228,
+        "decision_score": 0.3228,
+        "ranking_score": 0.1429,
+        "benchmark_score": 0.3206,
+        "relative_score": 0.2,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 1652.27,
+        "missed_conversions": 78.1,
+        "real_savings": 1652.27,
+        "real_savings_adjusted": 1156.59,
+        "target_source": "batch_top_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 24000,
+        "n_clicks": 1200,
+        "campaign": "Prospecting",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.047315,
+        "ctr_ci_high": 0.052831,
+        "prob_ctr_better": 0.5071,
+        "ctr_pvalue": 0.601687,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.02,
+          "CPA_event_1": 90.0,
+          "CPC": 1.8,
+          "CPM": 90.0
+        },
+        "z_scores": {
+          "CTR": 0.4358,
+          "CR_event_1": 0.3088,
+          "CPA_event_1": 0.2517,
+          "CPC": 0.2629,
+          "CPM": 0.4968
+        },
+        "std_metrics": {
+          "CTR": 0.01291,
+          "CR_event_1": 0.027774,
+          "CPA_event_1": 30.997959,
+          "CPC": 0.129148,
+          "CPM": 24.948539
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Средний балл, но стоимость конверсии высока",
+          "reason_type": "цена",
+          "reason_detail": "CPA z-score: 0.25",
+          "strengths": [],
+          "weaknesses": [
+            "CPA_event_1",
+            "CPC",
+            "CR_event_1"
+          ]
+        }
+      }
+    ]
+  },
+  "high_ctr_trap": {
+    "csv": "06_high_ctr_trap.csv",
+    "weight_mode": "goal_conversions",
+    "stats": {
+      "n_total": 6,
+      "n_scored": 6,
+      "n_excluded": 0,
+      "n_top": 2,
+      "n_low": 1,
+      "mode": "basic",
+      "score_mean": 0.502,
+      "score_std": 0.1248,
+      "weights_used": {
+        "CTR": 0.1,
+        "CR_event_1": 0.2,
+        "CPA_event_1": 0.2,
+        "CPC": 0.05,
+        "CPM": 0.05
+      },
+      "weight_mode": "goal_conversions",
+      "reliability_threshold": 300,
+      "event_labels": {
+        "event_1": "Конверсии"
+      },
+      "verdict_distribution": {
+        "Оптимизировать": 3,
+        "ОК": 3
+      },
+      "excluded_texts": [],
+      "insights": [
+        {
+          "type": "top_performers",
+          "icon": "trophy",
+          "title": "Лидеры рейтинга",
+          "description": "1. ad_2 (0.68) «Качество по доступной цене» — сильные: Конверсия: Конверсии, Стоимость: Конверсии, CPM 2. ad_3 (0.59) «Выгодное предложение» — сильные: CPC, Стоимость: Конверсии 3. ad_5 (0.55) «Широкий ассортимент» — сильные: CPM, Стоимость: Конверсии",
+          "severity": "success"
+        }
+      ]
+    },
+    "results": [
+      {
+        "text_id": "ad_1",
+        "headline": "ШОК! Цены рухнули",
+        "composite_score": 0.3412,
+        "decision_score": 0.3412,
+        "ranking_score": 0.0,
+        "benchmark_score": 0.2094,
+        "relative_score": 0.1667,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 648.92,
+        "missed_conversions": 14.81,
+        "real_savings": 662.86,
+        "real_savings_adjusted": 464.0,
+        "target_source": "batch_median",
+        "problem_type": "traffic_quality",
+        "metric_pattern": "high_ctr_low_cr",
+        "pattern_confidence": 0.85,
+        "declining_recently": false,
+        "category": "LOW",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 10000,
+        "n_clicks": 800,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.074845,
+        "ctr_ci_high": 0.085482,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.08,
+          "CR_event_1": 0.015,
+          "CPA_event_1": 98.838462,
+          "CPC": 1.5,
+          "CPM": 119.252632
+        },
+        "z_scores": {
+          "CTR": 0.8134,
+          "CR_event_1": 0.241,
+          "CPA_event_1": 0.1694,
+          "CPC": 0.665,
+          "CPM": 0.1611
+        },
+        "std_metrics": {
+          "CTR": 0.01472,
+          "CR_event_1": 0.019846,
+          "CPA_event_1": 27.937309,
+          "CPC": 0.190958,
+          "CPM": 15.780891
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Хорошая кликабельность, но слабая конверсия",
+          "reason_type": "трафик",
+          "reason_detail": "CTR (0.81) хороший, CR (0.24) слабый",
+          "strengths": [
+            "CTR",
+            "CPC"
+          ],
+          "weaknesses": [
+            "CPM",
+            "CPA_event_1",
+            "CR_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_2",
+        "headline": "Качество по доступной цене",
+        "composite_score": 0.6754,
+        "decision_score": 0.6754,
+        "ranking_score": 1.0,
+        "benchmark_score": 0.7941,
+        "relative_score": 1.0,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 11000,
+        "n_clicks": 550,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.046084,
+        "ctr_ci_high": 0.054234,
+        "prob_ctr_better": 0.0105,
+        "ctr_pvalue": 0.000771,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.070909,
+          "CPA_event_1": 24.61655,
+          "CPC": 1.7,
+          "CPM": 85.0
+        },
+        "z_scores": {
+          "CTR": 0.3621,
+          "CR_event_1": 0.8416,
+          "CPA_event_1": 0.744,
+          "CPC": 0.4106,
+          "CPM": 0.6273
+        },
+        "std_metrics": {
+          "CTR": 0.01472,
+          "CR_event_1": 0.019846,
+          "CPA_event_1": 27.937309,
+          "CPC": 0.190958,
+          "CPM": 15.780891
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CR_event_1",
+            "CPA_event_1",
+            "CPM"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_3",
+        "headline": "Выгодное предложение",
+        "composite_score": 0.586,
+        "decision_score": 0.586,
+        "ranking_score": 0.8,
+        "benchmark_score": 0.6532,
+        "relative_score": 0.8333,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 9000,
+        "n_clicks": 540,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.055282,
+        "ctr_ci_high": 0.065099,
+        "prob_ctr_better": 0.9812,
+        "ctr_pvalue": 0.28674,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.06,
+          "CR_event_1": 0.040741,
+          "CPA_event_1": 36.818182,
+          "CPC": 1.5,
+          "CPM": 90.0
+        },
+        "z_scores": {
+          "CTR": 0.5283,
+          "CR_event_1": 0.5374,
+          "CPA_event_1": 0.6526,
+          "CPC": 0.665,
+          "CPM": 0.5508
+        },
+        "std_metrics": {
+          "CTR": 0.01472,
+          "CR_event_1": 0.019846,
+          "CPA_event_1": 27.937309,
+          "CPC": 0.190958,
+          "CPM": 15.780891
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CPC",
+            "CPA_event_1"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_4",
+        "headline": "Товары для дома",
+        "composite_score": 0.4656,
+        "decision_score": 0.4656,
+        "ranking_score": 0.4,
+        "benchmark_score": 0.4178,
+        "relative_score": 0.5,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 100.0,
+        "missed_conversions": 2.06,
+        "real_savings": 92.19,
+        "real_savings_adjusted": 64.53,
+        "target_source": "batch_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "≈Средний",
+        "mode": "basic",
+        "n_impressions": 13000,
+        "n_clicks": 520,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.036767,
+        "ctr_ci_high": 0.043508,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.040385,
+          "CPA_event_1": 49.52381,
+          "CPC": 1.985,
+          "CPM": 80.0
+        },
+        "z_scores": {
+          "CTR": 0.2235,
+          "CR_event_1": 0.533,
+          "CPA_event_1": 0.5438,
+          "CPC": 0.1354,
+          "CPM": 0.698
+        },
+        "std_metrics": {
+          "CTR": 0.01472,
+          "CR_event_1": 0.019846,
+          "CPA_event_1": 27.937309,
+          "CPC": 0.190958,
+          "CPM": 15.780891
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPM; слабые: CPC, CTR",
+          "strengths": [
+            "CPM"
+          ],
+          "weaknesses": [
+            "CPC",
+            "CTR"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_5",
+        "headline": "Широкий ассортимент",
+        "composite_score": 0.5484,
+        "decision_score": 0.5484,
+        "ranking_score": 0.6,
+        "benchmark_score": 0.5822,
+        "relative_score": 0.6667,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "≈Средний",
+        "mode": "basic",
+        "n_impressions": 8500,
+        "n_clicks": 425,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.04557,
+        "ctr_ci_high": 0.054842,
+        "prob_ctr_better": 0.0215,
+        "ctr_pvalue": 0.003054,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.04,
+          "CPA_event_1": 40.0,
+          "CPC": 1.6,
+          "CPM": 80.0
+        },
+        "z_scores": {
+          "CTR": 0.3621,
+          "CR_event_1": 0.5281,
+          "CPA_event_1": 0.6263,
+          "CPC": 0.5404,
+          "CPM": 0.698
+        },
+        "std_metrics": {
+          "CTR": 0.01472,
+          "CR_event_1": 0.019846,
+          "CPA_event_1": 27.937309,
+          "CPC": 0.190958,
+          "CPM": 15.780891
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CPM",
+            "CPA_event_1"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_6",
+        "headline": "МЕГА-СКИДКИ каждый день",
+        "composite_score": 0.3953,
+        "decision_score": 0.3953,
+        "ranking_score": 0.2,
+        "benchmark_score": 0.29,
+        "relative_score": 0.3333,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 416.1,
+        "missed_conversions": 9.3,
+        "real_savings": 416.09,
+        "real_savings_adjusted": 291.26,
+        "target_source": "batch_median",
+        "problem_type": "traffic_quality",
+        "metric_pattern": "high_ctr_low_cr",
+        "pattern_confidence": 0.85,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 9500,
+        "n_clicks": 665,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.065044,
+        "ctr_ci_high": 0.075309,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.07,
+          "CR_event_1": 0.019549,
+          "CPA_event_1": 76.769231,
+          "CPC": 1.500752,
+          "CPM": 105.052632
+        },
+        "z_scores": {
+          "CTR": 0.6884,
+          "CR_event_1": 0.2854,
+          "CPA_event_1": 0.3101,
+          "CPC": 0.6642,
+          "CPM": 0.3208
+        },
+        "std_metrics": {
+          "CTR": 0.01472,
+          "CR_event_1": 0.019846,
+          "CPA_event_1": 27.937309,
+          "CPC": 0.190958,
+          "CPM": 15.780891
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Хорошая кликабельность, но слабая конверсия",
+          "reason_type": "трафик",
+          "reason_detail": "CTR (0.69) хороший, CR (0.29) слабый",
+          "strengths": [
+            "CTR",
+            "CPC"
+          ],
+          "weaknesses": [
+            "CR_event_1",
+            "CPA_event_1",
+            "CPM"
+          ]
+        }
+      }
+    ]
+  },
+  "roi_vs_volume": {
+    "csv": "07_roi_vs_volume.csv",
+    "weight_mode": "goal_revenue",
+    "stats": {
+      "n_total": 5,
+      "n_scored": 5,
+      "n_excluded": 0,
+      "n_top": 2,
+      "n_low": 0,
+      "mode": "full",
+      "score_mean": 0.4916,
+      "score_std": 0.166,
+      "weights_used": {
+        "CTR": 0.05,
+        "CR_event_1": 0.1,
+        "CPA_event_1": 0.1,
+        "ROI": 0.2,
+        "RPM": 0.15,
+        "RPC": 0.15,
+        "CPC": 0.05,
+        "CPM": 0.05
+      },
+      "weight_mode": "goal_revenue",
+      "reliability_threshold": 250,
+      "event_labels": {
+        "event_1": "Конверсии"
+      },
+      "verdict_distribution": {
+        "Мало данных": 1,
+        "ОК": 1,
+        "Оптимизировать": 3
+      },
+      "excluded_texts": [],
+      "insights": [
+        {
+          "type": "top_performers",
+          "icon": "trophy",
+          "title": "Лидеры рейтинга",
+          "description": "1. ad_2 (0.56) «Для всей семьи» — сильные: Стоимость: Конверсии, CPC, CPM 2. ad_3 (0.42) «Сезонные товары» — сильные: CPC, CPM 3. ad_4 (0.42) «Популярные модели» — сильные: CPC, CPM",
+          "severity": "success"
+        }
+      ]
+    },
+    "results": [
+      {
+        "text_id": "ad_1",
+        "headline": "Премиум-сегмент",
+        "composite_score": 0.7446,
+        "decision_score": 0.7446,
+        "ranking_score": 1.0,
+        "benchmark_score": 0.8787,
+        "relative_score": 1.0,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "auction",
+        "metric_pattern": "high_cost_ok_performance",
+        "pattern_confidence": 0.7,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Сильный +",
+        "mode": "full",
+        "n_impressions": 3500,
+        "n_clicks": 210,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.052612,
+        "ctr_ci_high": 0.068366,
+        "prob_ctr_better": 0.9963,
+        "ctr_pvalue": 0.013679,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.06,
+          "CR_event_1": 0.071429,
+          "CPA_event_1": 42.0,
+          "ROI": 6.82,
+          "RPM": 1396.4,
+          "RPC": 23.32,
+          "CPC": 3.0,
+          "CPM": 178.8
+        },
+        "z_scores": {
+          "CTR": 0.8568,
+          "CR_event_1": 0.8089,
+          "CPA_event_1": 0.6288,
+          "ROI": 0.842,
+          "RPM": 0.8535,
+          "RPC": 0.8518,
+          "CPC": 0.2506,
+          "CPM": 0.1908
+        },
+        "std_metrics": {
+          "CTR": 0.004472,
+          "CR_event_1": 0.014652,
+          "CPA_event_1": 15.05259,
+          "ROI": 2.886899,
+          "RPM": 548.66475,
+          "RPC": 8.949995,
+          "CPC": 0.547723,
+          "CPM": 36.713594
+        },
+        "verdict": {
+          "verdict": "Мало данных",
+          "reason": "Недостаточно данных для надёжной оценки",
+          "reason_type": "объёмы",
+          "reason_detail": "кликов: 210",
+          "strengths": [
+            "CTR",
+            "RPM",
+            "RPC",
+            "ROI",
+            "CR_event_1",
+            "CPA_event_1"
+          ],
+          "weaknesses": [
+            "CPM",
+            "CPC"
+          ]
+        },
+        "warnings": [
+          "insufficient_sample"
+        ]
+      },
+      {
+        "text_id": "ad_2",
+        "headline": "Для всей семьи",
+        "composite_score": 0.5623,
+        "decision_score": 0.5623,
+        "ranking_score": 0.75,
+        "benchmark_score": 0.7071,
+        "relative_score": 0.8,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Слабый +",
+        "mode": "full",
+        "n_impressions": 18000,
+        "n_clicks": 900,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.046913,
+        "ctr_ci_high": 0.053282,
+        "prob_ctr_better": 0.5082,
+        "ctr_pvalue": 0.671138,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.06,
+          "CPA_event_1": 33.68,
+          "ROI": 2.5,
+          "RPM": 350.0,
+          "RPC": 7.0,
+          "CPC": 2.0,
+          "CPM": 100.0
+        },
+        "z_scores": {
+          "CTR": 0.39,
+          "CR_event_1": 0.6599,
+          "CPA_event_1": 0.7465,
+          "ROI": 0.5442,
+          "RPM": 0.4639,
+          "RPC": 0.4814,
+          "CPC": 0.6749,
+          "CPM": 0.6686
+        },
+        "std_metrics": {
+          "CTR": 0.004472,
+          "CR_event_1": 0.014652,
+          "CPA_event_1": 15.05259,
+          "ROI": 2.886899,
+          "RPM": 548.66475,
+          "RPC": 8.949995,
+          "CPC": 0.547723,
+          "CPM": 36.713594
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CPA_event_1",
+            "CPC",
+            "CPM",
+            "CR_event_1"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_3",
+        "headline": "Сезонные товары",
+        "composite_score": 0.416,
+        "decision_score": 0.416,
+        "ranking_score": 0.375,
+        "benchmark_score": 0.5,
+        "relative_score": 0.5,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "metric_pattern": "conflicting_signals",
+        "pattern_confidence": 0.5,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "full",
+        "n_impressions": 12000,
+        "n_clicks": 600,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.046245,
+        "ctr_ci_high": 0.054047,
+        "prob_ctr_better": 0.51,
+        "ctr_pvalue": 0.73926,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.04,
+          "CPA_event_1": 50.0,
+          "ROI": 0.4,
+          "RPM": 140.0,
+          "RPC": 2.8,
+          "CPC": 2.0,
+          "CPM": 100.0
+        },
+        "z_scores": {
+          "CTR": 0.39,
+          "CR_event_1": 0.3314,
+          "CPA_event_1": 0.4989,
+          "ROI": 0.3658,
+          "RPM": 0.3711,
+          "RPC": 0.3673,
+          "CPC": 0.6749,
+          "CPM": 0.6686
+        },
+        "std_metrics": {
+          "CTR": 0.004472,
+          "CR_event_1": 0.014652,
+          "CPA_event_1": 15.05259,
+          "ROI": 2.886899,
+          "RPM": 548.66475,
+          "RPC": 8.949995,
+          "CPC": 0.547723,
+          "CPM": 36.713594
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPC, CPM; слабые: Конверсия: Конверсии",
+          "strengths": [
+            "CPC",
+            "CPM"
+          ],
+          "weaknesses": [
+            "CR_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_4",
+        "headline": "Популярные модели",
+        "composite_score": 0.416,
+        "decision_score": 0.416,
+        "ranking_score": 0.375,
+        "benchmark_score": 0.5,
+        "relative_score": 0.5,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "metric_pattern": "conflicting_signals",
+        "pattern_confidence": 0.5,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "full",
+        "n_impressions": 10000,
+        "n_clicks": 500,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.045901,
+        "ctr_ci_high": 0.054449,
+        "prob_ctr_better": 0.511,
+        "ctr_pvalue": 0.76704,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.04,
+          "CPA_event_1": 50.0,
+          "ROI": 0.4,
+          "RPM": 140.0,
+          "RPC": 2.8,
+          "CPC": 2.0,
+          "CPM": 100.0
+        },
+        "z_scores": {
+          "CTR": 0.39,
+          "CR_event_1": 0.3314,
+          "CPA_event_1": 0.4989,
+          "ROI": 0.3658,
+          "RPM": 0.3711,
+          "RPC": 0.3673,
+          "CPC": 0.6749,
+          "CPM": 0.6686
+        },
+        "std_metrics": {
+          "CTR": 0.004472,
+          "CR_event_1": 0.014652,
+          "CPA_event_1": 15.05259,
+          "ROI": 2.886899,
+          "RPM": 548.66475,
+          "RPC": 8.949995,
+          "CPC": 0.547723,
+          "CPM": 36.713594
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPC, CPM; слабые: Конверсия: Конверсии",
+          "strengths": [
+            "CPC",
+            "CPM"
+          ],
+          "weaknesses": [
+            "CR_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_5",
+        "headline": "Эксклюзивная линейка",
+        "composite_score": 0.3191,
+        "decision_score": 0.3191,
+        "ranking_score": 0.0,
+        "benchmark_score": 0.3581,
+        "relative_score": 0.2,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 240.0,
+        "missed_conversions": 5.0,
+        "revenue_gap": 446.0,
+        "real_savings": 250.0,
+        "real_savings_adjusted": 175.0,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "full",
+        "n_impressions": 5000,
+        "n_clicks": 250,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.044303,
+        "ctr_ci_high": 0.056398,
+        "prob_ctr_better": 0.5155,
+        "ctr_pvalue": 0.846681,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.04,
+          "CPA_event_1": 74.0,
+          "ROI": -0.176,
+          "RPM": 120.8,
+          "RPC": 2.416,
+          "CPC": 3.0,
+          "CPM": 150.0
+        },
+        "z_scores": {
+          "CTR": 0.39,
+          "CR_event_1": 0.3314,
+          "CPA_event_1": 0.1682,
+          "ROI": 0.3208,
+          "RPM": 0.363,
+          "RPC": 0.3574,
+          "CPC": 0.2506,
+          "CPM": 0.3407
+        },
+        "std_metrics": {
+          "CTR": 0.004472,
+          "CR_event_1": 0.014652,
+          "CPA_event_1": 15.05259,
+          "ROI": 2.886899,
+          "RPM": 548.66475,
+          "RPC": 8.949995,
+          "CPC": 0.547723,
+          "CPM": 36.713594
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Средний балл, но стоимость конверсии высока",
+          "reason_type": "цена",
+          "reason_detail": "CPA z-score: 0.17",
+          "strengths": [],
+          "weaknesses": [
+            "CPA_event_1",
+            "CPC",
+            "ROI",
+            "CR_event_1",
+            "CPM"
+          ]
+        }
+      }
+    ]
+  },
+  "borderline_decision": {
+    "csv": "08_borderline_decision.csv",
+    "weight_mode": "goal_conversions",
+    "stats": {
+      "n_total": 6,
+      "n_scored": 6,
+      "n_excluded": 0,
+      "n_top": 1,
+      "n_low": 1,
+      "mode": "basic",
+      "score_mean": 0.5057,
+      "score_std": 0.1762,
+      "weights_used": {
+        "CTR": 0.1,
+        "CR_event_1": 0.2,
+        "CPA_event_1": 0.2,
+        "CPC": 0.05,
+        "CPM": 0.05
+      },
+      "weight_mode": "goal_conversions",
+      "reliability_threshold": 300,
+      "event_labels": {
+        "event_1": "Конверсии"
+      },
+      "verdict_distribution": {
+        "Масштабировать": 1,
+        "ОК": 1,
+        "Оптимизировать": 3,
+        "Исключить": 1
+      },
+      "excluded_texts": [],
+      "insights": [
+        {
+          "type": "top_performers",
+          "icon": "trophy",
+          "title": "Лидеры рейтинга",
+          "description": "1. ad_1 (0.73) «Проверенный лидер» — сильные: Конверсия: Конверсии, CPC, CPM 2. ad_6 (0.55) «Быстрый результат» — сильные: CTR 3. ad_2 (0.53) «Новая формула» — сильные: CPC, CPM, CTR",
+          "severity": "success"
+        },
+        {
+          "type": "budget_waste",
+          "icon": "alert_triangle",
+          "title": "Бюджет на слабые тексты",
+          "description": "1 текст(ов) с вердиктом «Исключить» получили суммарно 11,000 показов. Наибольший расход: ad_5. Рекомендуется перераспределить бюджет на лидеров.",
+          "severity": "warning"
+        }
+      ]
+    },
+    "results": [
+      {
+        "text_id": "ad_1",
+        "headline": "Проверенный лидер",
+        "composite_score": 0.7275,
+        "decision_score": 0.7275,
+        "ranking_score": 1.0,
+        "benchmark_score": 0.7586,
+        "relative_score": 1.0,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Сильный +",
+        "mode": "basic",
+        "n_impressions": 14000,
+        "n_clicks": 700,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.046514,
+        "ctr_ci_high": 0.053737,
+        "prob_ctr_better": 0.9977,
+        "ctr_pvalue": 0.040293,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.06,
+          "CPA_event_1": 24.390196,
+          "CPC": 1.415,
+          "CPM": 70.1
+        },
+        "z_scores": {
+          "CTR": 0.6007,
+          "CR_event_1": 0.8044,
+          "CPA_event_1": 0.7016,
+          "CPC": 0.7563,
+          "CPM": 0.7478
+        },
+        "std_metrics": {
+          "CTR": 0.008165,
+          "CR_event_1": 0.013379,
+          "CPA_event_1": 41.362008,
+          "CPC": 0.574021,
+          "CPM": 22.46156
+        },
+        "verdict": {
+          "verdict": "Масштабировать",
+          "reason": "Высокий балл (0.73), сильные показатели",
+          "reason_type": "конверсия",
+          "reason_detail": "сильные: Конверсия: Конверсии, CPC, CPM",
+          "strengths": [
+            "CR_event_1",
+            "CPC",
+            "CPM",
+            "CPA_event_1",
+            "CTR"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_2",
+        "headline": "Новая формула",
+        "composite_score": 0.5282,
+        "decision_score": 0.5282,
+        "ranking_score": 0.6,
+        "benchmark_score": 0.5035,
+        "relative_score": 0.6667,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "≈Средний",
+        "mode": "basic",
+        "n_impressions": 9000,
+        "n_clicks": 450,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.045689,
+        "ctr_ci_high": 0.0547,
+        "prob_ctr_better": 0.9887,
+        "ctr_pvalue": 0.097963,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.035556,
+          "CPA_event_1": 47.8125,
+          "CPC": 1.7,
+          "CPM": 85.0
+        },
+        "z_scores": {
+          "CTR": 0.6007,
+          "CR_event_1": 0.3982,
+          "CPA_event_1": 0.5717,
+          "CPC": 0.6538,
+          "CPM": 0.6044
+        },
+        "std_metrics": {
+          "CTR": 0.008165,
+          "CR_event_1": 0.013379,
+          "CPA_event_1": 41.362008,
+          "CPC": 0.574021,
+          "CPM": 22.46156
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CPC",
+            "CPM",
+            "CTR"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_3",
+        "headline": "Классический выбор",
+        "composite_score": 0.5232,
+        "decision_score": 0.5232,
+        "ranking_score": 0.4,
+        "benchmark_score": 0.4965,
+        "relative_score": 0.5,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "≈Средний",
+        "mode": "basic",
+        "n_impressions": 10500,
+        "n_clicks": 420,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.03642,
+        "ctr_ci_high": 0.043921,
+        "prob_ctr_better": 0.0064,
+        "ctr_pvalue": 0.001722,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.040476,
+          "CPA_event_1": 44.470588,
+          "CPC": 1.8,
+          "CPM": 72.0
+        },
+        "z_scores": {
+          "CTR": 0.3065,
+          "CR_event_1": 0.4887,
+          "CPA_event_1": 0.5913,
+          "CPC": 0.6134,
+          "CPM": 0.7315
+        },
+        "std_metrics": {
+          "CTR": 0.008165,
+          "CR_event_1": 0.013379,
+          "CPA_event_1": 41.362008,
+          "CPC": 0.574021,
+          "CPM": 22.46156
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPM, CPC; слабые: CTR",
+          "strengths": [
+            "CPM",
+            "CPC"
+          ],
+          "weaknesses": [
+            "CTR"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_4",
+        "headline": "Продвинутая версия",
+        "composite_score": 0.5208,
+        "decision_score": 0.5208,
+        "ranking_score": 0.2,
+        "benchmark_score": 0.493,
+        "relative_score": 0.3333,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 17.5,
+        "missed_conversions": 0.36,
+        "real_savings": 17.5,
+        "real_savings_adjusted": 12.25,
+        "target_source": "batch_median",
+        "problem_type": "microsegment",
+        "metric_pattern": "low_ctr_high_cr",
+        "pattern_confidence": 0.75,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "≈Средний",
+        "mode": "basic",
+        "n_impressions": 8000,
+        "n_clicks": 320,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.035926,
+        "ctr_ci_high": 0.044522,
+        "prob_ctr_better": 0.0153,
+        "ctr_pvalue": 0.006652,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.05,
+          "CPA_event_1": 50.0,
+          "CPC": 2.5,
+          "CPM": 100.0
+        },
+        "z_scores": {
+          "CTR": 0.3065,
+          "CR_event_1": 0.6607,
+          "CPA_event_1": 0.5587,
+          "CPC": 0.3191,
+          "CPM": 0.4393
+        },
+        "std_metrics": {
+          "CTR": 0.008165,
+          "CR_event_1": 0.013379,
+          "CPA_event_1": 41.362008,
+          "CPC": 0.574021,
+          "CPM": 22.46156
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: Конверсия: Конверсии; слабые: CTR, CPC",
+          "strengths": [
+            "CR_event_1"
+          ],
+          "weaknesses": [
+            "CTR",
+            "CPC"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_5",
+        "headline": "Стандартный набор",
+        "composite_score": 0.1846,
+        "decision_score": 0.1846,
+        "ranking_score": 0.0,
+        "benchmark_score": 0.1261,
+        "relative_score": 0.1667,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 836.36,
+        "missed_conversions": 17.77,
+        "real_savings": 868.83,
+        "real_savings_adjusted": 608.18,
+        "target_source": "batch_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "declining_recently": false,
+        "category": "LOW",
+        "alt_category": "Сильный -",
+        "mode": "basic",
+        "n_impressions": 11000,
+        "n_clicks": 440,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.036498,
+        "ctr_ci_high": 0.043827,
+        "prob_ctr_better": 0.0054,
+        "ctr_pvalue": 0.001379,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.020455,
+          "CPA_event_1": 141.833333,
+          "CPC": 2.975,
+          "CPM": 120.0
+        },
+        "z_scores": {
+          "CTR": 0.3065,
+          "CR_event_1": 0.1763,
+          "CPA_event_1": 0.1208,
+          "CPC": 0.17,
+          "CPM": 0.2433
+        },
+        "std_metrics": {
+          "CTR": 0.008165,
+          "CR_event_1": 0.013379,
+          "CPA_event_1": 41.362008,
+          "CPC": 0.574021,
+          "CPM": 22.46156
+        },
+        "verdict": {
+          "verdict": "Исключить",
+          "reason": "Низкий балл (0.18), слабые показатели",
+          "reason_type": "цена",
+          "reason_detail": "слабые: Стоимость: Конверсии, CPC, Конверсия: Конверсии",
+          "strengths": [],
+          "weaknesses": [
+            "CPA_event_1",
+            "CPC",
+            "CR_event_1",
+            "CPM",
+            "CTR"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_6",
+        "headline": "Быстрый результат",
+        "composite_score": 0.5499,
+        "decision_score": 0.5499,
+        "ranking_score": 0.8,
+        "benchmark_score": 0.5343,
+        "relative_score": 0.8333,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 19.69,
+        "missed_conversions": 0.4,
+        "real_savings": 19.69,
+        "real_savings_adjusted": 13.78,
+        "target_source": "batch_median",
+        "problem_type": "auction",
+        "metric_pattern": "high_cost_ok_performance",
+        "pattern_confidence": 0.7,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "≈Средний",
+        "mode": "basic",
+        "n_impressions": 7500,
+        "n_clicks": 450,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.054851,
+        "ctr_ci_high": 0.065606,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.06,
+          "CR_event_1": 0.04,
+          "CPA_event_1": 50.0,
+          "CPC": 2.0,
+          "CPM": 120.0
+        },
+        "z_scores": {
+          "CTR": 0.8366,
+          "CR_event_1": 0.4798,
+          "CPA_event_1": 0.5587,
+          "CPC": 0.5283,
+          "CPM": 0.2433
+        },
+        "std_metrics": {
+          "CTR": 0.008165,
+          "CR_event_1": 0.013379,
+          "CPA_event_1": 41.362008,
+          "CPC": 0.574021,
+          "CPM": 22.46156
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CTR; слабые: CPM",
+          "strengths": [
+            "CTR"
+          ],
+          "weaknesses": [
+            "CPM"
+          ]
+        }
+      }
+    ]
+  },
+  "new_vs_proven": {
+    "csv": "09_new_vs_proven.csv",
+    "weight_mode": "goal_conversions",
+    "stats": {
+      "n_total": 5,
+      "n_scored": 5,
+      "n_excluded": 0,
+      "n_top": 2,
+      "n_low": 0,
+      "mode": "basic",
+      "score_mean": 0.4972,
+      "score_std": 0.1908,
+      "weights_used": {
+        "CTR": 0.1,
+        "CR_event_1": 0.2,
+        "CPA_event_1": 0.2,
+        "CPC": 0.05,
+        "CPM": 0.05
+      },
+      "weight_mode": "goal_conversions",
+      "reliability_threshold": 300,
+      "event_labels": {
+        "event_1": "Конверсии"
+      },
+      "verdict_distribution": {
+        "Мало данных": 1,
+        "Оптимизировать": 1,
+        "ОК": 2,
+        "Исключить": 1
+      },
+      "excluded_texts": [],
+      "insights": [
+        {
+          "type": "top_performers",
+          "icon": "trophy",
+          "title": "Лидеры рейтинга",
+          "description": "1. ad_3 (0.62) «Оптимальный баланс» — сильные: CPC, CPM, Стоимость: Конверсии 2. ad_5 (0.51) «Свежий взгляд» — сильные: — 3. ad_2 (0.36) «Испытано временем» — сильные: CPM",
+          "severity": "success"
+        },
+        {
+          "type": "budget_waste",
+          "icon": "alert_triangle",
+          "title": "Бюджет на слабые тексты",
+          "description": "1 текст(ов) с вердиктом «Исключить» получили суммарно 16,000 показов. Наибольший расход: ad_4. Рекомендуется перераспределить бюджет на лидеров.",
+          "severity": "warning"
+        }
+      ]
+    },
+    "results": [
+      {
+        "text_id": "ad_1",
+        "headline": "Инновация 2026",
+        "composite_score": 0.7315,
+        "decision_score": 0.7315,
+        "ranking_score": 1.0,
+        "benchmark_score": 0.762,
+        "relative_score": 1.0,
+        "reliability_score": 0.42,
+        "decision_confidence": "medium",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "auction",
+        "metric_pattern": "high_cost_ok_performance",
+        "pattern_confidence": 0.7,
+        "fatigue_score": 0.0,
+        "fatigue_penalty": 0.0,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Сильный +",
+        "mode": "basic",
+        "n_impressions": 1200,
+        "n_clicks": 84,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.05692,
+        "ctr_ci_high": 0.085863,
+        "prob_ctr_better": 0.999,
+        "ctr_pvalue": 5.6e-05,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.07,
+          "CR_event_1": 0.083333,
+          "CPA_event_1": 18.28,
+          "CPC": 1.5,
+          "CPM": 104.2
+        },
+        "z_scores": {
+          "CTR": 0.8366,
+          "CR_event_1": 0.8168,
+          "CPA_event_1": 0.7402,
+          "CPC": 0.7224,
+          "CPM": 0.154
+        },
+        "std_metrics": {
+          "CTR": 0.012247,
+          "CR_event_1": 0.020589,
+          "CPA_event_1": 19.647131,
+          "CPC": 0.250998,
+          "CPM": 11.342486
+        },
+        "verdict": {
+          "verdict": "Мало данных",
+          "reason": "Недостаточно данных для надёжной оценки",
+          "reason_type": "объёмы",
+          "reason_detail": "кликов: 84",
+          "strengths": [
+            "CTR",
+            "CR_event_1",
+            "CPA_event_1",
+            "CPC"
+          ],
+          "weaknesses": [
+            "CPM"
+          ]
+        },
+        "warnings": [
+          "insufficient_sample"
+        ]
+      },
+      {
+        "text_id": "ad_2",
+        "headline": "Испытано временем",
+        "composite_score": 0.3594,
+        "decision_score": 0.3594,
+        "ranking_score": 0.25,
+        "benchmark_score": 0.3058,
+        "relative_score": 0.4,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 570.0,
+        "missed_conversions": 16.76,
+        "real_savings": 569.99,
+        "real_savings_adjusted": 398.99,
+        "target_source": "batch_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "fatigue_score": 0.0,
+        "fatigue_penalty": 0.0,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 22000,
+        "n_clicks": 880,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.037491,
+        "ctr_ci_high": 0.042672,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 0.002402,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.039773,
+          "CPA_event_1": 50.285714,
+          "CPC": 2.0,
+          "CPM": 80.0
+        },
+        "z_scores": {
+          "CTR": 0.3065,
+          "CR_event_1": 0.3495,
+          "CPA_event_1": 0.3585,
+          "CPC": 0.2619,
+          "CPM": 0.6059
+        },
+        "std_metrics": {
+          "CTR": 0.012247,
+          "CR_event_1": 0.020589,
+          "CPA_event_1": 19.647131,
+          "CPC": 0.250998,
+          "CPM": 11.342486
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPM; слабые: CPC, CTR",
+          "strengths": [
+            "CPM"
+          ],
+          "weaknesses": [
+            "CPC",
+            "CTR",
+            "CR_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_3",
+        "headline": "Оптимальный баланс",
+        "composite_score": 0.6215,
+        "decision_score": 0.6215,
+        "ranking_score": 0.75,
+        "benchmark_score": 0.6405,
+        "relative_score": 0.8,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "fatigue_score": 0.0,
+        "fatigue_penalty": 0.0,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 14000,
+        "n_clicks": 700,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.046514,
+        "ctr_ci_high": 0.053737,
+        "prob_ctr_better": 0.5093,
+        "ctr_pvalue": 0.000998,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.06,
+          "CPA_event_1": 25.0,
+          "CPC": 1.5,
+          "CPM": 75.2
+        },
+        "z_scores": {
+          "CTR": 0.5,
+          "CR_event_1": 0.5894,
+          "CPA_event_1": 0.6693,
+          "CPC": 0.7224,
+          "CPM": 0.7013
+        },
+        "std_metrics": {
+          "CTR": 0.012247,
+          "CR_event_1": 0.020589,
+          "CPA_event_1": 19.647131,
+          "CPC": 0.250998,
+          "CPM": 11.342486
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CPC",
+            "CPM",
+            "CPA_event_1"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_4",
+        "headline": "Классика жанра",
+        "composite_score": 0.2606,
+        "decision_score": 0.2606,
+        "ranking_score": 0.0,
+        "benchmark_score": 0.2156,
+        "relative_score": 0.2,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 621.01,
+        "missed_conversions": 18.65,
+        "real_savings": 634.01,
+        "real_savings_adjusted": 443.81,
+        "target_source": "batch_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "fatigue_score": 0.2549,
+        "fatigue_penalty": 0.0382,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Сильный -",
+        "mode": "basic",
+        "n_impressions": 16000,
+        "n_clicks": 640,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.037074,
+        "ctr_ci_high": 0.04315,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 0.009933,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.029687,
+          "CPA_event_1": 66.685113,
+          "CPC": 2.0,
+          "CPM": 80.0
+        },
+        "z_scores": {
+          "CTR": 0.3065,
+          "CR_event_1": 0.2477,
+          "CPA_event_1": 0.1952,
+          "CPC": 0.2619,
+          "CPM": 0.6059
+        },
+        "std_metrics": {
+          "CTR": 0.012247,
+          "CR_event_1": 0.020589,
+          "CPA_event_1": 19.647131,
+          "CPC": 0.250998,
+          "CPM": 11.342486
+        },
+        "verdict": {
+          "verdict": "Исключить",
+          "reason": "Низкий балл (0.27), слабые показатели",
+          "reason_type": "цена",
+          "reason_detail": "слабые: Стоимость: Конверсии, Конверсия: Конверсии, CPC",
+          "strengths": [
+            "CPM"
+          ],
+          "weaknesses": [
+            "CPA_event_1",
+            "CR_event_1",
+            "CPC",
+            "CTR"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_5",
+        "headline": "Свежий взгляд",
+        "composite_score": 0.5132,
+        "decision_score": 0.5132,
+        "ranking_score": 0.5,
+        "benchmark_score": 0.5,
+        "relative_score": 0.6,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "fatigue_score": 0.0,
+        "fatigue_penalty": 0.0,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "≈Средний",
+        "mode": "basic",
+        "n_impressions": 8000,
+        "n_clicks": 400,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.04544,
+        "ctr_ci_high": 0.054998,
+        "prob_ctr_better": 0.5123,
+        "ctr_pvalue": 0.012313,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.05,
+          "CPA_event_1": 34.0,
+          "CPC": 1.7,
+          "CPM": 85.0
+        },
+        "z_scores": {
+          "CTR": 0.5,
+          "CR_event_1": 0.469,
+          "CPA_event_1": 0.5614,
+          "CPC": 0.5398,
+          "CPM": 0.4974
+        },
+        "std_metrics": {
+          "CTR": 0.012247,
+          "CR_event_1": 0.020589,
+          "CPA_event_1": 19.647131,
+          "CPC": 0.250998,
+          "CPM": 11.342486
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [],
+          "weaknesses": []
+        }
+      }
+    ]
+  },
+  "platform_split": {
+    "csv": "10_platform_split.csv",
+    "weight_mode": "goal_conversions",
+    "stats": {
+      "n_total": 8,
+      "n_scored": 8,
+      "n_excluded": 0,
+      "n_top": 2,
+      "n_low": 1,
+      "mode": "basic",
+      "score_mean": 0.5005,
+      "score_std": 0.1369,
+      "weights_used": {
+        "CTR": 0.1,
+        "CR_event_1": 0.2,
+        "CPA_event_1": 0.2,
+        "CPC": 0.05,
+        "CPM": 0.05
+      },
+      "weight_mode": "goal_conversions",
+      "reliability_threshold": 300,
+      "event_labels": {
+        "event_1": "Конверсии"
+      },
+      "verdict_distribution": {
+        "ОК": 2,
+        "Оптимизировать": 6
+      },
+      "segments": {
+        "platform": [
+          "Google",
+          "Meta"
+        ]
+      },
+      "excluded_texts": [],
+      "insights": [
+        {
+          "type": "top_performers",
+          "icon": "trophy",
+          "title": "Лидеры рейтинга",
+          "description": "1. g_4 (0.68) «Скидка новичкам» — сильные: Стоимость: Конверсии, Конверсия: Конверсии, CPM 2. g_1 (0.68) «Лучшая цена онлайн» — сильные: Стоимость: Конверсии, CPM, Конверсия: Конверсии 3. g_2 (0.62) «Доставка за 1 день» — сильные: Конверсия: Конверсии, Стоимость: Конверсии",
+          "severity": "success"
+        },
+        {
+          "type": "segment_pattern",
+          "icon": "chart",
+          "title": "Различие по платформам",
+          "description": "«Google» (средний балл 0.62, n=4) значительно лучше «Meta» (0.39, n=4). Разница: 0.23.",
+          "severity": "info"
+        }
+      ]
+    },
+    "results": [
+      {
+        "text_id": "g_1",
+        "headline": "Лучшая цена онлайн",
+        "composite_score": 0.6751,
+        "decision_score": 0.6751,
+        "ranking_score": 0.8571,
+        "benchmark_score": 0.8506,
+        "relative_score": 0.875,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 12000,
+        "n_clicks": 600,
+        "campaign": "",
+        "platform": "Google",
+        "device": "",
+        "ctr_ci_low": 0.046245,
+        "ctr_ci_high": 0.054047,
+        "prob_ctr_better": 0.0079,
+        "ctr_pvalue": 1.7e-05,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.05,
+          "CPA_event_1": 30.0,
+          "CPC": 1.5,
+          "CPM": 75.0
+        },
+        "z_scores": {
+          "CTR": 0.3568,
+          "CR_event_1": 0.7425,
+          "CPA_event_1": 0.762,
+          "CPC": 0.6196,
+          "CPM": 0.7502
+        },
+        "std_metrics": {
+          "CTR": 0.010607,
+          "CR_event_1": 0.015105,
+          "CPA_event_1": 21.49783,
+          "CPC": 0.17395,
+          "CPM": 11.933596
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CPA_event_1",
+            "CPM",
+            "CR_event_1",
+            "CPC"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "g_2",
+        "headline": "Доставка за 1 день",
+        "composite_score": 0.6246,
+        "decision_score": 0.6246,
+        "ranking_score": 0.7143,
+        "benchmark_score": 0.7974,
+        "relative_score": 0.75,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "metric_pattern": "conflicting_signals",
+        "pattern_confidence": 0.5,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 10000,
+        "n_clicks": 500,
+        "campaign": "",
+        "platform": "Google",
+        "device": "",
+        "ctr_ci_low": 0.045901,
+        "ctr_ci_high": 0.054449,
+        "prob_ctr_better": 0.0139,
+        "ctr_pvalue": 8.7e-05,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.05,
+          "CPA_event_1": 34.0,
+          "CPC": 1.7,
+          "CPM": 85.0
+        },
+        "z_scores": {
+          "CTR": 0.3568,
+          "CR_event_1": 0.7425,
+          "CPA_event_1": 0.7266,
+          "CPC": 0.3403,
+          "CPM": 0.5651
+        },
+        "std_metrics": {
+          "CTR": 0.010607,
+          "CR_event_1": 0.015105,
+          "CPA_event_1": 21.49783,
+          "CPC": 0.17395,
+          "CPM": 11.933596
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: Конверсия: Конверсии, Стоимость: Конверсии; слабые: CPC",
+          "strengths": [
+            "CR_event_1",
+            "CPA_event_1"
+          ],
+          "weaknesses": [
+            "CPC"
+          ]
+        }
+      },
+      {
+        "text_id": "g_3",
+        "headline": "Гарантия качества",
+        "composite_score": 0.4843,
+        "decision_score": 0.4843,
+        "ranking_score": 0.5714,
+        "benchmark_score": 0.5855,
+        "relative_score": 0.625,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "microsegment",
+        "metric_pattern": "low_ctr_high_cr",
+        "pattern_confidence": 0.75,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "≈Средний",
+        "mode": "basic",
+        "n_impressions": 8000,
+        "n_clicks": 320,
+        "campaign": "",
+        "platform": "Google",
+        "device": "",
+        "ctr_ci_low": 0.035926,
+        "ctr_ci_high": 0.044522,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.040625,
+          "CPA_event_1": 49.230769,
+          "CPC": 1.979,
+          "CPM": 80.0
+        },
+        "z_scores": {
+          "CTR": 0.1777,
+          "CR_event_1": 0.6079,
+          "CPA_event_1": 0.5668,
+          "CPC": 0.094,
+          "CPM": 0.6639
+        },
+        "std_metrics": {
+          "CTR": 0.010607,
+          "CR_event_1": 0.015105,
+          "CPA_event_1": 21.49783,
+          "CPC": 0.17395,
+          "CPM": 11.933596
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPM, Конверсия: Конверсии; слабые: CPC, CTR",
+          "strengths": [
+            "CPM",
+            "CR_event_1"
+          ],
+          "weaknesses": [
+            "CPC",
+            "CTR"
+          ]
+        }
+      },
+      {
+        "text_id": "g_4",
+        "headline": "Скидка новичкам",
+        "composite_score": 0.6789,
+        "decision_score": 0.6789,
+        "ranking_score": 1.0,
+        "benchmark_score": 0.8541,
+        "relative_score": 1.0,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 15000,
+        "n_clicks": 750,
+        "campaign": "",
+        "platform": "Google",
+        "device": "",
+        "ctr_ci_low": 0.046628,
+        "ctr_ci_high": 0.053606,
+        "prob_ctr_better": 0.0034,
+        "ctr_pvalue": 1e-06,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.050667,
+          "CPA_event_1": 29.632895,
+          "CPC": 1.5,
+          "CPM": 75.0
+        },
+        "z_scores": {
+          "CTR": 0.3568,
+          "CR_event_1": 0.7508,
+          "CPA_event_1": 0.765,
+          "CPC": 0.6196,
+          "CPM": 0.7502
+        },
+        "std_metrics": {
+          "CTR": 0.010607,
+          "CR_event_1": 0.015105,
+          "CPA_event_1": 21.49783,
+          "CPC": 0.17395,
+          "CPM": 11.933596
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CPA_event_1",
+            "CR_event_1",
+            "CPM",
+            "CPC"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "m_1",
+        "headline": "Лучшая цена онлайн",
+        "composite_score": 0.3877,
+        "decision_score": 0.3877,
+        "ranking_score": 0.2857,
+        "benchmark_score": 0.4109,
+        "relative_score": 0.375,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 378.91,
+        "missed_conversions": 6.18,
+        "real_savings": 379.86,
+        "real_savings_adjusted": 265.9,
+        "target_source": "batch_median",
+        "problem_type": "traffic_quality",
+        "metric_pattern": "high_ctr_low_cr",
+        "pattern_confidence": 0.85,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 20000,
+        "n_clicks": 1400,
+        "campaign": "",
+        "platform": "Meta",
+        "device": "",
+        "ctr_ci_low": 0.066547,
+        "ctr_ci_high": 0.07362,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.07,
+          "CR_event_1": 0.02,
+          "CPA_event_1": 74.966129,
+          "CPC": 1.5,
+          "CPM": 105.0
+        },
+        "z_scores": {
+          "CTR": 0.7852,
+          "CR_event_1": 0.2835,
+          "CPA_event_1": 0.2833,
+          "CPC": 0.6196,
+          "CPM": 0.1956
+        },
+        "std_metrics": {
+          "CTR": 0.010607,
+          "CR_event_1": 0.015105,
+          "CPA_event_1": 21.49783,
+          "CPC": 0.17395,
+          "CPM": 11.933596
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Хорошая кликабельность, но слабая конверсия",
+          "reason_type": "трафик",
+          "reason_detail": "CTR (0.79) хороший, CR (0.28) слабый",
+          "strengths": [
+            "CTR",
+            "CPC"
+          ],
+          "weaknesses": [
+            "CPM",
+            "CPA_event_1",
+            "CR_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "m_2",
+        "headline": "Доставка за 1 день",
+        "composite_score": 0.3828,
+        "decision_score": 0.3828,
+        "ranking_score": 0.1429,
+        "benchmark_score": 0.4023,
+        "relative_score": 0.25,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 268.46,
+        "missed_conversions": 4.37,
+        "real_savings": 268.49,
+        "real_savings_adjusted": 187.94,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "metric_pattern": "conflicting_signals",
+        "pattern_confidence": 0.5,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 18000,
+        "n_clicks": 1080,
+        "campaign": "",
+        "platform": "Meta",
+        "device": "",
+        "ctr_ci_low": 0.056625,
+        "ctr_ci_high": 0.063565,
+        "prob_ctr_better": 0.9983,
+        "ctr_pvalue": 0.590979,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.06,
+          "CR_event_1": 0.02037,
+          "CPA_event_1": 73.636364,
+          "CPC": 1.5,
+          "CPM": 90.0
+        },
+        "z_scores": {
+          "CTR": 0.5875,
+          "CR_event_1": 0.2885,
+          "CPA_event_1": 0.296,
+          "CPC": 0.6196,
+          "CPM": 0.4608
+        },
+        "std_metrics": {
+          "CTR": 0.010607,
+          "CR_event_1": 0.015105,
+          "CPA_event_1": 21.49783,
+          "CPC": 0.17395,
+          "CPM": 11.933596
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPC; слабые: Конверсия: Конверсии, Стоимость: Конверсии",
+          "strengths": [
+            "CPC"
+          ],
+          "weaknesses": [
+            "CR_event_1",
+            "CPA_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "m_3",
+        "headline": "Гарантия качества",
+        "composite_score": 0.3807,
+        "decision_score": 0.3807,
+        "ranking_score": 0.0,
+        "benchmark_score": 0.3986,
+        "relative_score": 0.125,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 215.63,
+        "missed_conversions": 3.51,
+        "real_savings": 215.63,
+        "real_savings_adjusted": 150.94,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "metric_pattern": "conflicting_signals",
+        "pattern_confidence": 0.5,
+        "declining_recently": false,
+        "category": "LOW",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 14000,
+        "n_clicks": 840,
+        "campaign": "",
+        "platform": "Meta",
+        "device": "",
+        "ctr_ci_low": 0.056187,
+        "ctr_ci_high": 0.064057,
+        "prob_ctr_better": 0.9951,
+        "ctr_pvalue": 0.641184,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.06,
+          "CR_event_1": 0.020238,
+          "CPA_event_1": 74.117647,
+          "CPC": 1.5,
+          "CPM": 90.0
+        },
+        "z_scores": {
+          "CTR": 0.5875,
+          "CR_event_1": 0.2867,
+          "CPA_event_1": 0.2914,
+          "CPC": 0.6196,
+          "CPM": 0.4608
+        },
+        "std_metrics": {
+          "CTR": 0.010607,
+          "CR_event_1": 0.015105,
+          "CPA_event_1": 21.49783,
+          "CPC": 0.17395,
+          "CPM": 11.933596
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPC; слабые: Конверсия: Конверсии, Стоимость: Конверсии",
+          "strengths": [
+            "CPC"
+          ],
+          "weaknesses": [
+            "CR_event_1",
+            "CPA_event_1"
+          ]
+        }
+      },
+      {
+        "text_id": "m_4",
+        "headline": "Скидка новичкам",
+        "composite_score": 0.3897,
+        "decision_score": 0.3897,
+        "ranking_score": 0.4286,
+        "benchmark_score": 0.4145,
+        "relative_score": 0.5,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 405.56,
+        "missed_conversions": 6.6,
+        "real_savings": 405.55,
+        "real_savings_adjusted": 283.88,
+        "target_source": "batch_median",
+        "problem_type": "traffic_quality",
+        "metric_pattern": "high_ctr_low_cr",
+        "pattern_confidence": 0.85,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 22000,
+        "n_clicks": 1540,
+        "campaign": "",
+        "platform": "Meta",
+        "device": "",
+        "ctr_ci_low": 0.066704,
+        "ctr_ci_high": 0.073448,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.07,
+          "CR_event_1": 0.02013,
+          "CPA_event_1": 74.516129,
+          "CPC": 1.5,
+          "CPM": 105.0
+        },
+        "z_scores": {
+          "CTR": 0.7852,
+          "CR_event_1": 0.2853,
+          "CPA_event_1": 0.2876,
+          "CPC": 0.6196,
+          "CPM": 0.1956
+        },
+        "std_metrics": {
+          "CTR": 0.010607,
+          "CR_event_1": 0.015105,
+          "CPA_event_1": 21.49783,
+          "CPC": 0.17395,
+          "CPM": 11.933596
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Хорошая кликабельность, но слабая конверсия",
+          "reason_type": "трафик",
+          "reason_detail": "CTR (0.79) хороший, CR (0.29) слабый",
+          "strengths": [
+            "CTR",
+            "CPC"
+          ],
+          "weaknesses": [
+            "CPM",
+            "CR_event_1",
+            "CPA_event_1"
+          ]
+        }
+      }
+    ]
+  },
+  "cost_outlier": {
+    "csv": "11_cost_outlier.csv",
+    "weight_mode": "goal_revenue",
+    "stats": {
+      "n_total": 5,
+      "n_scored": 5,
+      "n_excluded": 0,
+      "n_top": 1,
+      "n_low": 0,
+      "mode": "full",
+      "score_mean": 0.4932,
+      "score_std": 0.1525,
+      "weights_used": {
+        "CTR": 0.05,
+        "CR_event_1": 0.1,
+        "CPA_event_1": 0.1,
+        "ROI": 0.2,
+        "RPM": 0.15,
+        "RPC": 0.15,
+        "CPC": 0.05,
+        "CPM": 0.05
+      },
+      "weight_mode": "goal_revenue",
+      "reliability_threshold": 300,
+      "event_labels": {
+        "event_1": "Конверсии"
+      },
+      "verdict_distribution": {
+        "Масштабировать": 1,
+        "ОК": 2,
+        "Оптимизировать": 2
+      },
+      "excluded_texts": [],
+      "insights": [
+        {
+          "type": "top_performers",
+          "icon": "trophy",
+          "title": "Лидеры рейтинга",
+          "description": "1. ad_1 (0.74) «Премиум-консультация» — сильные: RPC, RPM, Конверсия: Конверсии 2. ad_2 (0.52) «Быстрый старт» — сильные: Стоимость: Конверсии, CPC, CPM 3. ad_3 (0.48) «Простое решение» — сильные: CTR",
+          "severity": "success"
+        }
+      ]
+    },
+    "results": [
+      {
+        "text_id": "ad_1",
+        "headline": "Премиум-консультация",
+        "composite_score": 0.7351,
+        "decision_score": 0.7351,
+        "ranking_score": 1.0,
+        "benchmark_score": 0.8447,
+        "relative_score": 1.0,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "auction",
+        "metric_pattern": "high_cost_ok_performance",
+        "pattern_confidence": 0.7,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Сильный +",
+        "mode": "full",
+        "n_impressions": 8000,
+        "n_clicks": 400,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.04544,
+        "ctr_ci_high": 0.054998,
+        "prob_ctr_better": 0.5123,
+        "ctr_pvalue": 0.481364,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.1,
+          "CPA_event_1": 40.0,
+          "ROI": 2.914667,
+          "RPM": 774.4,
+          "RPC": 15.488,
+          "CPC": 3.94,
+          "CPM": 196.0
+        },
+        "z_scores": {
+          "CTR": 0.61,
+          "CR_event_1": 0.8488,
+          "CPA_event_1": 0.6852,
+          "ROI": 0.8415,
+          "RPM": 0.8546,
+          "RPC": 0.8549,
+          "CPC": 0.1693,
+          "CPM": 0.1551
+        },
+        "std_metrics": {
+          "CTR": 0.004472,
+          "CR_event_1": 0.031235,
+          "CPA_event_1": 17.625226,
+          "ROI": 1.251824,
+          "RPM": 300.813794,
+          "RPC": 5.964749,
+          "CPC": 1.074607,
+          "CPM": 52.900019
+        },
+        "verdict": {
+          "verdict": "Масштабировать",
+          "reason": "Высокий балл (0.74), сильные показатели",
+          "reason_type": "конверсия",
+          "reason_detail": "сильные: RPC, RPM, Конверсия: Конверсии",
+          "strengths": [
+            "RPC",
+            "RPM",
+            "CR_event_1",
+            "ROI",
+            "CPA_event_1",
+            "CTR"
+          ],
+          "weaknesses": [
+            "CPM",
+            "CPC"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_2",
+        "headline": "Быстрый старт",
+        "composite_score": 0.5157,
+        "decision_score": 0.5157,
+        "ranking_score": 0.75,
+        "benchmark_score": 0.5634,
+        "relative_score": 0.8,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "≈Средний",
+        "mode": "full",
+        "n_impressions": 12000,
+        "n_clicks": 600,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.046245,
+        "ctr_ci_high": 0.054047,
+        "prob_ctr_better": 0.51,
+        "ctr_pvalue": 0.382723,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.04,
+          "CPA_event_1": 37.6,
+          "ROI": 0.866667,
+          "RPM": 140.0,
+          "RPC": 2.8,
+          "CPC": 1.5,
+          "CPM": 75.0
+        },
+        "z_scores": {
+          "CTR": 0.61,
+          "CR_event_1": 0.4512,
+          "CPA_event_1": 0.7138,
+          "ROI": 0.5083,
+          "RPM": 0.4163,
+          "RPC": 0.4125,
+          "CPC": 0.6637,
+          "CPM": 0.6438
+        },
+        "std_metrics": {
+          "CTR": 0.004472,
+          "CR_event_1": 0.031235,
+          "CPA_event_1": 17.625226,
+          "ROI": 1.251824,
+          "RPM": 300.813794,
+          "RPC": 5.964749,
+          "CPC": 1.074607,
+          "CPM": 52.900019
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CPA_event_1",
+            "CPC",
+            "CPM",
+            "CTR"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_3",
+        "headline": "Простое решение",
+        "composite_score": 0.4768,
+        "decision_score": 0.4768,
+        "ranking_score": 0.5,
+        "benchmark_score": 0.5,
+        "relative_score": 0.6,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "≈Средний",
+        "mode": "full",
+        "n_impressions": 10000,
+        "n_clicks": 500,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.045901,
+        "ctr_ci_high": 0.054449,
+        "prob_ctr_better": 0.511,
+        "ctr_pvalue": 0.427776,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.04,
+          "CPA_event_1": 50.0,
+          "ROI": 0.6,
+          "RPM": 160.0,
+          "RPC": 3.2,
+          "CPC": 2.0,
+          "CPM": 100.0
+        },
+        "z_scores": {
+          "CTR": 0.61,
+          "CR_event_1": 0.4512,
+          "CPA_event_1": 0.5524,
+          "ROI": 0.4552,
+          "RPM": 0.4326,
+          "RPC": 0.4288,
+          "CPC": 0.5534,
+          "CPM": 0.5298
+        },
+        "std_metrics": {
+          "CTR": 0.004472,
+          "CR_event_1": 0.031235,
+          "CPA_event_1": 17.625226,
+          "ROI": 1.251824,
+          "RPM": 300.813794,
+          "RPC": 5.964749,
+          "CPC": 1.074607,
+          "CPM": 52.900019
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CTR"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_4",
+        "headline": "Экономный вариант",
+        "composite_score": 0.4082,
+        "decision_score": 0.4082,
+        "ranking_score": 0.25,
+        "benchmark_score": 0.3894,
+        "relative_score": 0.4,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 140.0,
+        "missed_conversions": 2.97,
+        "revenue_gap": 499.71,
+        "real_savings": 148.4,
+        "real_savings_adjusted": 103.88,
+        "target_source": "batch_median",
+        "problem_type": "traffic_quality",
+        "metric_pattern": "high_ctr_low_cr",
+        "pattern_confidence": 0.85,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "full",
+        "n_impressions": 14000,
+        "n_clicks": 700,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.046514,
+        "ctr_ci_high": 0.053737,
+        "prob_ctr_better": 0.5093,
+        "ctr_pvalue": 0.344126,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.02,
+          "CPA_event_1": 60.0,
+          "ROI": 0.0,
+          "RPM": 60.533333,
+          "RPC": 1.225333,
+          "CPC": 1.212,
+          "CPM": 60.6
+        },
+        "z_scores": {
+          "CTR": 0.61,
+          "CR_event_1": 0.3024,
+          "CPA_event_1": 0.4117,
+          "ROI": 0.3409,
+          "RPM": 0.3539,
+          "RPC": 0.3503,
+          "CPC": 0.7207,
+          "CPM": 0.7036
+        },
+        "std_metrics": {
+          "CTR": 0.004472,
+          "CR_event_1": 0.031235,
+          "CPA_event_1": 17.625226,
+          "ROI": 1.251824,
+          "RPM": 300.813794,
+          "RPC": 5.964749,
+          "CPC": 1.074607,
+          "CPM": 52.900019
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Хорошая кликабельность, но слабая конверсия",
+          "reason_type": "трафик",
+          "reason_detail": "CTR (0.61) хороший, CR (0.30) слабый",
+          "strengths": [
+            "CPC",
+            "CPM",
+            "CTR"
+          ],
+          "weaknesses": [
+            "CR_event_1",
+            "ROI"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_5",
+        "headline": "Стандартный пакет",
+        "composite_score": 0.3304,
+        "decision_score": 0.3304,
+        "ranking_score": 0.0,
+        "benchmark_score": 0.2769,
+        "relative_score": 0.2,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 340.4,
+        "missed_conversions": 7.0,
+        "revenue_gap": 780.0,
+        "real_savings": 349.99,
+        "real_savings_adjusted": 244.99,
+        "target_source": "batch_median",
+        "problem_type": "hook",
+        "metric_pattern": "low_ctr",
+        "pattern_confidence": 0.8,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "full",
+        "n_impressions": 9000,
+        "n_clicks": 360,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.036147,
+        "ctr_ci_high": 0.044251,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 0.000185,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.030556,
+          "CPA_event_1": 80.945455,
+          "ROI": -0.256,
+          "RPM": 73.333333,
+          "RPC": 1.833333,
+          "CPC": 2.5,
+          "CPM": 100.0
+        },
+        "z_scores": {
+          "CTR": 0.1432,
+          "CR_event_1": 0.378,
+          "CPA_event_1": 0.1758,
+          "ROI": 0.2966,
+          "RPM": 0.3637,
+          "RPC": 0.3739,
+          "CPC": 0.4376,
+          "CPM": 0.5298
+        },
+        "std_metrics": {
+          "CTR": 0.004472,
+          "CR_event_1": 0.031235,
+          "CPA_event_1": 17.625226,
+          "ROI": 1.251824,
+          "RPM": 300.813794,
+          "RPC": 5.964749,
+          "CPC": 1.074607,
+          "CPM": 52.900019
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Средний балл, но стоимость конверсии высока",
+          "reason_type": "цена",
+          "reason_detail": "CPA z-score: 0.18",
+          "strengths": [],
+          "weaknesses": [
+            "CTR",
+            "CPA_event_1",
+            "ROI"
+          ]
+        }
+      }
+    ]
+  },
+  "mixed_signals": {
+    "csv": "12_mixed_signals.csv",
+    "weight_mode": "goal_conversions",
+    "stats": {
+      "n_total": 6,
+      "n_scored": 6,
+      "n_excluded": 0,
+      "n_top": 2,
+      "n_low": 1,
+      "mode": "basic",
+      "score_mean": 0.5034,
+      "score_std": 0.1608,
+      "weights_used": {
+        "CTR": 0.1,
+        "CR_event_1": 0.2,
+        "CPA_event_1": 0.2,
+        "CPC": 0.05,
+        "CPM": 0.05
+      },
+      "weight_mode": "goal_conversions",
+      "reliability_threshold": 300,
+      "event_labels": {
+        "event_1": "Конверсии"
+      },
+      "verdict_distribution": {
+        "Оптимизировать": 2,
+        "ОК": 3,
+        "Исключить": 1
+      },
+      "excluded_texts": [],
+      "insights": [
+        {
+          "type": "top_performers",
+          "icon": "trophy",
+          "title": "Лидеры рейтинга",
+          "description": "1. ad_3 (0.67) «Точечное решение» — сильные: Стоимость: Конверсии, Конверсия: Конверсии, CPC 2. ad_6 (0.63) «Умный выбор» — сильные: Стоимость: Конверсии, CPC, CPM 3. ad_2 (0.59) «Для профессионалов» — сильные: CPM, Конверсия: Конверсии, Стоимость: Конверсии",
+          "severity": "success"
+        },
+        {
+          "type": "budget_waste",
+          "icon": "alert_triangle",
+          "title": "Бюджет на слабые тексты",
+          "description": "1 текст(ов) с вердиктом «Исключить» получили суммарно 20,000 показов. Наибольший расход: ad_4. Рекомендуется перераспределить бюджет на лидеров.",
+          "severity": "warning"
+        }
+      ]
+    },
+    "results": [
+      {
+        "text_id": "ad_1",
+        "headline": "Кликни сейчас!",
+        "composite_score": 0.3595,
+        "decision_score": 0.3595,
+        "ranking_score": 0.2,
+        "benchmark_score": 0.2433,
+        "relative_score": 0.3333,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 630.61,
+        "missed_conversions": 16.54,
+        "real_savings": 630.63,
+        "real_savings_adjusted": 441.44,
+        "target_source": "batch_median",
+        "problem_type": "traffic_quality",
+        "metric_pattern": "high_ctr_low_cr",
+        "pattern_confidence": 0.85,
+        "declining_recently": false,
+        "category": "AVERAGE",
+        "alt_category": "Слабый -",
+        "mode": "basic",
+        "n_impressions": 10000,
+        "n_clicks": 700,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.065165,
+        "ctr_ci_high": 0.07517,
+        "prob_ctr_better": 1.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.07,
+          "CR_event_1": 0.015714,
+          "CPA_event_1": 95.454545,
+          "CPC": 1.5,
+          "CPM": 104.75
+        },
+        "z_scores": {
+          "CTR": 0.7914,
+          "CR_event_1": 0.2181,
+          "CPA_event_1": 0.2322,
+          "CPC": 0.6856,
+          "CPM": 0.2444
+        },
+        "std_metrics": {
+          "CTR": 0.015626,
+          "CR_event_1": 0.025636,
+          "CPA_event_1": 35.487038,
+          "CPC": 0.491596,
+          "CPM": 15.594554
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Хорошая кликабельность, но слабая конверсия",
+          "reason_type": "трафик",
+          "reason_detail": "CTR (0.79) хороший, CR (0.22) слабый",
+          "strengths": [
+            "CTR",
+            "CPC"
+          ],
+          "weaknesses": [
+            "CR_event_1",
+            "CPA_event_1",
+            "CPM"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_2",
+        "headline": "Для профессионалов",
+        "composite_score": 0.5906,
+        "decision_score": 0.5906,
+        "ranking_score": 0.6,
+        "benchmark_score": 0.5749,
+        "relative_score": 0.6667,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "microsegment",
+        "metric_pattern": "low_ctr_high_cr",
+        "pattern_confidence": 0.75,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 12000,
+        "n_clicks": 300,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.022358,
+        "ctr_ci_high": 0.027951,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 0.0,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.025,
+          "CR_event_1": 0.08,
+          "CPA_event_1": 31.25,
+          "CPC": 2.5,
+          "CPM": 63.125
+        },
+        "z_scores": {
+          "CTR": 0.1756,
+          "CR_event_1": 0.7739,
+          "CPA_event_1": 0.6487,
+          "CPC": 0.2219,
+          "CPM": 0.8235
+        },
+        "std_metrics": {
+          "CTR": 0.015626,
+          "CR_event_1": 0.025636,
+          "CPA_event_1": 35.487038,
+          "CPC": 0.491596,
+          "CPM": 15.594554
+        },
+        "verdict": {
+          "verdict": "Оптимизировать",
+          "reason": "Смешанные показатели — есть сильные и слабые метрики",
+          "reason_type": "смешанная",
+          "reason_detail": "сильные: CPM, Конверсия: Конверсии; слабые: CTR, CPC",
+          "strengths": [
+            "CPM",
+            "CR_event_1",
+            "CPA_event_1"
+          ],
+          "weaknesses": [
+            "CTR",
+            "CPC"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_3",
+        "headline": "Точечное решение",
+        "composite_score": 0.6749,
+        "decision_score": 0.6749,
+        "ranking_score": 1.0,
+        "benchmark_score": 0.6955,
+        "relative_score": 1.0,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 5000,
+        "n_clicks": 300,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.053755,
+        "ctr_ci_high": 0.06693,
+        "prob_ctr_better": 0.9993,
+        "ctr_pvalue": 9e-06,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.06,
+          "CR_event_1": 0.07,
+          "CPA_event_1": 21.607143,
+          "CPC": 1.5,
+          "CPM": 90.0
+        },
+        "z_scores": {
+          "CTR": 0.6667,
+          "CR_event_1": 0.6986,
+          "CPA_event_1": 0.7079,
+          "CPC": 0.6856,
+          "CPM": 0.4544
+        },
+        "std_metrics": {
+          "CTR": 0.015626,
+          "CR_event_1": 0.025636,
+          "CPA_event_1": 35.487038,
+          "CPC": 0.491596,
+          "CPM": 15.594554
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CPA_event_1",
+            "CR_event_1",
+            "CPC",
+            "CTR"
+          ],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_4",
+        "headline": "Масштабный проект",
+        "composite_score": 0.2692,
+        "decision_score": 0.2692,
+        "ranking_score": 0.0,
+        "benchmark_score": 0.1549,
+        "relative_score": 0.1667,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 1232.95,
+        "missed_conversions": 32.46,
+        "real_savings": 1237.5,
+        "real_savings_adjusted": 866.25,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "LOW",
+        "alt_category": "Сильный -",
+        "mode": "basic",
+        "n_impressions": 20000,
+        "n_clicks": 800,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.037373,
+        "ctr_ci_high": 0.042806,
+        "prob_ctr_better": 0.0,
+        "ctr_pvalue": 1.8e-05,
+        "is_significant_bh": true,
+        "metrics": {
+          "CTR": 0.04,
+          "CR_event_1": 0.025,
+          "CPA_event_1": 99.772727,
+          "CPC": 2.5,
+          "CPM": 100.0
+        },
+        "z_scores": {
+          "CTR": 0.3574,
+          "CR_event_1": 0.286,
+          "CPA_event_1": 0.2112,
+          "CPC": 0.2219,
+          "CPM": 0.3049
+        },
+        "std_metrics": {
+          "CTR": 0.015626,
+          "CR_event_1": 0.025636,
+          "CPA_event_1": 35.487038,
+          "CPC": 0.491596,
+          "CPM": 15.594554
+        },
+        "verdict": {
+          "verdict": "Исключить",
+          "reason": "Низкий балл (0.27), слабые показатели",
+          "reason_type": "цена",
+          "reason_detail": "слабые: Стоимость: Конверсии, CPC, Конверсия: Конверсии",
+          "strengths": [],
+          "weaknesses": [
+            "CPA_event_1",
+            "CPC",
+            "CR_event_1",
+            "CPM"
+          ]
+        }
+      },
+      {
+        "text_id": "ad_5",
+        "headline": "Золотая середина",
+        "composite_score": 0.4935,
+        "decision_score": 0.4935,
+        "ranking_score": 0.4,
+        "benchmark_score": 0.4251,
+        "relative_score": 0.5,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "excess_cost": 123.75,
+        "missed_conversions": 3.25,
+        "real_savings": 123.75,
+        "real_savings_adjusted": 86.62,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "GOOD",
+        "alt_category": "≈Средний",
+        "mode": "basic",
+        "n_impressions": 9000,
+        "n_clicks": 450,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.045689,
+        "ctr_ci_high": 0.0547,
+        "prob_ctr_better": 0.5116,
+        "ctr_pvalue": 0.092738,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.04,
+          "CPA_event_1": 45.0,
+          "CPC": 1.8,
+          "CPM": 90.0
+        },
+        "z_scores": {
+          "CTR": 0.5133,
+          "CR_event_1": 0.4183,
+          "CPA_event_1": 0.5562,
+          "CPC": 0.5423,
+          "CPM": 0.4544
+        },
+        "std_metrics": {
+          "CTR": 0.015626,
+          "CR_event_1": 0.025636,
+          "CPA_event_1": 35.487038,
+          "CPC": 0.491596,
+          "CPM": 15.594554
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [],
+          "weaknesses": []
+        }
+      },
+      {
+        "text_id": "ad_6",
+        "headline": "Умный выбор",
+        "composite_score": 0.6326,
+        "decision_score": 0.6326,
+        "ranking_score": 0.8,
+        "benchmark_score": 0.6371,
+        "relative_score": 0.8333,
+        "reliability_score": 1.0,
+        "decision_confidence": "high",
+        "anomaly_detected": false,
+        "target_source": "batch_median",
+        "problem_type": "mixed",
+        "pattern_confidence": 0.3,
+        "declining_recently": false,
+        "category": "TOP",
+        "alt_category": "Слабый +",
+        "mode": "basic",
+        "n_impressions": 11000,
+        "n_clicks": 550,
+        "campaign": "",
+        "platform": "",
+        "device": "",
+        "ctr_ci_low": 0.046084,
+        "ctr_ci_high": 0.054234,
+        "prob_ctr_better": 0.5105,
+        "ctr_pvalue": 0.065962,
+        "is_significant_bh": false,
+        "metrics": {
+          "CTR": 0.05,
+          "CR_event_1": 0.06,
+          "CPA_event_1": 25.0,
+          "CPC": 1.5,
+          "CPM": 75.0
+        },
+        "z_scores": {
+          "CTR": 0.5133,
+          "CR_event_1": 0.6107,
+          "CPA_event_1": 0.6877,
+          "CPC": 0.6856,
+          "CPM": 0.6854
+        },
+        "std_metrics": {
+          "CTR": 0.015626,
+          "CR_event_1": 0.025636,
+          "CPA_event_1": 35.487038,
+          "CPC": 0.491596,
+          "CPM": 15.594554
+        },
+        "verdict": {
+          "verdict": "ОК",
+          "reason": "Сбалансированные показатели",
+          "reason_type": "смешанная",
+          "reason_detail": "метрики в пределах нормы",
+          "strengths": [
+            "CPA_event_1",
+            "CPC",
+            "CPM",
+            "CR_event_1"
+          ],
+          "weaknesses": []
+        }
+      }
+    ]
+  }
+}

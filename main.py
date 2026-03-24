@@ -51,6 +51,8 @@ from users import router as auth_router, tenant_router, log_audit
 from auth import get_current_user, CurrentUser
 from sessions import router as sessions_router
 from usability_test import router as usability_test_router
+from mmp import router as mmp_router
+from demo import router as demo_router
 from database import get_db
 from db_models import (
     ScoringSession, ScoringResult as ScoringResultDB,
@@ -79,6 +81,8 @@ app.include_router(auth_router)
 app.include_router(tenant_router)
 app.include_router(sessions_router)
 app.include_router(usability_test_router)
+app.include_router(mmp_router)
+app.include_router(demo_router)
 
 _cors_origins = [
     "http://localhost:3000",
