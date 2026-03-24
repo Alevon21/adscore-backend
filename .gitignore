@@ -13,3 +13,4 @@ venv/
 *.log
 uploads/
 demo_data/combined_adjust_installs.csv
+demo_data/*.original.csv

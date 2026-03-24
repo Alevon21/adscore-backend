@@ -26,8 +26,8 @@ DATASETS = [
         "id": "mmp_adjust_installs",
         "module": "mmp",
         "name": "MMP: установки Adjust",
-        "description": "~210K строк. Реальные данные установок с трекерами, CTIT, device_id, странами.",
-        "filename": "combined_adjust_installs.csv",
+        "description": "~143K строк. Данные установок с трекерами, CTIT, device_id, странами.",
+        "filename": "demo_mmp_installs.csv",
     },
 ]
 
