@@ -378,6 +378,16 @@ async def upload_csv(
                 if k in row and pd.notna(row[k]) and str(row[k]).strip():
                     metrics_dict[k] = str(row[k]).strip()
 
+            # Auto-compute rates if raw counts are present but rates are missing
+            impr = metrics_dict.get("impressions")
+            clks = metrics_dict.get("clicks")
+            instl = metrics_dict.get("installs")
+            if impr and impr > 0:
+                if "ctr" not in metrics_dict and clks is not None:
+                    metrics_dict["ctr"] = round(clks / impr, 6)
+                if "cr_install" not in metrics_dict and instl is not None:
+                    metrics_dict["cr_install"] = round(instl / impr, 6)
+
             banner_metrics = BannerMetrics(**metrics_dict)
             fname = str(row.get("filename", "")) or ""
 
