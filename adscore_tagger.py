@@ -146,5 +146,5 @@ def tag_banner(source) -> dict:
         logger.error("Failed to parse AI response: %s\nResponse: %s", e, response_text)
         raise ValueError(f"AI returned invalid JSON: {e}")
 
-    logger.info("Successfully tagged banner: %s", image_path)
+    logger.info("Successfully tagged banner: %s", type(source).__name__)
     return tags
