@@ -12,6 +12,9 @@ REQUIRED_COLUMNS = [
 CTIT_BINS = [-np.inf, 15, 60, 900, 3600, 10800, 21600, 86400, np.inf]
 CTIT_LABELS = ["<15s", "15-60s", "1-15m", "15-60m", "1-3h", "3-6h", "6-24h", ">24h"]
 
+VTIT_BINS = [-np.inf, 60, 300, 900, 3600, 10800, 43200, 86400, np.inf]
+VTIT_LABELS = ["<1m", "1-5m", "5-15m", "15-60m", "1-3h", "3-12h", "12-24h", ">24h"]
+
 
 def validate_columns(df: pd.DataFrame) -> dict:
     cols = set(df.columns)
@@ -63,6 +66,16 @@ def compute_derived_fields(df: pd.DataFrame) -> pd.DataFrame:
         df["click_hour"] = df["click_time"].dt.hour
     if "ctit_seconds" in df.columns:
         df["ctit_bucket"] = pd.cut(df["ctit_seconds"], bins=CTIT_BINS, labels=CTIT_LABELS)
+
+    # VTIT: View-Through Install Time (for VTA / impression-based traffic)
+    if "is_impression_based" in df.columns and "installed_at" in df.columns and "engagement_time" in df.columns:
+        vta_mask = df["is_impression_based"] == True
+        df["vtit_seconds"] = np.nan
+        df.loc[vta_mask, "vtit_seconds"] = (
+            df.loc[vta_mask, "installed_at"] - df.loc[vta_mask, "engagement_time"]
+        ).dt.total_seconds()
+        df["vtit_bucket"] = pd.cut(df["vtit_seconds"], bins=VTIT_BINS, labels=VTIT_LABELS)
+
     return df
 
 

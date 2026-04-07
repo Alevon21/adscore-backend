@@ -12,6 +12,9 @@ DEFAULT_THRESHOLDS = {
     "dup_device_pct": 0.05,
     "ip_dup_install_threshold": 3,
     "ip_dup_count": 20,
+    "install_rate_low": 0.001,      # 0.1%
+    "install_rate_high": 0.01,      # 1%
+    "new_devices_high_pct": 0.20,   # 20%
 }
 
 
@@ -85,6 +88,7 @@ def compute_tracker_markers(
     tracker: str,
     benchmark_hourly: pd.Series,
     thresholds: dict = None,
+    device_tracker_map: dict = None,
 ) -> dict:
     t = {**DEFAULT_THRESHOLDS, **(thresholds or {})}
     tdf = df[df["adjust_tracker"] == tracker]
@@ -104,6 +108,13 @@ def compute_tracker_markers(
     lte60s_share = (ctit_valid <= 60).sum() / n_ctit if n_ctit > 0 else 0
     vta_share = tdf["is_impression_based"].sum() / n if "is_impression_based" in tdf.columns else 0
     reattr_rate = tdf["is_reattribution"].sum() / n
+
+    # VTIT stats for VTA traffic
+    vtit = tdf["vtit_seconds"].dropna() if "vtit_seconds" in tdf.columns else pd.Series(dtype=float)
+    vtit_valid = vtit[vtit >= 0]
+    n_vtit = len(vtit_valid)
+    vtit_p50 = float(vtit_valid.quantile(0.50)) if n_vtit > 0 else None
+    vtit_p95 = float(vtit_valid.quantile(0.95)) if n_vtit > 0 else None
 
     # CTV (valid CTIT) stats
     ctit_p50 = float(ctit_valid.quantile(0.50)) if n_ctit > 0 else None
@@ -151,6 +162,20 @@ def compute_tracker_markers(
     ip_counts = tdf["ip_string"].dropna().value_counts()
     heavy_ips = int((ip_counts > t["ip_dup_install_threshold"]).sum())
 
+    # Install Rate: clicks vs installs
+    n_clicks = int((tdf["activity_kind"] == "click").sum()) if "activity_kind" in tdf.columns else 0
+    n_installs_only = int((tdf["activity_kind"].isin(["install", "reattribution"])).sum()) if "activity_kind" in tdf.columns else n
+    install_rate = n_installs_only / n_clicks if n_clicks > 0 else None
+
+    # New Devices: devices exclusive to this tracker
+    tracker_devices = tdf["device_id"].dropna().unique()
+    n_tracker_devices = len(tracker_devices)
+    if n_tracker_devices > 0 and device_tracker_map is not None:
+        exclusive = sum(1 for d in tracker_devices if len(device_tracker_map.get(d, set())) == 1)
+        new_device_pct = exclusive / n_tracker_devices
+    else:
+        new_device_pct = 0.0
+
     # Multi-geo per tracker
     multi_geo_devices = detect_multi_geo_devices(tdf)
     multi_geo_ips = detect_multi_geo_ips(tdf)
@@ -163,6 +188,9 @@ def compute_tracker_markers(
         "m_hourly_anomaly": int(critical_hours >= 2),
         "m_dup_device_high": int(clean_dup_pct >= t["dup_device_pct"]),
         "m_dup_ip_high": int(heavy_ips >= t["ip_dup_count"]),
+        "m_install_rate_low": int(install_rate is not None and install_rate < t["install_rate_low"]),
+        "m_install_rate_high": int(install_rate is not None and install_rate > t["install_rate_high"]),
+        "m_new_devices_high": int(new_device_pct > t["new_devices_high_pct"]),
     }
     # All 7 markers contribute to risk score
     risk_score = sum(markers.values())
@@ -199,6 +227,12 @@ def compute_tracker_markers(
             "threshold_pp": fixed_threshold,
             "critical_hours_list": critical_hours_list,
             "hourly_anomaly_level": hourly_anomaly_level,
+            "install_rate": round(install_rate * 100, 4) if install_rate is not None else None,
+            "n_clicks": n_clicks,
+            "vtit_count": n_vtit,
+            "vtit_p50": round(vtit_p50, 1) if vtit_p50 is not None else None,
+            "vtit_p95": round(vtit_p95, 1) if vtit_p95 is not None else None,
+            "new_device_pct": round(new_device_pct * 100, 2),
             "multi_geo_devices": len(multi_geo_devices),
             "multi_geo_ips": len(multi_geo_ips),
         },
@@ -222,8 +256,11 @@ def run_fraud_analysis(df: pd.DataFrame, benchmark_trackers: list, thresholds: d
 
     trackers = sorted(df["adjust_tracker"].dropna().unique())
 
+    # Build device-to-tracker map for New Devices metric
+    device_tracker_map = df.groupby("device_id")["adjust_tracker"].apply(set).to_dict() if "device_id" in df.columns else {}
+
     # Per-tracker analysis
-    tracker_passports = [compute_tracker_markers(df, t, bench_hourly, thresholds) for t in trackers]
+    tracker_passports = [compute_tracker_markers(df, t, bench_hourly, thresholds, device_tracker_map) for t in trackers]
 
     # Fraud summary crosstab
     fraud_summary = {}
@@ -244,9 +281,13 @@ def run_fraud_analysis(df: pd.DataFrame, benchmark_trackers: list, thresholds: d
         tdf = df[df["adjust_tracker"] == tracker]
         ctit = tdf["ctit_seconds"].dropna()
         ctit_valid = ctit[ctit >= 0]
+        n_clk = int((tdf["activity_kind"] == "click").sum()) if "activity_kind" in tdf.columns else 0
+        n_inst_only = int((tdf["activity_kind"].isin(["install", "reattribution"])).sum()) if "activity_kind" in tdf.columns else len(tdf)
         tracker_aggregates.append({
             "tracker": tracker,
             "n_installs": len(tdf),
+            "n_clicks": n_clk,
+            "install_rate": round(n_inst_only / n_clk * 100, 4) if n_clk > 0 else None,
             "n_reattributions": int(tdf["is_reattribution"].sum()),
             "reattribution_rate": round(tdf["is_reattribution"].mean() * 100, 2),
             "ctit_p50": round(float(ctit_valid.quantile(0.50)), 1) if len(ctit_valid) > 0 else None,
@@ -308,6 +349,14 @@ def run_fraud_analysis(df: pd.DataFrame, benchmark_trackers: list, thresholds: d
             counts = tdf["ctit_bucket"].value_counts()
             ctit_distributions[tracker] = {str(k): int(v) for k, v in counts.items()}
 
+    # VTIT distributions (VTA traffic only)
+    vtit_distributions = {}
+    for tracker in trackers:
+        tdf_vtit = df[(df["adjust_tracker"] == tracker) & df["vtit_seconds"].notna() & (df["vtit_seconds"] >= 0)] if "vtit_seconds" in df.columns else pd.DataFrame()
+        if len(tdf_vtit) > 0 and "vtit_bucket" in tdf_vtit.columns:
+            counts = tdf_vtit["vtit_bucket"].value_counts()
+            vtit_distributions[tracker] = {str(k): int(v) for k, v in counts.items()}
+
     # Global multi-geo
     multi_geo_devices = detect_multi_geo_devices(df)
     multi_geo_ips = detect_multi_geo_ips(df)
@@ -334,6 +383,7 @@ def run_fraud_analysis(df: pd.DataFrame, benchmark_trackers: list, thresholds: d
         "critical_hours_map": critical_hours_map,
         "daily_volumes": daily_volumes,
         "ctit_distributions": ctit_distributions,
+        "vtit_distributions": vtit_distributions,
         "multi_geo": {
             "devices": multi_geo_devices[:50],
             "ips": multi_geo_ips[:50],

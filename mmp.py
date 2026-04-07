@@ -234,6 +234,7 @@ async def get_tracker_passports(
         "tracker_aggregates": a["tracker_aggregates"],
         "benchmark": a["benchmark"],
         "ctit_distributions": a.get("ctit_distributions", {}),
+        "vtit_distributions": a.get("vtit_distributions", {}),
     }
 
 
@@ -258,6 +259,7 @@ async def get_workbench_data(
         "critical_hours_map": a.get("critical_hours_map", {}),
         "daily_volumes": a["daily_volumes"],
         "ctit_distributions": a["ctit_distributions"],
+        "vtit_distributions": a.get("vtit_distributions", {}),
         "fraud_summary": a["fraud_summary"],
         "benchmark": a["benchmark"],
         "multi_geo": a["multi_geo"],
