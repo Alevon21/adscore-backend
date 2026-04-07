@@ -18,6 +18,7 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from sqlalchemy import select, update, delete, func
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm.attributes import flag_modified
 
 from auth import get_current_user, CurrentUser
 from database import get_db
@@ -590,6 +591,49 @@ async def get_banner(
         except Exception:
             pass
 
+    return _banner_to_record(banner, image_url)
+
+
+@adscore_router.patch("/banner/{banner_id}/metrics")
+async def update_banner_metrics(
+    banner_id: str,
+    payload: BannerMetrics,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Update metrics for a banner (merge with existing)."""
+    tid = current_user.tenant.id
+    banner = await _get_banner_or_404(db, banner_id, tid)
+
+    existing = banner.metrics or {}
+    updated = payload.model_dump(exclude_none=True)
+
+    # Merge: only overwrite fields that were explicitly sent
+    merged = {**existing, **updated}
+
+    # Auto-compute rates from raw counts
+    impr = merged.get("impressions")
+    clks = merged.get("clicks")
+    instl = merged.get("installs")
+    if impr and impr > 0:
+        if clks is not None:
+            merged["ctr"] = round(clks / impr, 6)
+        if instl is not None:
+            merged["cr_install"] = round(instl / impr, 6)
+
+    banner.metrics = merged
+    flag_modified(banner, "metrics")
+    await db.commit()
+    await db.refresh(banner)
+
+    image_url = None
+    if banner.storage_key:
+        try:
+            image_url = await file_storage.get_signed_url(banner.storage_key)
+        except Exception:
+            pass
+
+    logger.info("Updated metrics for banner %s", banner_id)
     return _banner_to_record(banner, image_url)
 
 
