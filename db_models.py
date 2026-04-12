@@ -71,6 +71,8 @@ class Tenant(Base):
     storage_quota_mb: Mapped[int] = mapped_column(Integer, default=1024, nullable=False)  # 1GB default
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+    logo_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    brand_color: Mapped[Optional[str]] = mapped_column(String(7), nullable=True)  # hex e.g. #3B82F6
 
     users: Mapped[List["User"]] = relationship(back_populates="tenant", lazy="selectin")
 
@@ -242,11 +244,18 @@ class Banner(Base):
     tagged_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     explanation: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     explained_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    project: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    concept_group: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    media_type: Mapped[Optional[str]] = mapped_column(String(10), default="image", nullable=True)  # 'image' | 'video'
+    video_meta: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)  # duration, fps, codec, etc.
+    keyframes: Mapped[Optional[list]] = mapped_column(JSONB, nullable=True)   # [{index, timestamp, frame_type, image_url, tags, cqs_score}]
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
     updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, onupdate=utcnow)
 
     __table_args__ = (
         Index("ix_banners_tenant_created", "tenant_id", "created_at"),
+        Index("ix_banners_tenant_project", "tenant_id", "project"),
+        Index("ix_banners_tenant_concept", "tenant_id", "concept_group"),
     )
 
 
@@ -292,6 +301,7 @@ class MmpSession(Base):
     tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("tenants.id"), nullable=False)
     created_by: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     status: Mapped[str] = mapped_column(String(20), default="uploaded", nullable=False)
+    mmp_type: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # "adjust" | "appsflyer"
 
     file_names: Mapped[Optional[list]] = mapped_column(JSONB, nullable=True)
     total_rows: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
@@ -312,4 +322,43 @@ class MmpSession(Base):
 
     __table_args__ = (
         Index("ix_mmp_sessions_tenant_created", "tenant_id", "created_at"),
+    )
+
+
+class SharedLink(Base):
+    __tablename__ = "shared_links"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=new_uuid)
+    token: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), unique=True, nullable=False, index=True)
+    report_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    filters: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("tenants.id"), nullable=False)
+    created_by: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+
+    __table_args__ = (
+        Index("ix_shared_links_token", "token"),
+        Index("ix_shared_links_tenant_created", "tenant_id", "created_at"),
+    )
+
+
+class Comment(Base):
+    __tablename__ = "comments"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=new_uuid)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("tenants.id"), nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    # Polymorphic target: "banner" or "hypothesis"
+    target_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    target_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, onupdate=utcnow)
+
+    user = relationship("User", lazy="joined")
+
+    __table_args__ = (
+        Index("ix_comments_target", "tenant_id", "target_type", "target_id"),
+        Index("ix_comments_user", "tenant_id", "user_id"),
     )

@@ -1,6 +1,6 @@
 """
 MMP (Mobile Measurement Partner) data analysis router.
-Currently supports Adjust CSV exports.
+Supports Adjust and AppsFlyer CSV exports with auto-detection.
 """
 
 import csv
@@ -20,7 +20,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from auth import get_current_user, CurrentUser, require_feature
 from database import get_db
 from db_models import MmpSession
-from mmp_parser import validate_columns, parse_timestamps, compute_derived_fields, REQUIRED_COLUMNS
+from mmp_parser import (
+    validate_columns, parse_timestamps, compute_derived_fields,
+    detect_mmp_type, normalise_columns, REQUIRED_COLUMNS,
+)
 from mmp_fraud import run_fraud_analysis
 
 logger = logging.getLogger(__name__)
@@ -47,7 +50,7 @@ async def upload_mmp_files(
     current_user: CurrentUser = Depends(require_feature("mmp")),
     db: AsyncSession = Depends(get_db),
 ):
-    """Upload one or more Adjust CSV files for fraud analysis."""
+    """Upload one or more MMP CSV files (Adjust or AppsFlyer) for fraud analysis."""
     if not files:
         raise HTTPException(400, "No files provided")
 
@@ -66,6 +69,7 @@ async def upload_mmp_files(
 
     # Parse and validate each file
     dfs = []
+    detected_mmp = None
     for i, content in enumerate(raw_contents):
         try:
             fname_lower = file_infos[i]["filename"].lower()
@@ -76,10 +80,21 @@ async def upload_mmp_files(
         except Exception as e:
             raise HTTPException(400, f"Failed to parse {file_infos[i]['filename']}: {str(e)}")
 
-        validation = validate_columns(df)
+        # Auto-detect MMP type from first file
+        if i == 0:
+            detected_mmp = detect_mmp_type(set(df.columns))
+            if not detected_mmp:
+                raise HTTPException(400, {
+                    "error": "Не удалось определить тип MMP. Поддерживаются Adjust и AppsFlyer.",
+                    "detected_columns": sorted(df.columns.tolist())[:20],
+                })
+            logger.info(f"Auto-detected MMP type: {detected_mmp}")
+
+        validation = validate_columns(df, mmp_type=detected_mmp)
         if not validation["ok"]:
             raise HTTPException(400, {
                 "file": file_infos[i]["filename"],
+                "mmp_type": detected_mmp,
                 "missing_columns": validation["missing"],
             })
         file_infos[i]["n_rows"] = len(df)
@@ -92,23 +107,27 @@ async def upload_mmp_files(
         if diff:
             raise HTTPException(400, f"File {file_infos[i]['filename']} has different columns: {sorted(diff)}")
 
-    # Merge, parse timestamps, compute derived fields
+    # Merge, normalise columns, parse timestamps, compute derived fields
     merged = pd.concat(dfs, ignore_index=True)
+    merged = normalise_columns(merged, detected_mmp)
     merged = parse_timestamps(merged)
     merged = compute_derived_fields(merged)
 
     session_id = str(uuid_mod.uuid4())
 
-    # Extract metadata
-    trackers = sorted(merged["adjust_tracker"].dropna().unique().tolist())
-    campaigns = sorted(merged["adjust_campaign"].dropna().unique().tolist())
-    countries = sorted(merged["country"].dropna().unique().tolist())
-    platforms = sorted(merged["adjust_platform"].dropna().unique().tolist()) if "adjust_platform" in merged.columns else []
-    date_min = merged["installed_at"].min()
-    date_max = merged["installed_at"].max()
+    # Extract metadata — use adjust_tracker/adjust_campaign (set by normalise_columns for compat)
+    tracker_col = "adjust_tracker" if "adjust_tracker" in merged.columns else "tracker"
+    campaign_col = "adjust_campaign" if "adjust_campaign" in merged.columns else "campaign"
+    trackers = sorted(merged[tracker_col].dropna().unique().tolist()) if tracker_col in merged.columns else []
+    campaigns = sorted(merged[campaign_col].dropna().unique().tolist()) if campaign_col in merged.columns else []
+    countries = sorted(merged["country"].dropna().unique().tolist()) if "country" in merged.columns else []
+    platform_col = "adjust_platform" if "adjust_platform" in merged.columns else "platform"
+    platforms = sorted(merged[platform_col].dropna().unique().tolist()) if platform_col in merged.columns else []
+    date_min = merged["installed_at"].min() if "installed_at" in merged.columns else None
+    date_max = merged["installed_at"].max() if "installed_at" in merged.columns else None
 
     # Per-tracker row counts for Smart Benchmark recommendation
-    tracker_counts = merged["adjust_tracker"].dropna().value_counts()
+    tracker_counts = merged[tracker_col].dropna().value_counts() if tracker_col in merged.columns else pd.Series(dtype=int)
     tracker_stats = [
         {"tracker": t, "rows": int(tracker_counts.get(t, 0))}
         for t in trackers
@@ -116,7 +135,7 @@ async def upload_mmp_files(
 
     # Store in memory with TTL
     with _mmp_lock:
-        _MMP_STORE[session_id] = {"df": merged, "tenant_id": str(current_user.tenant.id)}
+        _MMP_STORE[session_id] = {"df": merged, "tenant_id": str(current_user.tenant.id), "mmp_type": detected_mmp}
     _schedule_cleanup(session_id)
 
     # Persist to DB
@@ -126,6 +145,7 @@ async def upload_mmp_files(
             tenant_id=current_user.tenant.id,
             created_by=current_user.user.id,
             status="uploaded",
+            mmp_type=detected_mmp,
             file_names=[fi["filename"] for fi in file_infos],
             total_rows=len(merged),
             date_range_min=date_min if pd.notna(date_min) else None,
@@ -140,10 +160,14 @@ async def upload_mmp_files(
     except Exception as e:
         logger.warning(f"Failed to persist MMP session to DB: {e}")
 
-    logger.info(f"MMP upload: session={session_id}, files={len(file_infos)}, rows={len(merged)}")
+    logger.info(f"MMP upload: session={session_id}, type={detected_mmp}, files={len(file_infos)}, rows={len(merged)}")
+
+    MMP_LABELS = {"adjust": "Adjust", "appsflyer": "AppsFlyer", "singular": "Singular", "branch": "Branch"}
 
     return {
         "session_id": session_id,
+        "mmp_type": detected_mmp,
+        "mmp_label": MMP_LABELS.get(detected_mmp, detected_mmp),
         "files": file_infos,
         "total_rows": len(merged),
         "trackers": trackers,

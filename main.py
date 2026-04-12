@@ -53,6 +53,16 @@ from sessions import router as sessions_router
 from usability_test import router as usability_test_router
 from mmp import router as mmp_router
 from demo import router as demo_router
+from creative_history import creative_history_router
+from creative_analytics import analytics_router
+from share import router as share_router
+from comments import router as comments_router
+from activity_feed import router as activity_router
+from competitor_analysis import router as competitor_router
+from predictive_ctr import router as predictive_ctr_router
+from creative_generator import router as creative_generator_router
+from cross_platform import router as cross_platform_router
+from trend_detection import router as trend_router
 from database import get_db
 from db_models import (
     ScoringSession, ScoringResult as ScoringResultDB,
@@ -83,6 +93,16 @@ app.include_router(sessions_router)
 app.include_router(usability_test_router)
 app.include_router(mmp_router)
 app.include_router(demo_router)
+app.include_router(creative_history_router)
+app.include_router(analytics_router)
+app.include_router(share_router)
+app.include_router(comments_router)
+app.include_router(activity_router)
+app.include_router(competitor_router)
+app.include_router(predictive_ctr_router)
+app.include_router(creative_generator_router)
+app.include_router(cross_platform_router)
+app.include_router(trend_router)
 
 _cors_origins = [
     "http://localhost:3000",

@@ -117,6 +117,36 @@ async def get_current_user(
     return CurrentUser(user=user, tenant=tenant)
 
 
+async def get_current_user_optional(
+    request: Request,
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
+    db: AsyncSession = Depends(get_db),
+) -> Optional[CurrentUser]:
+    """Optional auth — returns CurrentUser if valid token, None otherwise."""
+    if not credentials:
+        return None
+    try:
+        signing_key = await _get_signing_key(credentials.credentials)
+        payload = pyjwt.decode(
+            credentials.credentials,
+            signing_key.key,
+            algorithms=_ALLOWED_ALGORITHMS,
+            options={"verify_aud": False, "verify_exp": True, "require": ["exp", "sub"]},
+        )
+    except (InvalidTokenError, Exception):
+        return None
+    supabase_uid = payload.get("sub")
+    if not supabase_uid:
+        return None
+    result = await db.execute(
+        select(User).where(User.supabase_uid == supabase_uid, User.is_active == True)
+    )
+    user = result.scalar_one_or_none()
+    if not user or not user.tenant or not user.tenant.is_active:
+        return None
+    return CurrentUser(user=user, tenant=user.tenant)
+
+
 async def verify_supabase_token(token: str) -> Optional[str]:
     """Verify a Supabase JWT and return the sub (user ID) claim.
 

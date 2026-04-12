@@ -610,3 +610,53 @@ async def get_audit_log(
         )
         for log in logs
     ]
+
+
+class BrandingUpdate(BaseModel):
+    logo_url: Optional[str] = None
+    brand_color: Optional[str] = None
+
+
+@tenant_router.get("/{tenant_id}/branding")
+async def get_branding(
+    tenant_id: str,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Get tenant branding (logo, color)."""
+    if str(current_user.tenant.id) != tenant_id:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    tenant = current_user.tenant
+    return {
+        "tenant_name": tenant.name,
+        "logo_url": tenant.logo_url,
+        "brand_color": tenant.brand_color,
+    }
+
+
+@tenant_router.patch("/{tenant_id}/branding")
+async def update_branding(
+    tenant_id: str,
+    body: BrandingUpdate,
+    current_user: CurrentUser = Depends(require_role(UserRole.owner, UserRole.admin)),
+    db: AsyncSession = Depends(get_db),
+):
+    """Update tenant branding for white-label exports."""
+    if str(current_user.tenant.id) != tenant_id:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    tenant = await db.get(Tenant, current_user.tenant.id)
+    if body.logo_url is not None:
+        tenant.logo_url = body.logo_url
+    if body.brand_color is not None:
+        if body.brand_color and not body.brand_color.startswith("#"):
+            raise HTTPException(status_code=400, detail="brand_color must be hex like #3B82F6")
+        tenant.brand_color = body.brand_color
+
+    await db.commit()
+    return {
+        "tenant_name": tenant.name,
+        "logo_url": tenant.logo_url,
+        "brand_color": tenant.brand_color,
+    }

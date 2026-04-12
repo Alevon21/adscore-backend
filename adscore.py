@@ -16,7 +16,7 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Reques
 from fastapi.responses import StreamingResponse
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-from sqlalchemy import select, update, delete, func
+from sqlalchemy import select, update, delete, func, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.attributes import flag_modified
 
@@ -44,15 +44,22 @@ logger = logging.getLogger(__name__)
 adscore_router = APIRouter(prefix="/adscore", tags=["adscore"])
 limiter = Limiter(key_func=get_remote_address)
 
-MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10 MB
+MAX_IMAGE_SIZE = 10 * 1024 * 1024   # 10 MB
+MAX_VIDEO_SIZE = 100 * 1024 * 1024  # 100 MB
 
-VALID_EXTENSIONS = (".png", ".jpg", ".jpeg", ".gif", ".webp")
+VALID_IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg", ".gif", ".webp")
+VALID_VIDEO_EXTENSIONS = (".mp4", ".webm", ".mov")
+VALID_EXTENSIONS = VALID_IMAGE_EXTENSIONS + VALID_VIDEO_EXTENSIONS
+
 MIME_MAP = {
     ".png": "image/png",
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
     ".gif": "image/gif",
     ".webp": "image/webp",
+    ".mp4": "video/mp4",
+    ".webm": "video/webm",
+    ".mov": "video/quicktime",
 }
 
 _SSRF_BLOCKED_HOSTS = {
@@ -96,6 +103,41 @@ def _sanitize_filename(name: str) -> str:
 # ---------------------------------------------------------------------------
 
 
+def _normalize_metrics(metrics: Optional[dict]) -> dict:
+    """Return a copy of metrics with CTR/CR values normalised to fractions.
+
+    Raw data may store CTR as a percentage (e.g. 6.0 meaning 6%).
+    This helper ensures values > 1 are divided by 100, and prefers
+    recomputing CTR from clicks/impressions when available.
+    """
+    if not metrics:
+        return {}
+    m = dict(metrics)
+    # Recompute CTR from raw counts if possible
+    try:
+        impr = m.get("impressions")
+        clicks = m.get("clicks")
+        if impr and clicks is not None:
+            impr_f = float(impr)
+            if impr_f > 0:
+                m["ctr"] = float(clicks) / impr_f
+                return m
+    except (ValueError, TypeError):
+        pass
+    # Normalise stored ctr
+    for key in ("ctr", "cr_install", "cr_event"):
+        v = m.get(key)
+        if v is None:
+            continue
+        try:
+            val = float(v)
+            if val > 1:
+                m[key] = val / 100.0
+        except (ValueError, TypeError):
+            pass
+    return m
+
+
 def _banner_to_record(b: Banner, image_url: Optional[str] = None) -> dict:
     """Convert a DB Banner row to a dict matching BannerRecord schema."""
     return {
@@ -106,7 +148,7 @@ def _banner_to_record(b: Banner, image_url: Optional[str] = None) -> dict:
         "file_size_bytes": b.file_size_bytes or 0,
         "width": b.width or 0,
         "height": b.height or 0,
-        "metrics": b.metrics or {},
+        "metrics": _normalize_metrics(b.metrics),
         "tags": b.tags,
         "tags_status": b.tags_status or "pending",
         "tags_error": b.tags_error,
@@ -114,6 +156,11 @@ def _banner_to_record(b: Banner, image_url: Optional[str] = None) -> dict:
         "explanation": b.explanation,
         "explained_at": b.explained_at.isoformat() if b.explained_at else None,
         "image_url": image_url,
+        "project": b.project,
+        "concept_group": b.concept_group,
+        "media_type": getattr(b, "media_type", None) or "image",
+        "video_meta": getattr(b, "video_meta", None),
+        "keyframes": getattr(b, "keyframes", None),
     }
 
 
@@ -246,6 +293,7 @@ async def create_banner_from_url(
 async def upload_banner(
     image: UploadFile = File(...),
     metrics: str = Form("{}"),
+    project: str = Form(""),
     current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
@@ -255,11 +303,14 @@ async def upload_banner(
 
     ext = Path(image.filename or "image.png").suffix.lower()
     if ext not in VALID_EXTENSIONS:
-        raise HTTPException(status_code=400, detail="Only image files (PNG, JPG, GIF, WebP) are allowed")
+        raise HTTPException(status_code=400, detail="Supported formats: PNG, JPG, GIF, WebP, MP4, WebM, MOV")
+
+    is_video = ext in VALID_VIDEO_EXTENSIONS
+    max_size = MAX_VIDEO_SIZE if is_video else MAX_IMAGE_SIZE
 
     content = await image.read()
-    if len(content) > MAX_IMAGE_SIZE:
-        raise HTTPException(status_code=400, detail=f"Image too large (max {MAX_IMAGE_SIZE // 1024 // 1024} MB)")
+    if len(content) > max_size:
+        raise HTTPException(status_code=400, detail=f"File too large (max {max_size // 1024 // 1024} MB)")
 
     try:
         metrics_dict = json.loads(metrics)
@@ -267,7 +318,13 @@ async def upload_banner(
         raise HTTPException(status_code=400, detail="Invalid metrics JSON")
 
     banner_metrics = BannerMetrics(**metrics_dict)
-    width, height = _get_image_dimensions(content)
+    # Use normalised values (rates auto-divided by 100 if > 1)
+    metrics_dict = banner_metrics.model_dump(exclude_none=True)
+
+    if is_video:
+        width, height = 0, 0  # will be set after video processing
+    else:
+        width, height = _get_image_dimensions(content)
     mime_type = MIME_MAP.get(ext, "image/png")
     banner_id = uuid_mod.uuid4()
     original_name = _sanitize_filename(image.filename or "unknown")
@@ -304,6 +361,7 @@ async def upload_banner(
         storage_key = None
 
     # Create DB row
+    project_name = project.strip()[:200] if project else None
     db_banner = Banner(
         id=banner_id,
         tenant_id=tid,
@@ -316,6 +374,8 @@ async def upload_banner(
         mime_type=mime_type,
         metrics=metrics_dict,
         tags_status="pending",
+        project=project_name,
+        media_type="video" if is_video else "image",
     )
     db.add(db_banner)
     await db.commit()
@@ -342,6 +402,7 @@ async def upload_banner(
 @adscore_router.post("/upload-csv", response_model=CSVUploadResponse)
 async def upload_csv(
     file: UploadFile = File(...),
+    project: str = Form(""),
     current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
@@ -351,6 +412,7 @@ async def upload_csv(
 
     tid = current_user.tenant.id
     uid = current_user.user.id
+    project_name = project.strip()[:200] if project else None
 
     content = await file.read()
     try:
@@ -390,7 +452,16 @@ async def upload_csv(
                     metrics_dict["cr_install"] = round(instl / impr, 6)
 
             banner_metrics = BannerMetrics(**metrics_dict)
+            # Use normalised values (rates auto-divided by 100 if > 1)
+            metrics_dict = banner_metrics.model_dump(exclude_none=True)
             fname = str(row.get("filename", "")) or ""
+
+            # Use per-row project if present in CSV, else fallback to form-level project
+            row_project = None
+            if "project" in row and pd.notna(row["project"]) and str(row["project"]).strip():
+                row_project = str(row["project"]).strip()[:200]
+            else:
+                row_project = project_name
 
             db_banner = Banner(
                 id=banner_id,
@@ -399,6 +470,7 @@ async def upload_csv(
                 original_filename=fname,
                 metrics=metrics_dict,
                 tags_status="no_image",
+                project=row_project,
             )
             db.add(db_banner)
 
@@ -423,6 +495,7 @@ async def upload_banner_url(
     request: Request,
     url: str = Form(...),
     metrics: str = Form("{}"),
+    project: str = Form(""),
     current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
@@ -443,6 +516,12 @@ async def upload_banner_url(
     banner_id = await create_banner_from_url(db, tid, uid, url, metrics_dict)
     if not banner_id:
         raise HTTPException(status_code=400, detail="Failed to download or store banner image")
+
+    # Set project if provided
+    project_name = project.strip()[:200] if project else None
+    if project_name:
+        banner_obj = await _get_banner_or_404(db, str(banner_id), tid)
+        banner_obj.project = project_name
 
     await db.commit()
 
@@ -493,6 +572,7 @@ async def list_banners(
     platform: Optional[str] = None,
     campaign: Optional[str] = None,
     tags_status: Optional[str] = None,
+    project: Optional[str] = None,
     element: Optional[str] = None,
     element_value: Optional[str] = None,
     page: int = 1,
@@ -509,6 +589,10 @@ async def list_banners(
     # Apply DB-level filters where possible
     if tags_status:
         q = q.where(Banner.tags_status == tags_status)
+    if project == "__none__":
+        q = q.where(Banner.project.is_(None))
+    elif project:
+        q = q.where(Banner.project == project)
 
     # Sort
     if sort_by == "upload_date":
@@ -662,6 +746,141 @@ async def delete_banner(
 
 
 # ---------------------------------------------------------------------------
+# Projects & Bulk operations
+# ---------------------------------------------------------------------------
+
+
+@adscore_router.get("/projects")
+async def list_projects(
+    current_user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """List unique project names for the current tenant."""
+    tid = current_user.tenant.id
+    result = await db.execute(
+        select(Banner.project, func.count(Banner.id).label("cnt"))
+        .where(Banner.tenant_id == tid)
+        .group_by(Banner.project)
+        .order_by(func.count(Banner.id).desc())
+    )
+    projects = []
+    no_project_count = 0
+    for row in result:
+        if row.project is None:
+            no_project_count = row.cnt
+        else:
+            projects.append({"name": row.project, "count": row.cnt})
+    return {"projects": projects, "no_project_count": no_project_count}
+
+
+@adscore_router.post("/banners/bulk-delete")
+async def bulk_delete_banners(
+    payload: dict,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Delete multiple banners at once. Body: {banner_ids: [str]}"""
+    tid = current_user.tenant.id
+    banner_ids = payload.get("banner_ids", [])
+    if not banner_ids:
+        raise HTTPException(status_code=400, detail="No banner_ids provided")
+
+    uuids = []
+    for bid in banner_ids:
+        try:
+            uuids.append(uuid_mod.UUID(bid))
+        except ValueError:
+            pass
+
+    # Fetch banners to delete storage files
+    result = await db.execute(
+        select(Banner).where(Banner.id.in_(uuids), Banner.tenant_id == tid)
+    )
+    banners_to_delete = list(result.scalars().all())
+
+    # Delete storage files
+    for b in banners_to_delete:
+        if b.storage_key:
+            try:
+                await file_storage.delete_file(b.storage_key)
+            except Exception as e:
+                logger.warning("Failed to delete banner file %s: %s", b.storage_key, e)
+
+    # Delete from DB
+    if banners_to_delete:
+        await db.execute(
+            delete(Banner).where(Banner.id.in_([b.id for b in banners_to_delete]))
+        )
+        await db.commit()
+
+    logger.info("Bulk deleted %d banners", len(banners_to_delete))
+    return {"deleted": len(banners_to_delete)}
+
+
+@adscore_router.post("/projects/rename")
+async def rename_project(
+    payload: dict,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Rename a project across all banners. Body: {old_name: str, new_name: str}"""
+    tid = current_user.tenant.id
+    old_name = (payload.get("old_name") or "").strip()
+    new_name = (payload.get("new_name") or "").strip()[:200]
+
+    if not old_name or not new_name:
+        raise HTTPException(status_code=400, detail="old_name and new_name are required")
+    if old_name == new_name:
+        return {"updated": 0, "old_name": old_name, "new_name": new_name}
+
+    result = await db.execute(
+        update(Banner)
+        .where(Banner.tenant_id == tid, Banner.project == old_name)
+        .values(project=new_name)
+    )
+    await db.commit()
+
+    logger.info("Renamed project '%s' -> '%s' for %d banners", old_name, new_name, result.rowcount)
+    return {"updated": result.rowcount, "old_name": old_name, "new_name": new_name}
+
+
+@adscore_router.post("/banners/bulk-set-project")
+async def bulk_set_project(
+    payload: dict,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Set project for multiple banners. Body: {banner_ids: [str], project: str|null}"""
+    tid = current_user.tenant.id
+    banner_ids = payload.get("banner_ids", [])
+    project_name = payload.get("project")  # None means unassign
+
+    if not banner_ids:
+        raise HTTPException(status_code=400, detail="No banner_ids provided")
+
+    # Trim project name
+    if project_name:
+        project_name = project_name.strip()[:200]
+
+    uuids = []
+    for bid in banner_ids:
+        try:
+            uuids.append(uuid_mod.UUID(bid))
+        except ValueError:
+            pass
+
+    result = await db.execute(
+        update(Banner)
+        .where(Banner.id.in_(uuids), Banner.tenant_id == tid)
+        .values(project=project_name or None)
+    )
+    await db.commit()
+
+    logger.info("Bulk set project='%s' for %d banners", project_name, result.rowcount)
+    return {"updated": result.rowcount, "project": project_name}
+
+
+# ---------------------------------------------------------------------------
 # AI Tagging
 # ---------------------------------------------------------------------------
 
@@ -689,20 +908,92 @@ async def tag_banner_endpoint(
 
     try:
         import asyncio
-        # Download image from Supabase
-        image_bytes = await file_storage.download_file(banner.storage_key)
-        tags_dict = await asyncio.to_thread(tag_banner, image_bytes)
+        import tempfile
 
-        banner.tags = tags_dict
+        # Download file from Supabase
+        file_bytes = await file_storage.download_file(banner.storage_key)
+        media_type = getattr(banner, "media_type", None) or "image"
+
+        if media_type == "video":
+            # Video: extract keyframes → tag each → aggregate
+            from video_processor import extract_keyframes, video_meta_to_dict
+            from video_scorer import score_video_keyframes
+
+            # Write video to temp file for FFmpeg
+            with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
+                tmp.write(file_bytes)
+                tmp_path = tmp.name
+
+            try:
+                meta, kf_list = await asyncio.to_thread(extract_keyframes, tmp_path)
+                result = await asyncio.to_thread(score_video_keyframes, kf_list, meta)
+
+                # Upload keyframe images to storage + build keyframes list
+                keyframes_data = []
+                for kf_data in result["keyframes"]:
+                    kf_obj = next((k for k in kf_list if k.index == kf_data["index"]), None)
+                    kf_image_url = None
+                    if kf_obj and os.path.exists(kf_obj.image_path):
+                        kf_storage_key = f"{tid}/banners/{banner.id}/keyframes/frame_{kf_data['index']:03d}.jpg"
+                        with open(kf_obj.image_path, "rb") as f:
+                            kf_bytes = f.read()
+                        try:
+                            import httpx
+                            url = f"{file_storage.STORAGE_BASE}/object/{file_storage.BUCKET}/{kf_storage_key}"
+                            async with httpx.AsyncClient(timeout=60) as client:
+                                resp = await client.post(url, content=kf_bytes, headers={
+                                    **file_storage._headers(),
+                                    "Content-Type": "image/jpeg",
+                                    "x-upsert": "true",
+                                })
+                            if resp.status_code in (200, 201):
+                                kf_image_url = await file_storage.get_signed_url(kf_storage_key)
+                        except Exception as e:
+                            logger.warning("Failed to upload keyframe %d: %s", kf_data["index"], e)
+
+                    keyframes_data.append({
+                        **kf_data,
+                        "image_url": kf_image_url,
+                    })
+
+                # Use hook frame tags as the banner's primary tags
+                hook_tags = next((kf["tags"] for kf in result["keyframes"] if kf["frame_type"] == "hook" and kf["tags"]), {})
+                tags_dict = hook_tags or (result["keyframes"][0]["tags"] if result["keyframes"] else {})
+
+                banner.tags = tags_dict
+                banner.video_meta = {
+                    **video_meta_to_dict(meta),
+                    "scene_count": result["scene_count"],
+                    "video_cqs": result["video_cqs"],
+                    "hook_cqs": result["hook_cqs"],
+                    "cta_cqs": result["cta_cqs"],
+                }
+                banner.keyframes = keyframes_data
+                banner.width = meta.width
+                banner.height = meta.height
+                flag_modified(banner, "video_meta")
+                flag_modified(banner, "keyframes")
+            finally:
+                os.unlink(tmp_path)
+                # Clean up keyframe temp files
+                for kf in kf_list:
+                    if os.path.exists(kf.image_path):
+                        os.unlink(kf.image_path)
+        else:
+            # Image: standard Claude Vision tagging
+            tags_dict = await asyncio.to_thread(tag_banner, file_bytes)
+            banner.tags = tags_dict
+
         banner.tags_status = "done"
         banner.tags_error = None
         banner.tagged_at = datetime.now(timezone.utc)
+        flag_modified(banner, "tags")
         await db.commit()
 
-        logger.info("Tagged banner %s successfully", banner_id)
+        logger.info("Tagged banner %s successfully (type=%s)", banner_id, media_type)
         return TagResponse(
             banner_id=banner_id,
-            tags=BannerTags(**tags_dict),
+            tags=BannerTags(**tags_dict) if tags_dict else None,
             tags_status="done",
         )
     except Exception as e:
@@ -772,10 +1063,11 @@ def _extract_boolean_elements(tags: dict) -> dict:
     """Extract all boolean tag fields as flat dict."""
     elements = {}
     bool_fields = {
-        "visual": ["has_faces"],
+        "visual": ["has_faces", "rule_of_thirds"],
         "text_elements": ["has_urgency_words"],
-        "structural": ["has_cta_button", "has_logo"],
+        "structural": ["has_cta_button", "has_logo", "product_visible", "price_visible", "before_after", "safe_zones_clear"],
         "emotional": ["has_smiling_face"],
+        "accessibility": ["contrast_adequate", "min_font_readable", "color_blind_safe"],
     }
     for category, fields in bool_fields.items():
         cat_data = tags.get(category, {})
@@ -784,8 +1076,12 @@ def _extract_boolean_elements(tags: dict) -> dict:
                 elements[field] = bool(cat_data[field])
 
     cat_fields = {
-        "visual": {"color_scheme": None, "background_type": None},
-        "emotional": {"tonality": None, "energy_level": None},
+        "visual": {"color_scheme": None, "background_type": None, "visual_clutter": None, "focal_point": None, "visual_hierarchy": None},
+        "text_elements": {"text_readability": None, "font_size_hierarchy": None, "font_style": None},
+        "structural": {"price_prominence": None},
+        "emotional": {"tonality": None, "energy_level": None, "personalization_level": None},
+        "accessibility": {"information_density": None},
+        "platform_fit": {"thumb_stop_potential": None, "format_type": None, "first_impression_strength": None},
     }
     for category, fields in cat_fields.items():
         cat_data = tags.get(category, {})
@@ -824,17 +1120,42 @@ def _compute_element_performance(banners_data: list, platform_filter: Optional[s
     for elem_name in element_names:
         with_metrics = {k: [] for k in metric_keys}
         without_metrics = {k: [] for k in metric_keys}
+        banners_with = 0
+        banners_without = 0
 
         for b in valid:
             elements = _extract_boolean_elements(b["tags"])
             has_elem = elements.get(elem_name, False)
             metrics = b.get("metrics", {})
 
+            if has_elem:
+                banners_with += 1
+            else:
+                banners_without += 1
+
             target = with_metrics if has_elem else without_metrics
+            # Normalise rate values to fractions (0-1 range)
+            impr = metrics.get("impressions")
+            normalised = {}
+            if impr and float(impr) > 0:
+                impr_f = float(impr)
+                clicks = metrics.get("clicks")
+                installs = metrics.get("installs")
+                events = sum(float(metrics.get(f"event_{i}") or 0) for i in range(1, 5))
+                if clicks is not None:
+                    normalised["ctr"] = float(clicks) / impr_f
+                if installs is not None:
+                    normalised["cr_install"] = float(installs) / impr_f
+                if events > 0:
+                    normalised["cr_event"] = events / impr_f
             for mk in metric_keys:
-                val = metrics.get(mk)
+                val = normalised.get(mk) or metrics.get(mk)
                 if val is not None:
-                    target[mk].append(val)
+                    fval = float(val)
+                    # Safety: if still > 1 after normalisation, treat as percentage
+                    if fval > 1:
+                        fval = fval / 100.0
+                    target[mk].append(fval)
 
         metric_stats = {}
         for mk in metric_keys:
@@ -849,7 +1170,7 @@ def _compute_element_performance(banners_data: list, platform_filter: Optional[s
             delta_pct = (delta / avg_wo * 100) if avg_wo != 0 else 0.0
 
             corr, p_val = 0.0, 1.0
-            if len(w) >= 2 and len(wo) >= 2:
+            if len(w) >= 1 and len(wo) >= 1:
                 all_vals = w + wo
                 all_flags = [1.0] * len(w) + [0.0] * len(wo)
                 if len(all_vals) >= 3:
@@ -871,29 +1192,43 @@ def _compute_element_performance(banners_data: list, platform_filter: Optional[s
             )
 
         category = "visual"
-        if elem_name.startswith(("has_urgency", "headline", "subtitle", "offer", "cta_text")):
+        if elem_name.startswith(("has_urgency", "headline", "subtitle", "offer", "cta_text", "text_readability", "font_size", "font_style")):
             category = "text_elements"
-        elif elem_name.startswith(("has_cta", "has_logo", "text_image")):
+        elif elem_name.startswith(("has_cta", "has_logo", "text_image", "product_", "price_", "before_after", "safe_zones")):
             category = "structural"
-        elif elem_name.startswith(("tonality", "has_smiling", "energy")):
+        elif elem_name.startswith(("tonality", "has_smiling", "energy", "personalization")):
             category = "emotional"
+        elif elem_name.startswith(("contrast_", "min_font", "color_blind", "information_density")):
+            category = "accessibility"
+        elif elem_name.startswith(("thumb_stop", "format_type", "first_impression")):
+            category = "platform_fit"
 
         all_elements[elem_name] = ElementPerformance(
             element_name=elem_name,
             element_category=category,
-            n_with=sum(len(with_metrics[k]) for k in metric_keys) // len(metric_keys) if metric_keys else 0,
-            n_without=sum(len(without_metrics[k]) for k in metric_keys) // len(metric_keys) if metric_keys else 0,
+            n_with=banners_with,
+            n_without=banners_without,
             metrics=metric_stats,
         )
 
     return list(all_elements.values())
 
 
-async def _load_tenant_banners_data(db: AsyncSession, tenant_id: uuid_mod.UUID) -> list:
+async def _load_tenant_banners_data(
+    db: AsyncSession, tenant_id: uuid_mod.UUID, project: Optional[str] = None,
+    media_type: Optional[str] = None,
+) -> list:
     """Load all banners for a tenant as list of dicts (for analytics functions)."""
-    result = await db.execute(
-        select(Banner).where(Banner.tenant_id == tenant_id)
-    )
+    q = select(Banner).where(Banner.tenant_id == tenant_id)
+    if project == "__none__":
+        q = q.where(Banner.project.is_(None))
+    elif project:
+        q = q.where(Banner.project == project)
+    if media_type == "image":
+        q = q.where(or_(Banner.media_type == "image", Banner.media_type.is_(None)))
+    elif media_type == "video":
+        q = q.where(Banner.media_type == "video")
+    result = await db.execute(q)
     banners = result.scalars().all()
     return [_banner_to_record(b) for b in banners]
 
@@ -901,12 +1236,14 @@ async def _load_tenant_banners_data(db: AsyncSession, tenant_id: uuid_mod.UUID) 
 @adscore_router.get("/insights", response_model=InsightsResponse)
 async def get_insights(
     platform: Optional[str] = None,
+    project: Optional[str] = None,
+    media_type: Optional[str] = None,
     current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     """Get element performance insights for the current tenant."""
     tid = current_user.tenant.id
-    banners_data = await _load_tenant_banners_data(db, tid)
+    banners_data = await _load_tenant_banners_data(db, tid, project=project, media_type=media_type)
 
     elements = _compute_element_performance(banners_data, platform_filter=platform)
 
@@ -932,15 +1269,157 @@ async def get_insights(
     )
 
 
+@adscore_router.get("/insights/video-hooks")
+async def get_video_hook_insights(
+    project: Optional[str] = None,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Analyze hook frame performance across video creatives."""
+    tid = current_user.tenant.id
+    banners_data = await _load_tenant_banners_data(db, tid, project=project, media_type="video")
+
+    hook_groups = {}  # hook_type -> list of {ctr, banner_id, image_url, ...}
+    duration_groups = {}  # bucket label -> list of {ctr, ...}
+
+    for b in banners_data:
+        m = b.get("metrics") or {}
+        ctr = m.get("ctr")
+        if ctr is None or b.get("tags_status") != "done":
+            continue
+
+        kfs = b.get("keyframes") or []
+        vmeta = b.get("video_meta") or {}
+        dur = vmeta.get("duration", 0)
+
+        # Classify duration bucket
+        if dur <= 0:
+            dur_bucket = "unknown"
+        elif dur <= 6:
+            dur_bucket = "0-6s"
+        elif dur <= 15:
+            dur_bucket = "6-15s"
+        elif dur <= 30:
+            dur_bucket = "15-30s"
+        elif dur <= 60:
+            dur_bucket = "30-60s"
+        else:
+            dur_bucket = "60s+"
+
+        entry = {
+            "banner_id": b.get("id"),
+            "ctr": ctr,
+            "image_url": b.get("image_url"),
+            "filename": b.get("original_filename"),
+            "duration": dur,
+        }
+
+        duration_groups.setdefault(dur_bucket, []).append(entry)
+
+        # Hook frame analysis
+        hook_frame = next((kf for kf in kfs if kf.get("frame_type") == "hook"), None)
+        if hook_frame:
+            tags = hook_frame.get("tags") or {}
+            # Determine hook type from tags
+            hook_type = "other"
+            if tags.get("text_elements", {}).get("headline"):
+                hook_type = "text"
+            elif tags.get("structural", {}).get("human_presence") in ("face_closeup", "person"):
+                hook_type = "face"
+            elif tags.get("visual", {}).get("product_prominence") in ("high", "dominant"):
+                hook_type = "product"
+            elif tags.get("emotional", {}).get("action_dynamic") in ("high", "medium"):
+                hook_type = "action"
+
+            entry["hook_image_url"] = hook_frame.get("image_url")
+            entry["hook_cqs"] = hook_frame.get("cqs_score")
+            hook_groups.setdefault(hook_type, []).append(entry)
+
+    # Aggregate hook groups
+    hook_summary = []
+    for htype, entries in sorted(hook_groups.items()):
+        ctrs = [e["ctr"] for e in entries]
+        avg_ctr = sum(ctrs) / len(ctrs) if ctrs else 0
+        best = max(entries, key=lambda e: e["ctr"])
+        hook_summary.append({
+            "hook_type": htype,
+            "count": len(entries),
+            "avg_ctr": round(avg_ctr, 6),
+            "best_ctr": round(best["ctr"], 6),
+            "best_banner_id": best["banner_id"],
+            "best_image_url": best.get("hook_image_url") or best.get("image_url"),
+        })
+    hook_summary.sort(key=lambda x: x["avg_ctr"], reverse=True)
+
+    # Aggregate duration groups
+    duration_summary = []
+    for bucket, entries in sorted(duration_groups.items()):
+        ctrs = [e["ctr"] for e in entries]
+        avg_ctr = sum(ctrs) / len(ctrs) if ctrs else 0
+        duration_summary.append({
+            "bucket": bucket,
+            "count": len(entries),
+            "avg_ctr": round(avg_ctr, 6),
+        })
+
+    # CTA endcard analysis
+    cta_yes = []
+    cta_no = []
+    for b in banners_data:
+        m = b.get("metrics") or {}
+        ctr = m.get("ctr")
+        if ctr is None or b.get("tags_status") != "done":
+            continue
+        kfs = b.get("keyframes") or []
+        cta_frame = next((kf for kf in kfs if kf.get("frame_type") == "cta"), None)
+        if cta_frame and cta_frame.get("tags", {}).get("structural", {}).get("cta_presence"):
+            cta_yes.append(ctr)
+        else:
+            cta_no.append(ctr)
+
+    cta_impact = {
+        "with_cta_count": len(cta_yes),
+        "without_cta_count": len(cta_no),
+        "with_cta_avg_ctr": round(sum(cta_yes) / len(cta_yes), 6) if cta_yes else None,
+        "without_cta_avg_ctr": round(sum(cta_no) / len(cta_no), 6) if cta_no else None,
+    }
+
+    # Scene count analysis
+    scene_groups = {}
+    for b in banners_data:
+        m = b.get("metrics") or {}
+        ctr = m.get("ctr")
+        if ctr is None or b.get("tags_status") != "done":
+            continue
+        vmeta = b.get("video_meta") or {}
+        sc = vmeta.get("scene_count") or len([kf for kf in (b.get("keyframes") or []) if kf.get("frame_type") == "scene_change"])
+        scene_groups.setdefault(sc, []).append(ctr)
+
+    scene_summary = [
+        {"scene_count": sc, "count": len(ctrs), "avg_ctr": round(sum(ctrs) / len(ctrs), 6)}
+        for sc, ctrs in sorted(scene_groups.items())
+    ]
+
+    return {
+        "hook_types": hook_summary,
+        "duration_buckets": duration_summary,
+        "cta_impact": cta_impact,
+        "scene_counts": scene_summary,
+        "n_videos": len([b for b in banners_data if b.get("tags_status") == "done"]),
+    }
+
+
 @adscore_router.get("/elements")
 async def get_elements_table(
     platform: Optional[str] = None,
+    project: Optional[str] = None,
+    media_type: Optional[str] = None,
     current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     """Get flat element→KPI table for DataTable rendering."""
     tid = current_user.tenant.id
-    banners_data = await _load_tenant_banners_data(db, tid)
+    banners_data = await _load_tenant_banners_data(db, tid, project=project, media_type=media_type)
     elements = _compute_element_performance(banners_data, platform_filter=platform)
 
     rows = []
@@ -1029,8 +1508,10 @@ def _build_explain_context(banner: dict, banners_data: list, element_perf: list)
         "text_elements": "Текстовые",
         "structural": "Структурные",
         "emotional": "Эмоциональные",
+        "accessibility": "Доступность",
+        "platform_fit": "Платформа",
     }
-    for category in ["visual", "text_elements", "structural", "emotional"]:
+    for category in ["visual", "text_elements", "structural", "emotional", "accessibility", "platform_fit"]:
         cat_data = tags.get(category, {}) if tags else {}
         if not cat_data:
             continue
