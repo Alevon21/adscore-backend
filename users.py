@@ -627,11 +627,17 @@ async def get_branding(
     if str(current_user.tenant.id) != tenant_id:
         raise HTTPException(status_code=403, detail="Access denied")
 
-    tenant = current_user.tenant
+    tenant = await db.get(Tenant, current_user.tenant.id)
+    try:
+        logo = tenant.logo_url
+        color = tenant.brand_color
+    except Exception:
+        logo = None
+        color = None
     return {
         "tenant_name": tenant.name,
-        "logo_url": tenant.logo_url,
-        "brand_color": tenant.brand_color,
+        "logo_url": logo,
+        "brand_color": color,
     }
 
 
@@ -647,16 +653,23 @@ async def update_branding(
         raise HTTPException(status_code=403, detail="Access denied")
 
     tenant = await db.get(Tenant, current_user.tenant.id)
-    if body.logo_url is not None:
-        tenant.logo_url = body.logo_url
-    if body.brand_color is not None:
-        if body.brand_color and not body.brand_color.startswith("#"):
-            raise HTTPException(status_code=400, detail="brand_color must be hex like #3B82F6")
-        tenant.brand_color = body.brand_color
-
-    await db.commit()
-    return {
-        "tenant_name": tenant.name,
-        "logo_url": tenant.logo_url,
-        "brand_color": tenant.brand_color,
-    }
+    try:
+        if body.logo_url is not None:
+            tenant.logo_url = body.logo_url
+        if body.brand_color is not None:
+            if body.brand_color and not body.brand_color.startswith("#"):
+                raise HTTPException(status_code=400, detail="brand_color must be hex like #3B82F6")
+            tenant.brand_color = body.brand_color
+        await db.commit()
+        return {
+            "tenant_name": tenant.name,
+            "logo_url": tenant.logo_url,
+            "brand_color": tenant.brand_color,
+        }
+    except Exception:
+        return {
+            "tenant_name": tenant.name,
+            "logo_url": None,
+            "brand_color": None,
+            "error": "Branding columns not yet migrated. Run alembic upgrade head.",
+        }

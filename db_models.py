@@ -6,7 +6,7 @@ from typing import Optional, List, Dict
 from sqlalchemy import (
     String, Boolean, DateTime, Integer, BigInteger, Text, Enum, ForeignKey, Index, Float,
 )
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, deferred
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 from database import Base
@@ -71,8 +71,8 @@ class Tenant(Base):
     storage_quota_mb: Mapped[int] = mapped_column(Integer, default=1024, nullable=False)  # 1GB default
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
-    logo_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
-    brand_color: Mapped[Optional[str]] = mapped_column(String(7), nullable=True)  # hex e.g. #3B82F6
+    logo_url: Mapped[Optional[str]] = deferred(mapped_column(String(500), nullable=True))
+    brand_color: Mapped[Optional[str]] = deferred(mapped_column(String(7), nullable=True))  # hex e.g. #3B82F6
 
     users: Mapped[List["User"]] = relationship(back_populates="tenant", lazy="selectin")
 
