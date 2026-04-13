@@ -24,7 +24,7 @@ from fastapi.responses import StreamingResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from sqlalchemy import select, update
+from sqlalchemy import select, update, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from exporter import export_results
@@ -47,7 +47,7 @@ from scorer import TextScorer
 from tester import ABTester
 from text_analyzer import TextPartAnalyzer
 from adscore import adscore_router
-from users import router as auth_router, tenant_router, log_audit
+from users import router as auth_router, tenant_router, admin_router as superadmin_router, log_audit, PLAN_SESSION_LIMITS
 from auth import get_current_user, CurrentUser
 from sessions import router as sessions_router
 from usability_test import router as usability_test_router
@@ -89,6 +89,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.include_router(adscore_router)
 app.include_router(auth_router)
 app.include_router(tenant_router)
+app.include_router(superadmin_router)
 app.include_router(sessions_router)
 app.include_router(usability_test_router)
 app.include_router(mmp_router)
@@ -307,6 +308,27 @@ async def upload_file(
     # Persist to DB + Supabase Storage
     from database import async_session
     async with async_session() as db:
+        # Check session limit for free plan
+        plan = current_user.tenant.plan.value
+        is_sa = getattr(current_user.user, 'is_superadmin', False)
+        session_limit = -1 if is_sa else PLAN_SESSION_LIMITS.get(plan, 5)
+        if session_limit > 0:
+            from datetime import datetime, timezone
+            now = datetime.now(timezone.utc)
+            month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            count_result = await db.execute(
+                select(func.count(ScoringSession.id)).where(
+                    ScoringSession.tenant_id == current_user.tenant.id,
+                    ScoringSession.created_at >= month_start,
+                )
+            )
+            current_count = count_result.scalar() or 0
+            if current_count >= session_limit:
+                raise HTTPException(
+                    status_code=403,
+                    detail=f"Лимит сессий на текущем тарифе ({session_limit}/мес) исчерпан. Обновите тариф для безлимитного доступа."
+                )
+
         # Audit log
         await log_audit(
             db, current_user.tenant.id, current_user.user.id, "upload", request,

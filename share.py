@@ -38,7 +38,7 @@ async def create_share_link(
     current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    valid_types = {"stakeholder_report", "budget", "brief"}
+    valid_types = {"stakeholder_report", "budget", "brief", "scoring_results"}
     if body.report_type not in valid_types:
         raise HTTPException(400, f"report_type must be one of {valid_types}")
 
@@ -164,5 +164,44 @@ async def get_shared_report(
             current_user=pseudo_user,
             db=db,
         )
+    elif link.report_type == "scoring_results":
+        session_id = filters.get("session_id")
+        if not session_id:
+            raise HTTPException(400, "session_id required in filters")
+        from db_models import ScoringSession, ScoringResult
+        import uuid as uuid_std
+        sess_result = await db.execute(
+            select(ScoringSession)
+            .where(
+                ScoringSession.id == uuid_std.UUID(session_id),
+                ScoringSession.tenant_id == link.tenant_id,
+            )
+        )
+        session = sess_result.scalar_one_or_none()
+        if not session:
+            raise HTTPException(404, "Session not found")
+
+        scoring_result = await db.execute(
+            select(ScoringResult)
+            .where(ScoringResult.session_id == session.id)
+            .order_by(ScoringResult.created_at.desc())
+            .limit(1)
+        )
+        sr = scoring_result.scalar_one_or_none()
+        if not sr:
+            raise HTTPException(404, "No results found")
+
+        return {
+            "session": {
+                "file_name": session.file_name,
+                "n_rows": session.n_rows,
+                "mode": session.mode,
+                "completed_at": session.completed_at.isoformat() if session.completed_at else None,
+            },
+            "results": sr.results,
+            "stats": sr.stats,
+            "text_part_result": sr.text_part_result,
+            "campaign_analysis": sr.campaign_analysis,
+        }
     else:
         raise HTTPException(400, "Unknown report type")

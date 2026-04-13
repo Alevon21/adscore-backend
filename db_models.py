@@ -23,12 +23,14 @@ def new_uuid():
 class UserRole(str, enum.Enum):
     owner = "owner"
     admin = "admin"
-    analyst = "analyst"
-    viewer = "viewer"
+    manager = "manager"
+    analyst = "analyst"       # legacy, kept for DB compatibility
+    viewer = "viewer"         # legacy, kept for DB compatibility
 
 
 class TenantPlan(str, enum.Enum):
     free = "free"
+    starter = "starter"
     pro = "pro"
     enterprise = "enterprise"
 
@@ -90,6 +92,7 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
     last_login: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     features: Mapped[Optional[list]] = mapped_column(JSONB, default=lambda: ["calculators", "research"], nullable=True)
+    is_superadmin: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", nullable=False)
 
     tenant: Mapped[Tenant] = relationship(back_populates="users", lazy="selectin")
 
@@ -201,6 +204,7 @@ class ScoringSession(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
     updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True, onupdate=utcnow)
     completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    visibility: Mapped[str] = mapped_column(String(20), default="team", server_default="team", nullable=False)
 
     __table_args__ = (
         Index("ix_sessions_tenant_created", "tenant_id", "created_at"),
@@ -340,6 +344,27 @@ class SharedLink(Base):
     __table_args__ = (
         Index("ix_shared_links_token", "token"),
         Index("ix_shared_links_tenant_created", "tenant_id", "created_at"),
+    )
+
+
+class SessionVisibility(str, enum.Enum):
+    team = "team"        # everyone in tenant (default, backward compatible)
+    private = "private"  # only creator
+    selected = "selected"  # creator + selected users
+
+
+class SessionShare(Base):
+    __tablename__ = "session_shares"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=new_uuid)
+    session_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("scoring_sessions.id", ondelete="CASCADE"), nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    shared_by: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+
+    __table_args__ = (
+        Index("ix_session_shares_session", "session_id"),
+        Index("ix_session_shares_user", "user_id"),
     )
 
 

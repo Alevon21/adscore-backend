@@ -1,5 +1,7 @@
+import os
 import re
 import uuid
+from calendar import monthrange
 from datetime import datetime, timezone
 from typing import Optional, List
 
@@ -11,7 +13,7 @@ from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
-from db_models import User, Tenant, AuditLog, UserRole, PendingInvite
+from db_models import User, Tenant, AuditLog, UserRole, TenantPlan, PendingInvite, Banner, ScoringSession
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from auth import get_current_user, require_role, require_feature, get_user_features, CurrentUser, VALID_FEATURES, verify_supabase_token
 
@@ -42,6 +44,7 @@ class UserResponse(BaseModel):
     tenant_slug: str
     tenant_plan: str
     features: List[str] = []
+    is_superadmin: bool = False
 
     class Config:
         from_attributes = True
@@ -99,6 +102,16 @@ def slugify(text: str) -> str:
     return text[:100]
 
 
+class ProfileUpdateRequest(BaseModel):
+    name: Optional[str] = None
+    company_name: Optional[str] = None
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+
 def user_to_response(user: User) -> UserResponse:
     return UserResponse(
         id=str(user.id),
@@ -110,6 +123,7 @@ def user_to_response(user: User) -> UserResponse:
         tenant_slug=user.tenant.slug,
         tenant_plan=user.tenant.plan.value,
         features=get_user_features(user),
+        is_superadmin=getattr(user, 'is_superadmin', False),
     )
 
 
@@ -673,3 +687,393 @@ async def update_branding(
             "brand_color": None,
             "error": "Branding columns not yet migrated. Run alembic upgrade head.",
         }
+
+
+# ── Profile Management ──────────────────────────────────
+
+@router.patch("/profile", response_model=UserResponse)
+async def update_profile(
+    body: ProfileUpdateRequest,
+    request: Request,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Update current user's name and/or company name."""
+    user = current_user.user
+    changed = {}
+
+    if body.name is not None:
+        old_name = user.name
+        user.name = body.name.strip()
+        changed["name"] = {"old": old_name, "new": user.name}
+
+    if body.company_name is not None:
+        # Only owner can rename the company
+        if user.role != UserRole.owner:
+            raise HTTPException(status_code=403, detail="Only the owner can rename the company")
+        tenant = await db.get(Tenant, current_user.tenant.id)
+        old_company = tenant.name
+        tenant.name = body.company_name.strip()
+        changed["company_name"] = {"old": old_company, "new": tenant.name}
+
+    if not changed:
+        raise HTTPException(status_code=400, detail="Nothing to update")
+
+    await db.commit()
+    await db.refresh(user)
+
+    await log_audit(
+        db, current_user.tenant.id, user.id, "update_profile", request,
+        details=changed,
+    )
+    await db.commit()
+
+    return user_to_response(user)
+
+
+@router.post("/change-password")
+async def change_password(
+    body: ChangePasswordRequest,
+    request: Request,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Change password with current password verification via Supabase."""
+    import httpx
+
+    if len(body.new_password) < 6:
+        raise HTTPException(status_code=400, detail="Новый пароль должен быть не менее 6 символов")
+
+    # Step 1: Verify current password by attempting to sign in with it
+    sb_url = os.getenv("SUPABASE_URL", "")
+    sb_anon_key = os.getenv("SUPABASE_ANON_KEY", "")
+    sb_service_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
+
+    async with httpx.AsyncClient() as client:
+        verify_resp = await client.post(
+            f"{sb_url}/auth/v1/token?grant_type=password",
+            json={"email": current_user.user.email, "password": body.current_password},
+            headers={
+                "apikey": sb_anon_key,
+                "Content-Type": "application/json",
+            },
+        )
+        if verify_resp.status_code != 200:
+            raise HTTPException(status_code=400, detail="Неверный текущий пароль")
+
+    # Step 2: Update password via Supabase Admin API
+    async with httpx.AsyncClient() as client:
+        update_resp = await client.put(
+            f"{sb_url}/auth/v1/admin/users/{current_user.user.supabase_uid}",
+            json={"password": body.new_password},
+            headers={
+                "apikey": sb_anon_key,
+                "Authorization": f"Bearer {sb_service_key}",
+                "Content-Type": "application/json",
+            },
+        )
+        if update_resp.status_code not in (200, 201):
+            raise HTTPException(status_code=500, detail="Ошибка при обновлении пароля")
+
+    await log_audit(
+        db, current_user.tenant.id, current_user.user.id, "change_password", request,
+    )
+    await db.commit()
+
+    return {"ok": True}
+
+
+@router.delete("/account")
+async def delete_own_account(
+    request: Request,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Delete (deactivate) own account. Owners cannot delete themselves if they have other users."""
+    user = current_user.user
+
+    if user.role == UserRole.owner:
+        # Check if there are other active users in the tenant
+        result = await db.execute(
+            select(func.count(User.id)).where(
+                User.tenant_id == current_user.tenant.id,
+                User.is_active == True,
+                User.id != user.id,
+            )
+        )
+        other_count = result.scalar()
+        if other_count > 0:
+            raise HTTPException(
+                status_code=400,
+                detail="Cannot delete owner account while other users exist. Transfer ownership or remove them first.",
+            )
+
+    user.is_active = False
+    db.add(user)
+
+    await log_audit(
+        db, current_user.tenant.id, user.id, "delete_account", request,
+        resource_type="user", resource_id=str(user.id),
+    )
+    await db.commit()
+
+    return {"ok": True}
+
+
+# ── Tenant Usage ──────────────────────────────────────────
+
+PLAN_BANNER_LIMITS = {
+    "free": 10,
+    "starter": 50,
+    "pro": 500,
+    "enterprise": 10000,
+}
+
+PLAN_SESSION_LIMITS = {
+    "free": 5,
+    "starter": -1,  # unlimited
+    "pro": -1,
+    "enterprise": -1,
+}
+
+
+@tenant_router.get("/{tenant_id}/usage")
+async def get_usage(
+    tenant_id: str,
+    current_user: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Get tenant usage stats (banners used this month, limits, reset date)."""
+    if str(current_user.tenant.id) != tenant_id:
+        raise HTTPException(status_code=403, detail="Access denied to this tenant")
+
+    now = datetime.now(timezone.utc)
+    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    _, last_day = monthrange(now.year, now.month)
+    month_end = now.replace(day=last_day, hour=23, minute=59, second=59)
+    days_until_reset = (month_end - now).days + 1
+
+    # Count banners uploaded this month
+    result = await db.execute(
+        select(func.count(Banner.id)).where(
+            Banner.tenant_id == current_user.tenant.id,
+            Banner.created_at >= month_start,
+        )
+    )
+    banners_used = result.scalar() or 0
+
+    # Count scoring sessions created this month
+    sessions_result = await db.execute(
+        select(func.count(ScoringSession.id)).where(
+            ScoringSession.tenant_id == current_user.tenant.id,
+            ScoringSession.created_at >= month_start,
+        )
+    )
+    sessions_used = sessions_result.scalar() or 0
+
+    plan = current_user.tenant.plan.value
+    is_sa = getattr(current_user.user, 'is_superadmin', False)
+    banners_limit = 999999 if is_sa else PLAN_BANNER_LIMITS.get(plan, 10)
+
+    return {
+        "banners_used": banners_used,
+        "banners_limit": banners_limit,
+        "sessions_used": sessions_used,
+        "sessions_limit": -1 if is_sa else PLAN_SESSION_LIMITS.get(plan, 5),
+        "days_until_reset": days_until_reset,
+        "period": f"{now.strftime('%B %Y')}",
+        "plan": "unlimited" if is_sa else plan,
+    }
+
+
+# ── Superadmin ──────────────────────────────────────────
+
+admin_router = APIRouter(prefix="/admin", tags=["admin"])
+
+
+def _require_superadmin():
+    """Dependency: require user to be a superadmin."""
+    async def check(current_user: CurrentUser = Depends(get_current_user)):
+        if not getattr(current_user.user, 'is_superadmin', False):
+            raise HTTPException(status_code=403, detail="Superadmin access required")
+        return current_user
+    return check
+
+
+class TenantAdminResponse(BaseModel):
+    id: str
+    name: str
+    slug: str
+    plan: str
+    is_active: bool
+    created_at: str
+    user_count: int
+    banner_count: int
+
+
+class TenantPlanUpdate(BaseModel):
+    plan: Optional[str] = None
+    is_active: Optional[bool] = None
+
+
+@admin_router.get("/tenants")
+async def admin_list_tenants(
+    current_user: CurrentUser = Depends(_require_superadmin()),
+    db: AsyncSession = Depends(get_db),
+):
+    """List all tenants with user/banner counts (superadmin only)."""
+    result = await db.execute(select(Tenant).order_by(Tenant.created_at.desc()))
+    tenants = result.scalars().all()
+
+    response = []
+    for t in tenants:
+        user_count_r = await db.execute(
+            select(func.count(User.id)).where(User.tenant_id == t.id, User.is_active == True)
+        )
+        banner_count_r = await db.execute(
+            select(func.count(Banner.id)).where(Banner.tenant_id == t.id)
+        )
+        response.append(TenantAdminResponse(
+            id=str(t.id),
+            name=t.name,
+            slug=t.slug,
+            plan=t.plan.value,
+            is_active=t.is_active,
+            created_at=t.created_at.isoformat(),
+            user_count=user_count_r.scalar() or 0,
+            banner_count=banner_count_r.scalar() or 0,
+        ))
+
+    return response
+
+
+@admin_router.get("/users")
+async def admin_list_all_users(
+    current_user: CurrentUser = Depends(_require_superadmin()),
+    db: AsyncSession = Depends(get_db),
+):
+    """List all users across all tenants (superadmin only)."""
+    result = await db.execute(
+        select(User).order_by(User.created_at.desc())
+    )
+    users = result.scalars().all()
+    return [
+        {
+            "id": str(u.id),
+            "email": u.email,
+            "name": u.name,
+            "role": u.role.value,
+            "is_active": u.is_active,
+            "is_superadmin": getattr(u, 'is_superadmin', False),
+            "tenant_name": u.tenant.name if u.tenant else None,
+            "tenant_id": str(u.tenant_id),
+            "created_at": u.created_at.isoformat(),
+            "last_login": u.last_login.isoformat() if u.last_login else None,
+        }
+        for u in users
+    ]
+
+
+@admin_router.get("/stats")
+async def admin_platform_stats(
+    current_user: CurrentUser = Depends(_require_superadmin()),
+    db: AsyncSession = Depends(get_db),
+):
+    """Platform-level stats (superadmin only)."""
+    tenants_total = (await db.execute(select(func.count(Tenant.id)))).scalar() or 0
+    tenants_active = (await db.execute(
+        select(func.count(Tenant.id)).where(Tenant.is_active == True)
+    )).scalar() or 0
+    users_total = (await db.execute(select(func.count(User.id)))).scalar() or 0
+    users_active = (await db.execute(
+        select(func.count(User.id)).where(User.is_active == True)
+    )).scalar() or 0
+    banners_total = (await db.execute(select(func.count(Banner.id)))).scalar() or 0
+
+    # Per-plan breakdown
+    plan_counts = {}
+    for plan in TenantPlan:
+        cnt = (await db.execute(
+            select(func.count(Tenant.id)).where(Tenant.plan == plan, Tenant.is_active == True)
+        )).scalar() or 0
+        plan_counts[plan.value] = cnt
+
+    return {
+        "tenants_total": tenants_total,
+        "tenants_active": tenants_active,
+        "users_total": users_total,
+        "users_active": users_active,
+        "banners_total": banners_total,
+        "plan_breakdown": plan_counts,
+    }
+
+
+@admin_router.patch("/tenants/{target_tenant_id}")
+async def admin_update_tenant(
+    target_tenant_id: str,
+    body: TenantPlanUpdate,
+    request: Request,
+    current_user: CurrentUser = Depends(_require_superadmin()),
+    db: AsyncSession = Depends(get_db),
+):
+    """Update tenant plan or status (superadmin only)."""
+    tenant = await db.get(Tenant, uuid.UUID(target_tenant_id))
+    if not tenant:
+        raise HTTPException(status_code=404, detail="Tenant not found")
+
+    changed = {}
+    if body.plan is not None:
+        try:
+            new_plan = TenantPlan(body.plan)
+        except ValueError:
+            raise HTTPException(status_code=400, detail=f"Invalid plan: {body.plan}")
+        changed["plan"] = {"old": tenant.plan.value, "new": new_plan.value}
+        tenant.plan = new_plan
+
+    if body.is_active is not None:
+        changed["is_active"] = {"old": tenant.is_active, "new": body.is_active}
+        tenant.is_active = body.is_active
+
+    if not changed:
+        raise HTTPException(status_code=400, detail="Nothing to update")
+
+    await db.commit()
+
+    await log_audit(
+        db, current_user.tenant.id, current_user.user.id, "admin_update_tenant", request,
+        resource_type="tenant", resource_id=target_tenant_id,
+        details=changed,
+    )
+    await db.commit()
+
+    return {"ok": True, "changes": changed}
+
+
+@admin_router.patch("/users/{target_user_id}")
+async def admin_toggle_user_active(
+    target_user_id: str,
+    request: Request,
+    current_user: CurrentUser = Depends(_require_superadmin()),
+    db: AsyncSession = Depends(get_db),
+):
+    """Activate or deactivate a user (superadmin only). Toggles is_active."""
+    target = await db.get(User, uuid.UUID(target_user_id))
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Prevent deactivating yourself
+    if target.id == current_user.user.id:
+        raise HTTPException(status_code=400, detail="Нельзя деактивировать самого себя")
+
+    old_active = target.is_active
+    target.is_active = not target.is_active
+    await db.commit()
+
+    await log_audit(
+        db, current_user.tenant.id, current_user.user.id, "admin_toggle_user", request,
+        resource_type="user", resource_id=target_user_id,
+        details={"email": target.email, "is_active": {"old": old_active, "new": target.is_active}},
+    )
+    await db.commit()
+
+    return {"ok": True, "is_active": target.is_active}
