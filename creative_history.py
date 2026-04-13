@@ -174,7 +174,6 @@ async def import_placements_csv(
     banner_id: str,
     current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-    file: "UploadFile" = None,
     body: dict = None,
 ):
     """Import placements from CSV data. Accepts JSON body with {rows: [...]}."""
