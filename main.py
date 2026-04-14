@@ -143,6 +143,24 @@ async def on_startup():
     except Exception as e:
         logger.warning("Database init skipped (not available): %s", e)
 
+    # One-time migration: set superadmin for admin@example.com
+    try:
+        from database import async_session
+        from db_models import User
+        async with async_session() as db:
+            result = await db.execute(
+                select(User).where(User.email == "admin@example.com")
+            )
+            user = result.scalar_one_or_none()
+            if user and not user.is_superadmin:
+                user.is_superadmin = True
+                await db.commit()
+                logger.info("Set is_superadmin=true for admin@example.com")
+            elif user:
+                logger.info("admin@example.com already superadmin")
+    except Exception as e:
+        logger.warning("Superadmin migration skipped: %s", e)
+
 
 # In-memory session store (protected by _session_lock)
 SESSION_STORE: Dict[str, Dict[str, Any]] = {}
