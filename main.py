@@ -66,7 +66,7 @@ from trend_detection import router as trend_router
 from database import get_db
 from db_models import (
     ScoringSession, ScoringResult as ScoringResultDB,
-    StoredFile, FileStatus, SessionStatus,
+    StoredFile, FileStatus, SessionStatus, User,
 )
 import storage as file_storage
 
@@ -136,17 +136,50 @@ async def add_security_headers(request: Request, call_next):
 
 @app.on_event("startup")
 async def on_startup():
-    from database import init_db
+    from database import init_db, engine, async_session
+    from sqlalchemy import text
+
     try:
         await init_db()
         logger.info("Database initialized")
     except Exception as e:
         logger.warning("Database init skipped (not available): %s", e)
 
-    # One-time migration: set superadmin for admin@example.com
+    # Auto-migrate: add missing columns to existing tables
+    _migrations = [
+        ("users", "is_active", "ALTER TABLE users ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true"),
+        ("users", "is_superadmin", "ALTER TABLE users ADD COLUMN is_superadmin BOOLEAN NOT NULL DEFAULT false"),
+        ("tenants", "is_active", "ALTER TABLE tenants ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true"),
+        ("scoring_sessions", "visibility", "ALTER TABLE scoring_sessions ADD COLUMN visibility VARCHAR(20) NOT NULL DEFAULT 'team'"),
+    ]
     try:
-        from database import async_session
-        from db_models import User
+        async with engine.begin() as conn:
+            for table, column, ddl in _migrations:
+                exists = await conn.execute(text(
+                    "SELECT 1 FROM information_schema.columns "
+                    "WHERE table_name = :t AND column_name = :c"
+                ), {"t": table, "c": column})
+                if not exists.scalar():
+                    await conn.execute(text(ddl))
+                    logger.info("Migration: added %s.%s", table, column)
+
+            # Create session_shares table if missing
+            await conn.execute(text("""
+                CREATE TABLE IF NOT EXISTS session_shares (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    session_id UUID NOT NULL,
+                    user_id UUID NOT NULL,
+                    shared_by UUID NOT NULL,
+                    created_at TIMESTAMPTZ DEFAULT now(),
+                    UNIQUE(session_id, user_id)
+                )
+            """))
+        logger.info("Auto-migrations complete")
+    except Exception as e:
+        logger.warning("Auto-migration error: %s", e)
+
+    # Set superadmin for admin@example.com
+    try:
         async with async_session() as db:
             result = await db.execute(
                 select(User).where(User.email == "admin@example.com")
@@ -156,8 +189,6 @@ async def on_startup():
                 user.is_superadmin = True
                 await db.commit()
                 logger.info("Set is_superadmin=true for admin@example.com")
-            elif user:
-                logger.info("admin@example.com already superadmin")
     except Exception as e:
         logger.warning("Superadmin migration skipped: %s", e)
 
