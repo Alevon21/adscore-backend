@@ -981,21 +981,33 @@ async def admin_platform_stats(
 ):
     """Platform-level stats (superadmin only)."""
     tenants_total = (await db.execute(select(func.count(Tenant.id)))).scalar() or 0
-    tenants_active = (await db.execute(
-        select(func.count(Tenant.id)).where(Tenant.is_active == True)
-    )).scalar() or 0
+    try:
+        tenants_active = (await db.execute(
+            select(func.count(Tenant.id)).where(Tenant.is_active == True)
+        )).scalar() or 0
+    except Exception:
+        tenants_active = tenants_total
     users_total = (await db.execute(select(func.count(User.id)))).scalar() or 0
-    users_active = (await db.execute(
-        select(func.count(User.id)).where(User.is_active == True)
-    )).scalar() or 0
-    banners_total = (await db.execute(select(func.count(Banner.id)))).scalar() or 0
+    try:
+        users_active = (await db.execute(
+            select(func.count(User.id)).where(User.is_active == True)
+        )).scalar() or 0
+    except Exception:
+        users_active = users_total
+    try:
+        banners_total = (await db.execute(select(func.count(Banner.id)))).scalar() or 0
+    except Exception:
+        banners_total = 0
 
     # Per-plan breakdown
     plan_counts = {}
     for plan in TenantPlan:
-        cnt = (await db.execute(
-            select(func.count(Tenant.id)).where(Tenant.plan == plan, Tenant.is_active == True)
-        )).scalar() or 0
+        try:
+            cnt = (await db.execute(
+                select(func.count(Tenant.id)).where(Tenant.plan == plan, Tenant.is_active == True)
+            )).scalar() or 0
+        except Exception:
+            cnt = 0
         plan_counts[plan.value] = cnt
 
     return {
