@@ -149,7 +149,10 @@ async def on_startup():
     _migrations = [
         ("users", "is_active", "ALTER TABLE users ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true"),
         ("users", "is_superadmin", "ALTER TABLE users ADD COLUMN is_superadmin BOOLEAN NOT NULL DEFAULT false"),
+        ("users", "features", "ALTER TABLE users ADD COLUMN features JSONB DEFAULT '[\"calculators\", \"research\"]'::jsonb"),
         ("tenants", "is_active", "ALTER TABLE tenants ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true"),
+        ("tenants", "logo_url", "ALTER TABLE tenants ADD COLUMN logo_url VARCHAR(500)"),
+        ("tenants", "brand_color", "ALTER TABLE tenants ADD COLUMN brand_color VARCHAR(7)"),
         ("scoring_sessions", "visibility", "ALTER TABLE scoring_sessions ADD COLUMN visibility VARCHAR(20) NOT NULL DEFAULT 'team'"),
     ]
     try:
