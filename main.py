@@ -171,6 +171,14 @@ async def on_startup():
                     await conn.execute(text(ddl))
                     logger.info("Migration: added %s.%s", table, column)
 
+            # Add 'deleted' to sessionstatus enum if missing
+            # (ALTER TYPE ADD VALUE must run OUTSIDE a transaction in Postgres,
+            # so we do it with autocommit=True via isolation_level)
+            try:
+                await conn.execute(text("ALTER TYPE sessionstatus ADD VALUE IF NOT EXISTS 'deleted'"))
+            except Exception as _e:
+                logger.info("sessionstatus enum 'deleted' already present or alter skipped: %s", _e)
+
             # Create session_shares table if missing
             await conn.execute(text("""
                 CREATE TABLE IF NOT EXISTS session_shares (
