@@ -153,6 +153,11 @@ async def on_startup():
         ("tenants", "is_active", "ALTER TABLE tenants ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true"),
         ("tenants", "logo_url", "ALTER TABLE tenants ADD COLUMN logo_url VARCHAR(500)"),
         ("tenants", "brand_color", "ALTER TABLE tenants ADD COLUMN brand_color VARCHAR(7)"),
+        ("banners", "project", "ALTER TABLE banners ADD COLUMN project VARCHAR(200)"),
+        ("banners", "concept_group", "ALTER TABLE banners ADD COLUMN concept_group VARCHAR(200)"),
+        ("banners", "media_type", "ALTER TABLE banners ADD COLUMN media_type VARCHAR(10) DEFAULT 'image'"),
+        ("banners", "video_meta", "ALTER TABLE banners ADD COLUMN video_meta JSONB"),
+        ("banners", "keyframes", "ALTER TABLE banners ADD COLUMN keyframes JSONB"),
         ("scoring_sessions", "visibility", "ALTER TABLE scoring_sessions ADD COLUMN visibility VARCHAR(20) NOT NULL DEFAULT 'team'"),
     ]
     try:
