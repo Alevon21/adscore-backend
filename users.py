@@ -965,6 +965,7 @@ async def admin_list_all_users(
             "role": u.role.value,
             "is_active": u.is_active,
             "is_superadmin": getattr(u, 'is_superadmin', False),
+            "has_demo": "demo_data" in (u.features or []),
             "tenant_name": u.tenant.name if u.tenant else None,
             "tenant_id": str(u.tenant_id),
             "created_at": u.created_at.isoformat(),
@@ -1089,3 +1090,43 @@ async def admin_toggle_user_active(
     await db.commit()
 
     return {"ok": True, "is_active": target.is_active}
+
+
+@admin_router.patch("/users/{target_user_id}/demo")
+async def admin_toggle_user_demo(
+    target_user_id: str,
+    request: Request,
+    current_user: CurrentUser = Depends(_require_superadmin()),
+    db: AsyncSession = Depends(get_db),
+):
+    """Toggle demo_data feature for a user (superadmin only).
+
+    By default users don't have the demo_data feature — superadmin can grant
+    or revoke it with this endpoint. Owner/admin roles bypass feature checks
+    on the backend, so toggling has effect only for analyst/manager users.
+    """
+    target = await db.get(User, uuid.UUID(target_user_id))
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    current_features = list(target.features or ["calculators", "research"])
+    had_demo = "demo_data" in current_features
+    if had_demo:
+        new_features = [f for f in current_features if f != "demo_data"]
+    else:
+        new_features = current_features + ["demo_data"]
+
+    target.features = new_features
+    # SQLAlchemy needs explicit flag to pick up JSONB list mutation
+    from sqlalchemy.orm.attributes import flag_modified
+    flag_modified(target, "features")
+    await db.commit()
+
+    await log_audit(
+        db, current_user.tenant.id, current_user.user.id, "admin_toggle_demo", request,
+        resource_type="user", resource_id=target_user_id,
+        details={"email": target.email, "demo_data": {"old": had_demo, "new": not had_demo}},
+    )
+    await db.commit()
+
+    return {"ok": True, "has_demo": not had_demo, "features": new_features}
